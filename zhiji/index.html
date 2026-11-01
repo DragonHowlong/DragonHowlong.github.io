@@ -466,8 +466,8 @@ function applyTemplate(id){
  * Flip LB_API.enabled when server is ready. finishPlay / viewManage already call these.
  */
 const LB_API = {
-  enabled: false,
-  // base: '', // e.g. 'https://api.example.com'
+  enabled: true,
+  base: 'https://zhiji-board.wanghowlonggg-jcwmny.workers.dev',
   submitPath: '/zhiji/score',
   boardPath: '/zhiji/board'
 };
@@ -1473,17 +1473,17 @@ function viewManage(){
         <div class="stat-box"><div class="n">${st.plays|0}</div><div class="l">答题人数</div></div>
         <div class="stat-box"><div class="n">${st.wins|0}</div><div class="l">获奖人数</div></div>
       </div>
-      <p class="hint">统计仅保存在本机浏览器，换设备/清缓存会丢失；好友端各自本地记录，不会自动汇总到你这里。</p>
+      <p class="hint">答题人数/获奖人数仅保存在本机；下方跨设备排行榜会汇总好友成绩。</p>
     </div>
     ${(st.board&&st.board.length)?`
     <div class="card"><h2>本机排行榜</h2><div class="leaderboard">
       ${st.board.slice(0,20).map(r=>`<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score}/${Q_COUNT}</span></div>`).join('')}
     </div>
-    <div class="lb-remote-hook" id="lb-remote-hook">跨设备排行榜：后端就绪后在此汇总好友成绩（LB_API）。</div>
+    <div class="lb-remote-hook" id="lb-remote-hook">正在加载跨设备排行榜…</div>
     </div>`:`
     <div class="card"><h2>排行榜</h2>
-      <p class="hint">本机暂无记录。跨设备排行榜等后端上线后自动显示。</p>
-      <div class="lb-remote-hook" id="lb-remote-hook">钩子已留：fetchBoardRemote(quizId)</div>
+      <p class="hint">本机暂无记录；跨设备成绩会显示在下方。</p>
+      <div class="lb-remote-hook" id="lb-remote-hook">正在加载跨设备排行榜…</div>
     </div>`}
     <div class="card">
       <button class="btn btn-secondary" onclick="copyShortLink()">复制短链 ?s=</button>
