@@ -236,6 +236,18 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .cat-tab.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);font-weight:650}
 .tip-box{background:var(--tip-bg);border:1px solid var(--tip-border);border-radius:12px;padding:12px;font-size:13px;line-height:1.55;color:var(--tip-text);margin-top:10px}
 .tip-box b{display:block;margin-bottom:4px}
+.msg-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.msg-actions .btn{margin-top:0}
+.msg-list{margin-top:8px}
+.msg-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.msg-item:last-child{border-bottom:none}
+.msg-item .who{font-size:13px;font-weight:650;color:var(--primary-dark);margin-bottom:4px}
+.msg-item .when{font-size:11px;color:var(--text-light);margin-top:6px}
+.msg-item .body{font-size:14px;line-height:1.55;word-break:break-word}
+.corner-msg{display:flex;gap:8px;justify-content:flex-end;margin:0 0 10px}
+.corner-msg .btn{flex:0 0 auto;width:auto;padding:8px 12px;margin:0;font-size:13px}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dev-grid .stat-box .n{font-size:28px}
 .action-bar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .action-bar .btn{margin-top:0}
 .action-bar .span2{grid-column:1 / -1}
@@ -462,13 +474,18 @@ function applyTemplate(id){
   toast('已加载模板，请确认每题你的答案');
 }
 
-/* Remote leaderboard API — used by finishPlay, viewManage, viewResult */
+/* Remote leaderboard / msg / hit API — workers.dev may be blocked in WeChat */
 const LB_API = {
   enabled: true,
   base: 'https://zhiji-board.wanghowlonggg-jcwmny.workers.dev',
   submitPath: '/zhiji/score',
-  boardPath: '/zhiji/board'
+  boardPath: '/zhiji/board',
+  msgPath: '/zhiji/msg',
+  hitPath: '/zhiji/hit',
+  statsPath: '/zhiji/stats'
 };
+/* Site-developer only. Not for quiz creators. */
+const DEV_TOKEN = 'INakag_zwNB9FL1lQw8RwjFd';
 async function submitScoreRemote(quizId, row){
   if(!LB_API.enabled || !LB_API.base) return null;
   try{
@@ -489,6 +506,151 @@ async function fetchBoardRemote(quizId){
     const data=await res.json();
     return Array.isArray(data)?data:(data&&data.board)||null;
   }catch(e){ return null; }
+}
+async function postHitRemote(quizId, kind){
+  if(!LB_API.enabled || !LB_API.base || !quizId) return null;
+  try{
+    const res=await fetch(LB_API.base + LB_API.hitPath, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({quizId, kind:kind||'open', fp:getPlayerFp(), at:Date.now()})
+    });
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){ return null; }
+}
+async function postMsgRemote(quizId, kind, text, nick){
+  if(!LB_API.enabled || !LB_API.base || !quizId) return null;
+  try{
+    const res=await fetch(LB_API.base + LB_API.msgPath, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({quizId, kind, text, nick:nick||'', fp:getPlayerFp()})
+    });
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){ return null; }
+}
+async function fetchMsgRemote(quizId, kind){
+  if(!LB_API.enabled || !LB_API.base || !quizId) return null;
+  try{
+    const res=await fetch(LB_API.base + LB_API.msgPath + '?quizId=' + encodeURIComponent(quizId) + '&kind=' + encodeURIComponent(kind), {cache:'no-store'});
+    if(!res.ok) return null;
+    const data=await res.json();
+    return Array.isArray(data)?data:null;
+  }catch(e){ return null; }
+}
+async function fetchSiteStatsRemote(){
+  if(!LB_API.enabled || !LB_API.base) return null;
+  try{
+    const res=await fetch(LB_API.base + LB_API.statsPath + '?token=' + encodeURIComponent(DEV_TOKEN), {cache:'no-store'});
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){ return null; }
+}
+function isDevMode(){
+  try{
+    const p=new URLSearchParams(location.search);
+    return p.get('dev')===DEV_TOKEN;
+  }catch(e){ return false; }
+}
+function fmtMsgTime(at){
+  const n=Number(at);
+  if(!Number.isFinite(n)||!n) return '';
+  try{
+    const d=new Date(n);
+    const pad=x=>String(x).padStart(2,'0');
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+  }catch(e){ return ''; }
+}
+function renderMsgRows(list, kind){
+  if(!list||!list.length) return '<p class="hint">还没有留言</p>';
+  return '<div class="msg-list">'+list.slice(0,50).map(m=>{
+    const who=kind==='anon'?'匿名':escapeHtml(m.nick||'匿名');
+    return '<div class="msg-item"><div class="who">'+who+'</div><div class="body">'+escapeHtml(m.text||'')+'</div><div class="when">'+escapeHtml(fmtMsgTime(m.at))+'</div></div>';
+  }).join('')+'</div>';
+}
+async function openMsgInbox(kind){
+  const quiz=S.published; if(!quiz){ toast('没有已发布试卷'); return; }
+  const title=kind==='whisper'?'悄悄话':'匿名信';
+  closeModal();
+  const wrap=document.createElement('div');
+  wrap.className='modal-mask';
+  wrap.id='msg-inbox-modal';
+  wrap.onclick=function(ev){ if(ev.target===wrap) closeModal(); };
+  wrap.innerHTML='<div class="modal"><h3>'+title+'</h3><div id="msg-inbox-body"><p class="hint">正在加载…</p></div><button class="btn btn-secondary" onclick="closeModal()">关闭</button></div>';
+  document.body.appendChild(wrap);
+  const body=document.getElementById('msg-inbox-body');
+  if(!LB_API.enabled){ body.innerHTML='<p class="hint">留言未启用</p>'; return; }
+  const list=await fetchMsgRemote(quiz.id, kind);
+  if(list===null){
+    body.innerHTML='<p class="hint">加载失败，可能是网络拦截（如微信拦 *.workers.dev）。请用系统浏览器打开再试。</p>';
+    return;
+  }
+  body.innerHTML=renderMsgRows(list, kind);
+}
+function openLeaveMsg(kind){
+  const quiz=S.playQuiz; if(!quiz||!S.result){ toast('请先完成答题'); return; }
+  const title=kind==='whisper'?'写悄悄话':'写匿名信';
+  const tip=kind==='whisper'?'会显示你的昵称':'对方只看到「匿名」';
+  closeModal();
+  const wrap=document.createElement('div');
+  wrap.className='modal-mask';
+  wrap.id='msg-leave-modal';
+  wrap.onclick=function(ev){ if(ev.target===wrap) closeModal(); };
+  wrap.innerHTML='<div class="modal"><h3>'+title+'</h3><p class="hint">'+tip+'</p>'
+    +'<textarea id="msg-leave-text" maxlength="280" placeholder="说点什么…（最多280字）" style="min-height:110px"></textarea>'
+    +'<div class="msg-actions"><button class="btn btn-secondary" onclick="closeModal()">取消</button>'
+    +'<button class="btn btn-primary" onclick="submitLeaveMsg(\''+kind+'\')">发送</button></div>'
+    +'<p class="hint" id="msg-leave-status"></p></div>';
+  document.body.appendChild(wrap);
+  setTimeout(function(){ const t=document.getElementById('msg-leave-text'); if(t) t.focus(); },0);
+}
+async function submitLeaveMsg(kind){
+  const quiz=S.playQuiz; if(!quiz) return;
+  const ta=document.getElementById('msg-leave-text');
+  const st=document.getElementById('msg-leave-status');
+  const text=(ta&&ta.value||'').trim();
+  if(!text){ toast('先写点内容'); return; }
+  if(st) st.textContent='发送中…';
+  const remote=await postMsgRemote(quiz.id, kind, text, S.playNick||'匿名');
+  if(remote&&remote.ok){
+    toast(kind==='whisper'?'悄悄话已发送':'匿名信已发送');
+    closeModal();
+    return;
+  }
+  toast('已记录本地确认；若网络拦截，出题人可能收不到');
+  if(st) st.textContent='发送可能失败（网络拦截）。你可换系统浏览器再试。';
+}
+async function hydrateDevStats(){
+  const box=document.getElementById('dev-stats-hook');
+  if(!box) return;
+  box.innerHTML='<p class="hint">正在加载全站数据…</p>';
+  const data=await fetchSiteStatsRemote();
+  if(!data||!data.site){
+    box.innerHTML='<p class="hint">加载失败。Worker 未部署新接口，或网络拦截 *.workers.dev。</p>';
+    return;
+  }
+  const s=data.site;
+  box.innerHTML='<div class="dev-grid">'
+    +'<div class="stat-box"><div class="n">'+(s.opens|0)+'</div><div class="l">打开次数</div></div>'
+    +'<div class="stat-box"><div class="n">'+(s.finishes|0)+'</div><div class="l">答完次数</div></div>'
+    +'<div class="stat-box"><div class="n">'+(s.wins|0)+'</div><div class="l">获奖次数</div></div>'
+    +'<div class="stat-box"><div class="n">'+(s.publishes|0)+'</div><div class="l">发布次数</div></div>'
+    +'<div class="stat-box"><div class="n">'+(s.quizCount||((s.quizIds&&s.quizIds.length)|0))+'</div><div class="l">触及试卷</div></div>'
+    +'<div class="stat-box"><div class="n">'+(s.whispers|0)+'</div><div class="l">悄悄话</div></div>'
+    +'<div class="stat-box"><div class="n">'+(s.anons|0)+'</div><div class="l">匿名信</div></div>'
+    +'<div class="stat-box"><div class="n">'+(s.plays|0)+'</div><div class="l">开始答题</div></div>'
+    +'</div><p class="hint">仅开发者可见。更新于 '+escapeHtml(fmtMsgTime(s.updatedAt))+'</p>';
+}
+function viewDev(){
+  return `<div class="view active">
+    <header class="app-header"><h1>开发者数据</h1><p>全站汇总 · 不对出题人开放</p></header>
+    <div class="card"><div id="dev-stats-hook"><p class="hint">正在加载…</p></div>
+      <button class="btn btn-secondary" onclick="hydrateDevStats()">刷新</button>
+      <button class="btn btn-ghost" style="width:100%" onclick="history.replaceState(null,'',location.pathname+'#home');S.route='home';render()">离开</button>
+    </div>
+  </div>`;
 }
 
 const MEME_POOL = {
@@ -937,6 +1099,7 @@ function parseRoute(){
     return 'play-intro';
   }
 
+  if(params.get('dev')===DEV_TOKEN) return 'dev';
   if(params.get('manage')==='1') return 'manage';
   if(['home','create','reward','manage'].includes(h)) return h;
   if(h==='result' && S.result && S.playQuiz) return 'result';
@@ -950,7 +1113,7 @@ function navigate(route, replace){
     route='play-intro';
   }
   S.route=route;
-  const map={home:'#home',create:'#create',reward:'#reward',manage:'#manage','play-intro':'#play',play:'#play',result:'#result'};
+  const map={home:'#home',create:'#create',reward:'#reward',manage:'#manage',dev:'#dev','play-intro':'#play',play:'#play',result:'#result'};
   let target=map[route]||'#home';
   // keep search when playing
   const q=extractPayload();
@@ -1027,8 +1190,9 @@ function render(){
   if(r==='home') app.innerHTML=viewHome();
   else if(r==='create') app.innerHTML=viewCreate();
   else if(r==='reward') app.innerHTML=viewReward();
+  else if(r==='dev'){ app.innerHTML=viewDev(); setTimeout(hydrateDevStats,0); }
   else if(r==='manage'){ app.innerHTML=viewManage(); setTimeout(paintManageQr,0); setTimeout(hydrateRemoteBoard,0); }
-  else if(r==='play-intro') app.innerHTML=viewPlayIntro();
+  else if(r==='play-intro'){ app.innerHTML=viewPlayIntro(); setTimeout(trackFriendOpen,0); }
   else if(r==='play') app.innerHTML=viewPlay();
   else if(r==='result'){ app.innerHTML=viewResult(); setTimeout(function(){ hydrateRemoteBoard(S.playQuiz&&S.playQuiz.id); },0); }
   else app.innerHTML=viewHome();
@@ -1384,6 +1548,7 @@ function publishQuiz(){
     questions:d.slots.map(s=>{const qq={q:s.q,options:[...s.options],answer:s.answer|0}; if(typeof s.bankIdx==='number') qq.bankIdx=s.bankIdx; else {const bi=findBankIdx(s); if(bi>=0) qq.bankIdx=bi;} return qq;})
   };
   savePublished(quiz);
+  void postHitRemote(quiz.id,'publish');
   const st=getStats(quiz.id); setStats(quiz.id,st);
   // Clear draft after publish to avoid stale resume / crash-recovery confusion
   S.draft=defaultDraft();
@@ -1455,6 +1620,10 @@ function viewManage(){
         <b>微信分享提示</b>
         点「生成分享海报」发朋友圈最香；也可只存二维码或复制压缩链接（通常 &lt;800 字）。
       </div>
+    </div>
+    <div class="corner-msg">
+      <button class="btn btn-secondary" onclick="openMsgInbox('whisper')">悄悄话</button>
+      <button class="btn btn-secondary" onclick="openMsgInbox('anon')">匿名信</button>
     </div>
     <div class="card">
       <h2>邀请二维码</h2>
@@ -1548,6 +1717,17 @@ async function hydrateRemoteBoard(quizId){
     return;
   }
   box.innerHTML=renderBoardRows(board);
+}
+
+function trackFriendOpen(){
+  try{
+    if(!hasFriendLink()) return;
+    const quiz=S.playQuiz; if(!quiz||!quiz.id) return;
+    const k='zhiji-hit-open-'+quiz.id;
+    if(sessionStorage.getItem(k)==='1') return;
+    sessionStorage.setItem(k,'1');
+    void postHitRemote(quiz.id,'open');
+  }catch(e){}
 }
 function clearManageAndHome(){
   history.replaceState(null,'', location.pathname + '#home');
@@ -1982,6 +2162,7 @@ function beginPlay(){
   getPlayerFp();
   S._activePlay=true;
   S.playIdx=0;S.playAnswers=[];S.result=null;S.route='play';render();
+  if(hasFriendLink()) void postHitRemote(quiz.id,'play');
 }
 function viewPlay(){
   const quiz=S.playQuiz; if(!quiz)return viewPlayIntro();
@@ -2089,6 +2270,11 @@ function viewResult(){
         ? `<p class="hint" style="margin-bottom:10px">这套题本机已作答，不能再答一次。<br>纯前端仅锁定当前手机浏览器。</p>`
         : `<button class="btn btn-primary" onclick="beginPlay()">再试一次</button>
       <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>`}
+      <div class="msg-actions">
+        <button class="btn btn-secondary" onclick="openLeaveMsg('whisper')">留悄悄话</button>
+        <button class="btn btn-secondary" onclick="openLeaveMsg('anon')">写匿名信</button>
+      </div>
+      <p class="hint">悄悄话带昵称；匿名信不显示名字。</p>
       <p style="margin:16px 0 8px;font-size:14px;color:var(--text-light);line-height:1.55">测完了？出一套属于你的题发给朋友。</p>
       <button class="btn btn-mint" onclick="goCreateOwn()">我也要出题</button>
     </div>
@@ -2236,6 +2422,10 @@ function viewResult(){
   }
 })();
 
+  if(isDevMode()){
+    try{ history.replaceState(null,'', location.pathname + '?dev=' + encodeURIComponent(DEV_TOKEN) + '#dev'); }catch(e){}
+    S.route='dev';
+  }
   window.addEventListener('hashchange', onHash);
   Object.assign(window,{
     S,clamp,navigate,startCreate,goManage,setSlotAnswer,prevStep,nextStep,
@@ -2243,7 +2433,7 @@ function viewResult(){
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
     onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,savePosterImage,generateSharePoster,buildSharePoster,switchQrMode,paintManageQr,
     previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick,
-    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard
+    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,DEV_TOKEN,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,hydrateDevStats,viewDev,trackFriendOpen
   });
   if(qPayload || sid){
     try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
