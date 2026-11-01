@@ -1223,19 +1223,16 @@ function viewHome(){
     <div class="card" style="text-align:center;padding:28px 18px">
       ${memeImg(pickEntryMeme(),'meme-hero')}
       <div class="intro-title">创建你的默契测试卷</div>
-      <p class="hint" style="margin:8px 0 16px">随机出题或从分类题库挑选，选好你的答案，生成链接发给好友。</p>
       <button class="btn btn-primary" onclick="startCreate(false)">开始出题</button>
       ${hasPub?`<button class="btn btn-mint" onclick="goManage()">我的已发布试卷</button>`:''}
     </div>
     <div class="card">
       <h2>现成模板 · 点一下加载</h2>
-      <p class="hint" style="margin-top:-4px;margin-bottom:8px">直接灌进 10 题草稿，记得把每题「我的答案」改成你的真实选项。</p>
       <div class="tpl-list">${tplCards}</div>
     </div>
     <div class="card">
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
-      <p class="hint" style="margin:8px 0 0;text-align:left">主题会写进分享链接，好友打开自动同款样式。</p>
     </div>
     <p class="footer-note">纯前端 · 数据保存在本机 localStorage<br>分享链接自带题目，好友打开即可答</p>
   </div>`;
@@ -1280,7 +1277,6 @@ function viewCreate(){
             <span class="opt-letter">${LETTERS[j]}</span>${escapeHtml(o)}
             ${j===slot.answer?'<span style="margin-left:auto;color:var(--green);font-size:12px;font-weight:700">我的答案</span>':''}
           </button>`).join('')}
-        <p class="hint">点选项切换「我的正确答案」，再点「下一题」确认。</p>
         <div class="action-bar">
           <button class="btn btn-primary span2" onclick="nextStep()">${i>=Q_COUNT-1?'下一题 · 去设置奖励':'下一题'}</button>
           <button class="btn btn-secondary" onclick="randomBankSlot()">换一题</button>
@@ -1355,7 +1351,6 @@ function bankModalHtml(){
       <h3>题库选一题</h3>
       <div class="cat-tabs">${tabs}</div>
       <div class="search-box"><input type="text" placeholder="搜索题目…" value="${escapeHtml(f)}" oninput="S.bankFilter=this.value;refreshBankModal()"></div>
-      <p class="hint" style="margin:0 0 8px">已选用的题会禁用；当前题槽共可用 ${available.length} 题</p>
       <div class="bank-list" id="bank-list">${list.map(({b,i})=>{
         const isUsed=used.has(i)&&i!==curBank;
         return `
@@ -1469,7 +1464,6 @@ function viewReward(){
       <div class="chip-row">
         <button type="button" class="chip ${d.nameSkipped||!(d.name||'').trim()?'active':''}" onclick="skipName()">跳过 / 不填</button>
       </div>
-      <p class="hint">不填则显示「神秘人的默契测试卷」</p>
     </div>
     <div class="card">
       <h2>奖励内容</h2>
@@ -1482,7 +1476,6 @@ function viewReward(){
     </div>
     <div class="card">
       <h2>获奖门槛</h2>
-      <p class="hint" style="margin-top:0">答对几题可获奖？</p>
       <div class="chip-row">
         ${THRESH_PRESETS.map(n=>`<button type="button" class="chip ${(d.threshold|0)===n?'active':''}" onclick="pickThreshold(${n})">${n} 题</button>`).join('')}
       </div>
@@ -1492,11 +1485,9 @@ function viewReward(){
       <div class="chip-row">
         ${INV_PRESETS.map(p=>`<button type="button" class="chip ${(inv===p.value || (inv==null&&p.value==null))?'active':''}" onclick="pickInventory(${p.value===null?'null':p.value})">${p.label}</button>`).join('')}
       </div>
-      <p class="hint">仅作文案展示；真实兑换请出题人自行核对。</p>
     </div>
     <div class="card">
       <h2>分段评语 <span class="badge">已预填可改</span></h2>
-      <p class="hint">按答对题数展示评语，可直接用默认文案。</p>
       <div id="band-list">${renderBandsEditor()}</div>
       <button class="btn btn-secondary btn-sm" onclick="addBand()">＋ 增加一档</button>
     </div>
