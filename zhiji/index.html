@@ -7,7 +7,7 @@
 <title>默契测试 · 你有多了解我</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
+:root,html[data-theme="cute"]{
   --bg:#EAF6F3;
   --bg2:#E8F4FC;
   --card:#ffffff;
@@ -25,49 +25,154 @@
   --warn:#E8A838;
   --radius:16px;
   --shadow:0 4px 16px rgba(75,163,199,.12);
+  --header-1:#4BA3C7;
+  --header-2:#6BB3E0;
+  --header-3:#7BC9A6;
+  --input-bg:#FAFDFC;
+  --chip-bg:#ffffff;
+  --opt-bg:#ffffff;
+  --opt-selected-bg:#F0F9FC;
+  --progress-track:#C5DDE8;
+  --quiz-track:rgba(208,232,226,.9);
+  --soft-grad-a:#F0F9FC;
+  --soft-grad-b:#EAF7F1;
+  --reward-bg:#FBFEFF;
+  --no-reward-bg:#F7F8FA;
+  --tip-bg:#FFF8E8;
+  --tip-border:#F0D9A0;
+  --tip-text:#7A5A20;
+  --modal-bg:#ffffff;
+  --bank-item-bg:#FAFDFC;
+  --slot-empty-bg:#F3F5F7;
+  --btn-sec-bg:#ffffff;
+  --danger-border:#F5D0D0;
+  --bgm-bg:rgba(255,255,255,.92);
+  --primary-rgb:75,163,199;
+}
+html[data-theme="mono"]{
+  --bg:#F4F4F4;
+  --bg2:#EEEEEE;
+  --card:#ffffff;
+  --primary:#111111;
+  --primary-dark:#000000;
+  --primary-soft:#E8E8E8;
+  --green:#222222;
+  --green-soft:#F0F0F0;
+  --mint:#444444;
+  --text:#111111;
+  --text-light:#666666;
+  --border:#D0D0D0;
+  --danger:#B00020;
+  --danger-soft:#FCE8EC;
+  --warn:#555555;
+  --shadow:0 4px 16px rgba(0,0,0,.08);
+  --header-1:#111111;
+  --header-2:#333333;
+  --header-3:#555555;
+  --input-bg:#FAFAFA;
+  --chip-bg:#ffffff;
+  --opt-bg:#ffffff;
+  --opt-selected-bg:#F2F2F2;
+  --progress-track:#D8D8D8;
+  --quiz-track:#E6E6E6;
+  --soft-grad-a:#F7F7F7;
+  --soft-grad-b:#EFEFEF;
+  --reward-bg:#FAFAFA;
+  --no-reward-bg:#F5F5F5;
+  --tip-bg:#F7F7F7;
+  --tip-border:#D0D0D0;
+  --tip-text:#333333;
+  --modal-bg:#ffffff;
+  --bank-item-bg:#FAFAFA;
+  --slot-empty-bg:#F0F0F0;
+  --btn-sec-bg:#ffffff;
+  --danger-border:#E8B4BE;
+  --bgm-bg:rgba(255,255,255,.95);
+  --primary-rgb:17,17,17;
+}
+html[data-theme="dark"]{
+  --bg:#12141A;
+  --bg2:#1A1D26;
+  --card:#232733;
+  --primary:#6EC1E0;
+  --primary-dark:#8AD0EA;
+  --primary-soft:#2A3A48;
+  --green:#6BCF9B;
+  --green-soft:#1E3A2E;
+  --mint:#5CB88A;
+  --text:#E8ECF2;
+  --text-light:#9AA3B2;
+  --border:#343B4A;
+  --danger:#F08A8F;
+  --danger-soft:#3A2426;
+  --warn:#E8B86D;
+  --shadow:0 4px 18px rgba(0,0,0,.45);
+  --header-1:#2A4A5C;
+  --header-2:#3A6A7A;
+  --header-3:#3A6B58;
+  --input-bg:#1A1D26;
+  --chip-bg:#1E222C;
+  --opt-bg:#1E222C;
+  --opt-selected-bg:#2A3A48;
+  --progress-track:#3A4152;
+  --quiz-track:#2A303C;
+  --soft-grad-a:#1E2A32;
+  --soft-grad-b:#1E2E28;
+  --reward-bg:#1E2A32;
+  --no-reward-bg:#1A1D26;
+  --tip-bg:#2A2618;
+  --tip-border:#5A4A20;
+  --tip-text:#E8D5A0;
+  --modal-bg:#232733;
+  --bank-item-bg:#1A1D26;
+  --slot-empty-bg:#2A303C;
+  --btn-sec-bg:#1E222C;
+  --danger-border:#5A3438;
+  --bgm-bg:rgba(30,34,44,.92);
+  --primary-rgb:110,193,224;
 }
 html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);color:var(--text);-webkit-tap-highlight-color:transparent}
 #app{max-width:430px;margin:0 auto;min-height:100%;position:relative;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
 .view{display:none;padding:0 0 24px;animation:fadeIn .25s ease}
 .view.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-header.app-header{background:linear-gradient(135deg,#4BA3C7 0%,#6BB3E0 55%,#7BC9A6 100%);color:#fff;padding:28px 20px 24px;border-radius:0 0 28px 28px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
+header.app-header{background:linear-gradient(135deg,var(--header-1) 0%,var(--header-2) 55%,var(--header-3) 100%);color:#fff;padding:28px 20px 24px;border-radius:0 0 28px 28px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
 header.app-header::after{content:"";position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12)}
 header.app-header h1{font-size:22px;font-weight:700;letter-spacing:1px;position:relative}
 header.app-header p{font-size:13px;opacity:.92;margin-top:6px;position:relative}
 .step-pill{display:inline-block;background:rgba(255,255,255,.22);padding:4px 12px;border-radius:20px;font-size:12px;margin-top:10px;position:relative}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin:0 14px 12px;box-shadow:var(--shadow);border:1px solid rgba(208,232,226,.8)}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin:0 14px 12px;box-shadow:var(--shadow);border:1px solid var(--border)}
 .card h2{font-size:16px;margin-bottom:12px;color:var(--primary-dark);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .card h2 .badge{font-size:12px;background:var(--primary-soft);color:var(--primary-dark);padding:2px 10px;border-radius:10px;font-weight:600}
 label{display:block;font-size:13px;color:var(--text-light);margin-bottom:4px;margin-top:10px}
-input[type=text],input[type=number],textarea,select{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;background:#FAFDFC;color:var(--text);outline:none;transition:border .2s;font-family:inherit}
+input[type=text],input[type=number],textarea,select{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;background:var(--input-bg);color:var(--text);outline:none;transition:border .2s;font-family:inherit}
 input:focus,textarea:focus,select:focus{border-color:var(--primary)}
 textarea{resize:vertical;min-height:64px;line-height:1.5}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;font-family:inherit;width:100%;margin-top:8px}
 .btn:active{transform:scale(.97);opacity:.9}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.btn-primary{background:linear-gradient(135deg,var(--primary),#5BB8D4);color:#fff;box-shadow:0 4px 12px rgba(75,163,199,.28)}
-.btn-secondary{background:#fff;color:var(--primary-dark);border:1.5px solid var(--primary)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(var(--primary-rgb),.28)}
+.btn-secondary{background:var(--btn-sec-bg);color:var(--primary-dark);border:1.5px solid var(--primary)}
 .btn-mint{background:linear-gradient(135deg,var(--mint),var(--green));color:#fff}
-.btn-danger{background:var(--danger-soft);color:var(--danger);border:1px solid #F5D0D0;font-size:13px;padding:7px 12px;width:auto;margin:0}
+.btn-danger{background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger-border);font-size:13px;padding:7px 12px;width:auto;margin:0}
 .btn-ghost{background:transparent;color:var(--text-light);font-size:13px;padding:8px;width:auto;margin:0}
 .btn-sm{padding:9px 12px;font-size:13px;width:auto;margin:0;border-radius:12px}
 .btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .btn-row .btn{flex:1;margin-top:0;min-width:0}
 .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:13px;color:var(--text);cursor:pointer;font-family:inherit}
+.chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--chip-bg);font-size:13px;color:var(--text);cursor:pointer;font-family:inherit}
 .chip.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);font-weight:600}
 .progress-dots{display:flex;gap:5px;justify-content:center;margin:4px 0 12px;padding:0 16px}
-.progress-dots span{width:8px;height:8px;border-radius:50%;background:#C5DDE8;transition:all .2s}
+.progress-dots span{width:8px;height:8px;border-radius:50%;background:var(--progress-track);transition:all .2s}
 .progress-dots span.done{background:var(--green)}
 .progress-dots span.cur{background:var(--primary);width:18px;border-radius:6px}
-.quiz-progress{height:5px;background:rgba(208,232,226,.9);border-radius:3px;margin:0 14px 14px;overflow:hidden}
+.quiz-progress{height:5px;background:var(--quiz-track);border-radius:3px;margin:0 14px 14px;overflow:hidden}
 .quiz-progress-bar{height:100%;background:linear-gradient(90deg,var(--primary),var(--mint));border-radius:3px;transition:width .3s}
 .quiz-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--text-light);margin:0 16px 10px}
 .quiz-q{font-size:18px;font-weight:650;line-height:1.55;margin-bottom:18px}
-.opt-btn{display:flex;align-items:center;width:100%;text-align:left;padding:13px 14px;margin-bottom:10px;border:1.5px solid var(--border);border-radius:14px;background:#fff;font-size:15px;color:var(--text);cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.4}
+.opt-btn{display:flex;align-items:center;width:100%;text-align:left;padding:13px 14px;margin-bottom:10px;border:1.5px solid var(--border);border-radius:14px;background:var(--opt-bg);font-size:15px;color:var(--text);cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.4}
 .opt-btn:active{transform:scale(.98)}
-.opt-btn.selected{border-color:var(--primary);background:#F0F9FC;color:var(--primary-dark)}
+.opt-btn.selected{border-color:var(--primary);background:var(--opt-selected-bg);color:var(--primary-dark)}
 .opt-btn.correct-mark{border-color:var(--green);background:var(--green-soft)}
 .opt-letter{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;border-radius:50%;background:var(--bg2);color:var(--primary);font-weight:700;font-size:13px;margin-right:10px;flex-shrink:0}
 .opt-btn.selected .opt-letter{background:var(--primary);color:#fff}
@@ -75,14 +180,14 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .opt-edit{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .opt-edit input[type=radio]{accent-color:var(--primary);width:18px;height:18px;flex-shrink:0}
 .opt-edit input[type=text]{flex:1}
-.opt-edit .rm{flex-shrink:0;width:32px;height:32px;border-radius:10px;border:1px solid #F5D0D0;background:var(--danger-soft);color:var(--danger);font-size:16px;cursor:pointer}
+.opt-edit .rm{flex-shrink:0;width:32px;height:32px;border-radius:10px;border:1px solid var(--danger-border);background:var(--danger-soft);color:var(--danger);font-size:16px;cursor:pointer}
 .result-card{text-align:center;padding:26px 18px}
 .result-card .score-num{font-size:52px;font-weight:750;color:var(--primary);line-height:1}
 .result-card .score-label{font-size:14px;color:var(--text-light);margin:6px 0 16px}
-.result-card .comment{font-size:15px;line-height:1.65;margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#F0F9FC,#EAF7F1);border-radius:14px}
-.result-card .reward{font-size:15px;color:var(--primary-dark);font-weight:650;padding:14px 16px;border:1.5px dashed var(--primary);border-radius:14px;margin-bottom:8px;background:#FBFEFF}
-.result-card .no-reward{font-size:14px;color:var(--text-light);padding:12px;background:#F7F8FA;border-radius:12px;margin-bottom:8px}
-.reward-preview{display:flex;align-items:center;gap:12px;padding:12px;background:linear-gradient(135deg,#F0F9FC,#EAF7F1);border-radius:14px;margin-top:8px}
+.result-card .comment{font-size:15px;line-height:1.65;margin-bottom:14px;padding:14px;background:linear-gradient(135deg,var(--soft-grad-a),var(--soft-grad-b));border-radius:14px}
+.result-card .reward{font-size:15px;color:var(--primary-dark);font-weight:650;padding:14px 16px;border:1.5px dashed var(--primary);border-radius:14px;margin-bottom:8px;background:var(--reward-bg)}
+.result-card .no-reward{font-size:14px;color:var(--text-light);padding:12px;background:var(--no-reward-bg);border-radius:12px;margin-bottom:8px}
+.reward-preview{display:flex;align-items:center;gap:12px;padding:12px;background:linear-gradient(135deg,var(--soft-grad-a),var(--soft-grad-b));border-radius:14px;margin-top:8px}
 .reward-preview .emoji{font-size:28px}
 .reward-preview .txt{flex:1;text-align:left}
 .reward-preview .txt b{display:block;font-size:15px;color:var(--primary-dark)}
@@ -96,12 +201,12 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .band-row .band-range{flex:0 0 78px;font-size:12px;color:var(--primary);font-weight:600;padding-top:12px;text-align:center}
 .band-row textarea{flex:1;min-height:52px}
 .modal-mask{position:fixed;inset:0;background:rgba(30,50,60,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;max-width:430px;margin:0 auto}
-.modal{background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));width:100%;max-height:88vh;overflow-y:auto}
+.modal{background:var(--modal-bg);border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));width:100%;max-height:88vh;overflow-y:auto;color:var(--text)}
 .modal h3{font-size:17px;margin-bottom:12px;text-align:center}
 .bank-list{max-height:46vh;overflow-y:auto}
-.bank-item{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;background:#FAFDFC}
+.bank-item{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;background:var(--bank-item-bg)}
 .bank-item:active{background:var(--primary-soft)}
-.bank-item.used{opacity:.45;cursor:not-allowed;background:#F3F5F7}
+.bank-item.used{opacity:.45;cursor:not-allowed;background:var(--slot-empty-bg)}
 .bank-item .bq{font-size:14px;font-weight:550;margin-bottom:4px}
 .bank-item .bo{font-size:12px;color:var(--text-light);line-height:1.5}
 .bank-item .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);margin-bottom:4px;font-weight:600}
@@ -109,12 +214,12 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .toast.show{opacity:1}
 .footer-note{text-align:center;padding:8px 20px;font-size:12px;color:var(--text-light);line-height:1.5}
 .hero-emoji{font-size:42px;margin-bottom:8px}
-.meme-hero{display:block;width:min(180px,46vw);height:auto;margin:0 auto 12px;border-radius:18px;box-shadow:0 6px 18px rgba(75,163,199,.18);object-fit:cover;animation:memeFloat 3.2s ease-in-out infinite}
-.meme-result{display:block;width:min(160px,42vw);height:auto;margin:0 auto 14px;border-radius:16px;box-shadow:0 4px 14px rgba(75,163,199,.16);object-fit:cover}
+.meme-hero{display:block;width:min(180px,46vw);height:auto;margin:0 auto 12px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;animation:memeFloat 3.2s ease-in-out infinite}
+.meme-result{display:block;width:min(160px,42vw);height:auto;margin:0 auto 14px;border-radius:16px;box-shadow:0 4px 14px rgba(var(--primary-rgb),.16);object-fit:cover}
 @keyframes memeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .intro-title{font-size:20px;font-weight:700;line-height:1.4;margin-bottom:8px;color:var(--text)}
 .slot-tag{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);font-weight:600}
-.slot-tag.empty{background:#F3F5F7;color:var(--text-light)}
+.slot-tag.empty{background:var(--slot-empty-bg);color:var(--text-light)}
 .leaderboard{margin-top:10px}
 .lb-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
 .lb-row:last-child{border-bottom:none}
@@ -127,22 +232,42 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .q-preview{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:12px;padding:12px;background:var(--bg2);border-radius:12px}
 .cat-tabs{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0 10px;margin-bottom:4px}
 .cat-tabs::-webkit-scrollbar{display:none}
-.cat-tab{flex:0 0 auto;padding:7px 12px;border-radius:16px;border:1.5px solid var(--border);background:#fff;font-size:12px;color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap}
+.cat-tab{flex:0 0 auto;padding:7px 12px;border-radius:16px;border:1.5px solid var(--border);background:var(--chip-bg);font-size:12px;color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap}
 .cat-tab.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);font-weight:650}
-.tip-box{background:#FFF8E8;border:1px solid #F0D9A0;border-radius:12px;padding:12px;font-size:13px;line-height:1.55;color:#7A5A20;margin-top:10px}
+.tip-box{background:var(--tip-bg);border:1px solid var(--tip-border);border-radius:12px;padding:12px;font-size:13px;line-height:1.55;color:var(--tip-text);margin-top:10px}
 .tip-box b{display:block;margin-bottom:4px}
 .action-bar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .action-bar .btn{margin-top:0}
 .action-bar .span2{grid-column:1 / -1}
 
 .qr-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:8px 0 4px}
-.qr-wrap img,.qr-wrap canvas{width:min(72vw,260px);height:auto;border-radius:12px;background:#fff;padding:10px;box-shadow:0 2px 10px rgba(75,163,199,.15);border:1px solid var(--border);image-rendering:pixelated}
+.qr-wrap img,.qr-wrap canvas{width:min(72vw,260px);height:auto;border-radius:12px;background:#fff;padding:10px;box-shadow:0 2px 10px rgba(var(--primary-rgb),.15);border:1px solid var(--border);image-rendering:pixelated}
 .qr-caption{font-size:14px;font-weight:650;color:var(--primary-dark);margin:12px 0 4px}
 .qr-sub{font-size:12px;color:var(--text-light);line-height:1.5;margin:0 8px 8px}
 
-.bgm-toggle{position:fixed;top:calc(12px + env(safe-area-inset-top));right:max(12px, env(safe-area-inset-right));z-index:300;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:rgba(255,255,255,.92);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;cursor:pointer;color:var(--primary-dark);padding:0;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(6px)}
+.bgm-toggle{position:fixed;top:calc(12px + env(safe-area-inset-top));right:max(12px, env(safe-area-inset-right));z-index:300;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:var(--bgm-bg);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;cursor:pointer;color:var(--primary-dark);padding:0;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(6px)}
 .bgm-toggle:active{transform:scale(.94)}
 .bgm-toggle[aria-pressed="true"]{background:var(--primary-soft);border-color:var(--primary)}
+
+.theme-picker{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.theme-chip{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:14px;border:1.5px solid var(--border);background:var(--chip-bg);cursor:pointer;font-family:inherit;color:var(--text);font-size:12px;line-height:1.3}
+.theme-chip .swatch{width:100%;height:28px;border-radius:10px;border:1px solid var(--border)}
+.theme-chip.active{border-color:var(--primary);background:var(--primary-soft);font-weight:650;color:var(--primary-dark)}
+.theme-chip .swatch.cute{background:linear-gradient(90deg,#E8F4FC,#EAF6F3,#7BC9A6)}
+.theme-chip .swatch.mono{background:linear-gradient(90deg,#111,#888,#f4f4f4)}
+.theme-chip .swatch.dark{background:linear-gradient(90deg,#12141A,#2A4A5C,#6EC1E0)}
+.tpl-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.tpl-card{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:var(--chip-bg);cursor:pointer;font-family:inherit;color:var(--text)}
+.tpl-card:active{transform:scale(.98);opacity:.92}
+.tpl-card .te{font-size:26px;line-height:1;flex-shrink:0;margin-top:2px}
+.tpl-card .tb{flex:1;min-width:0}
+.tpl-card .tn{font-size:14px;font-weight:650;margin-bottom:2px}
+.tpl-card .td{font-size:12px;color:var(--text-light);line-height:1.45}
+.section-label{font-size:13px;font-weight:650;color:var(--primary-dark);margin:4px 0 2px}
+html[data-theme="mono"] .btn-primary,html[data-theme="mono"] .btn-mint{background:#111;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+html[data-theme="mono"] header.app-header{background:#111}
+.lb-remote-hook{margin-top:8px;padding:10px;border:1px dashed var(--border);border-radius:12px;font-size:12px;color:var(--text-light);line-height:1.5}
+
 
 </style>
 </head>
@@ -177,6 +302,196 @@ const DEFAULT_BANDS = [
   {min:7,max:8,text:'不错嘛！你真的有在认真观察我～'},
   {min:9,max:10,text:'默契爆棚！！你也太懂我了吧，奖励安排上！'}
 ];
+
+
+/* ---------- Theme skins ---------- */
+const THEME_IDS = ['cute','mono','dark'];
+const THEME_META = [
+  {id:'cute', label:'明亮可爱'},
+  {id:'mono', label:'极简黑白'},
+  {id:'dark', label:'暗黑模式'}
+];
+function normalizeTheme(t){
+  t=String(t||'cute');
+  return THEME_IDS.indexOf(t)>=0 ? t : 'cute';
+}
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', normalizeTheme(theme));
+}
+function setDraftTheme(theme){
+  if(!S.draft) loadDraft();
+  const keepTheme = normalizeTheme(theme);
+  // Selecting theme before create: keep into draft immediately + live preview
+  if(!S.draft.theme || S.draft.theme !== keepTheme){
+    S.draft.theme = keepTheme;
+    saveDraft();
+  } else {
+    S.draft.theme = keepTheme;
+    saveDraft();
+  }
+  applyTheme(keepTheme);
+  if(S.route==='home') render();
+}
+function syncThemeForRoute(){
+  let t='cute';
+  if(S.playQuiz && S.playQuiz.theme) t=S.playQuiz.theme;
+  else if(S.route==='manage' && S.published && S.published.theme) t=S.published.theme;
+  else if(S.draft && S.draft.theme) t=S.draft.theme;
+  applyTheme(t);
+}
+
+/* ---------- Preset quiz templates ---------- */
+const TEMPLATES = [
+  {
+    id:'bestie',
+    emoji:'👭',
+    name:'闺蜜测试模板',
+    desc:'抽象整活版闺蜜默契 · 10 题开箱即用',
+    themeSuggest:'cute',
+    reward:'奶茶券',
+    titleHint:'闺蜜默契挑战',
+    nameHint:'闺蜜本人',
+    questions:[
+      {q:'闺蜜半夜突然发「在吗」通常意味着？',options:['真有急事','精神状态分享会','想骂人找同盟','其实只是手滑'],answer:1},
+      {q:'我们出门约会最容易迟到的原因？',options:['换衣服开演唱会','纠结吃什么','化妆修图超时','出门前突然摆烂'],answer:0},
+      {q:'我对「保密」的真实表现是？',options:['守口如瓶专业户','转头就跟第三人说','只说一半更刺激','看八卦强度决定'],answer:0},
+      {q:'闺蜜吵架后我的第一反应？',options:['先装死等对方破冰','发抽象表情包求和','认真长文复盘','直接约饭当和解'],answer:3},
+      {q:'我们合照时我通常？',options:['抢C位但闭眼','负责修图人设','只露半个脑袋','要求重拍到崩溃'],answer:1},
+      {q:'我对闺蜜安利的东西？',options:['立刻买表示忠诚','收藏吃灰','嘴上好评实际没看','认真试用并锐评'],answer:0},
+      {q:'我们聊天最常出现的主题？',options:['吃什么','精神状态日报','吐槽同一个人','回忆杀名场面'],answer:0},
+      {q:'我对「双人出行」的规划风格？',options:['特种兵景点清单','走到哪算哪','只关心吃饭点','全交给对方然后抱怨'],answer:1},
+      {q:'闺蜜说「你懂我」时我？',options:['骄傲点头','其实没懂但装懂','立刻举例证明','回一句「那必须」'],answer:3},
+      {q:'我们友谊的抽象关键词是？',options:['双向奔赴的抽象','互损式亲密','饭搭子最高形态','精神状态共享云盘'],answer:1}
+    ]
+  },
+  {
+    id:'couple',
+    emoji:'💞',
+    name:'情侣默契模板',
+    desc:'搞怪情侣卷 · 测测对方是不是装懂',
+    themeSuggest:'cute',
+    reward:'请客一顿',
+    titleHint:'情侣默契挑战',
+    nameHint:'对象本人',
+    questions:[
+      {q:'约会选餐厅时我最终会？',options:['说随便然后否定全部','秒选老地方','看评价纠结半小时','把决定权甩给你再嫌弃'],answer:0},
+      {q:'我对「想你了」的回复风格？',options:['复读想你','发表情包装酷','认真写小作文','已读后过十分钟回'],answer:1},
+      {q:'吵架冷战时我更像？',options:['先认输型','等你来哄型','用梗化解型','认真讲道理型'],answer:1},
+      {q:'看电影时我的真实状态？',options:['认真看并锐评','刷手机但要你陪','吃爆米花为主','中途睡着'],answer:0},
+      {q:'我对纪念日的态度？',options:['必须仪式感','记得就行别整花活','靠日历提醒','假装忘记看你反应'],answer:0},
+      {q:'分享欲峰值时我会？',options:['狂发一天碎片','只发吃的','语音连麦输出','憋着等见面说'],answer:0},
+      {q:'我对「你开心就好」这句话？',options:['真心的','有时是放弃争论','需要你读空气','其实想你猜心意'],answer:1},
+      {q:'情侣合拍短视频我？',options:['导演强迫症','镜头害羞型','整活主角','拒绝出镜只拍照'],answer:2},
+      {q:'对方忙没空回消息时我？',options:['理解并继续刷','轻微内耗','发更多消息轰炸','直接打电话确认还活着'],answer:0},
+      {q:'我们之间的默契暗号更像？',options:['一个眼神懂吃啥','表情包就能复盘一天','互损等于说爱你','突然同步说同一句离谱话'],answer:3}
+    ]
+  },
+  {
+    id:'family',
+    emoji:'👨‍👩‍👧',
+    name:'家人版模板',
+    desc:'家庭抽象默契 · 适合发给爸妈兄弟姐妹',
+    themeSuggest:'mono',
+    reward:'一个拥抱',
+    titleHint:'家人默契挑战',
+    nameHint:'家里人',
+    questions:[
+      {q:'家里喊我名字通常因为？',options:['吃饭了','让我干活','找不到遥控器','真的想聊天（罕见）'],answer:0},
+      {q:'我对「你又宅在家」的回应？',options:['我在学习（谎言）','承认并继续宅','反问你不也是','戴耳机假装没听见'],answer:1},
+      {q:'家庭聚餐点菜时我？',options:['负责提意见被否决','闷声吃就行','抢着点自己爱吃的','只负责付钱人设'],answer:0},
+      {q:'长辈问成绩/工作我通常？',options:['打太极模糊回答','报喜不报忧','诚实然后被说教','转移话题到吃饭'],answer:3},
+      {q:'我在家的真实生物钟？',options:['昼伏夜出','被叫醒才起床','意外很规律','看有没有人管'],answer:0},
+      {q:'家里Wi‑Fi密码我？',options:['倒背如流','永远问别人','写在某处但找不到','负责改密码然后忘掉'],answer:0},
+      {q:'我对「多穿点」的态度？',options:['嘴上答应实际不穿','真的会加一件','反驳气温数据','出门后再加'],answer:0},
+      {q:'家庭群聊里我的人设？',options:['表情包输出机','沉默旁观','只回「收到」','偶尔发红包刷存在'],answer:0},
+      {q:'被叫去帮忙拿东西时？',options:['问在哪然后找不到','一次拿对','让别人再描述三遍','假装没听到'],answer:0},
+      {q:'家人最懂我的一点其实是？',options:['我嘴硬心软','我对吃很认真','我需要独处充电','我表面平静内核戏多'],answer:1}
+    ]
+  },
+  {
+    id:'party',
+    emoji:'🎉',
+    name:'团建聚会破冰模板',
+    desc:'聚会破冰搞怪卷 · 十题认识同事/同学',
+    themeSuggest:'dark',
+    reward:'请客喝一杯',
+    titleHint:'破冰默契挑战',
+    nameHint:'局主',
+    questions:[
+      {q:'聚会破冰阶段我通常？',options:['主动整活带动气氛','角落观察人类','只跟熟人说话','靠吃掩饰社恐'],answer:1},
+      {q:'自我介绍轮到我时？',options:['标准三件套','突然抽象发言','希望跳过','讲太长被打断'],answer:0},
+      {q:'团建游戏输了惩罚我？',options:['认命表演','找替罪羊','规则律师找漏洞','笑着说下次一定'],answer:0},
+      {q:'聚餐点菜争论时我？',options:['和事佬','坚持己见','随便吃啥都行','偷偷加一个自己爱的'],answer:3},
+      {q:'酒桌/饮料桌文化我更像？',options:['社交润滑剂','浅尝即止','盯着果汁保命','负责拍照记录'],answer:1},
+      {q:'突然被点名发言我？',options:['大脑蓝屏','复读上一位','流畅输出像开挂','用笑话蒙混'],answer:0},
+      {q:'合影环节我的位置策略？',options:['靠边不抢镜','中间C位','只露脑袋','负责按快门不当人'],answer:0},
+      {q:'聚会结束后我？',options:['秒到家充电','意犹未尽续摊','发感谢表情包','复盘今天社死点'],answer:0},
+      {q:'我对「下次再聚」的理解？',options:['真的会约','社交结束语','看缘分','由活跃的人发起'],answer:1},
+      {q:'最能代表我聚会人格的是？',options:['气氛组吉祥物','安静但在场','整活担当','后勤/点菜NPC'],answer:1}
+    ]
+  }
+];
+
+function templateById(id){
+  return TEMPLATES.find(t=>t.id===id) || null;
+}
+function applyTemplate(id){
+  if(hasFriendLink()){ toast('当前为答题链接'); return; }
+  const tpl=templateById(id);
+  if(!tpl){ toast('模板不存在'); return; }
+  const d=defaultDraft();
+  d.theme=normalizeTheme(tpl.themeSuggest || (S.draft&&S.draft.theme) || 'cute');
+  d.name=tpl.nameHint||'';
+  d.title=tpl.titleHint||'';
+  d.reward=tpl.reward||'奶茶券';
+  d.rewardCustom='';
+  d.step=0;
+  d.slots=(tpl.questions||[]).slice(0,Q_COUNT).map(q=>({
+    q:q.q,
+    options:[...(q.options||[])],
+    answer:clamp(q.answer|0,0,Math.max(0,(q.options||[]).length-1)),
+    filled:true
+  }));
+  while(d.slots.length<Q_COUNT){
+    d.slots.push({q:'',options:['','',''],answer:0,filled:false});
+  }
+  S.draft=d;
+  saveDraft();
+  applyTheme(d.theme);
+  navigate('create');
+  toast('已加载模板，请确认每题你的答案');
+}
+
+/* HOOK: remote leaderboard backend (parallel track — leave disabled)
+ * Flip LB_API.enabled when server is ready. finishPlay / viewManage already call these.
+ */
+const LB_API = {
+  enabled: false,
+  // base: '', // e.g. 'https://api.example.com'
+  submitPath: '/zhiji/score',
+  boardPath: '/zhiji/board'
+};
+async function submitScoreRemote(quizId, row){
+  if(!LB_API.enabled || !LB_API.base) return null;
+  try{
+    const res=await fetch(LB_API.base + LB_API.submitPath, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({quizId, ...row, fp:getPlayerFp()})
+    });
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){ return null; }
+}
+async function fetchBoardRemote(quizId){
+  if(!LB_API.enabled || !LB_API.base) return null;
+  try{
+    const res=await fetch(LB_API.base + LB_API.boardPath + '?quizId=' + encodeURIComponent(quizId), {cache:'no-store'});
+    if(!res.ok) return null;
+    const data=await res.json();
+    return Array.isArray(data)?data:(data&&data.board)||null;
+  }catch(e){ return null; }
+}
 
 const MEME_POOL = {
   entry: ['memes/m01.jpg','memes/m05.jpg','memes/m08.jpg','memes/m06.jpg','memes/m07.jpg','memes/m03.jpg'],
@@ -304,6 +619,7 @@ function encodeQuiz(quiz){
     t:quiz.title||'',
     r:quiz.reward||'',
     th:quiz.threshold|0,
+    tm:normalizeTheme(quiz.theme),
     inv:quiz.inventory==null?null:quiz.inventory,
     b:(quiz.bands||[]).map(x=>({m:x.min,x:x.max,t:x.text})),
     q:(quiz.questions||[]).map(compactQuestion)
@@ -355,6 +671,7 @@ function decodeQuiz(payload){
       title:c.t||((c.n||'神秘人')+'的默契测试卷'),
       reward:c.r||'神秘奖励',
       threshold:typeof c.th==='number'?c.th:9,
+      theme:normalizeTheme(c.tm),
       inventory:c.inv==null?null:c.inv,
       bands:(c.b||[]).map(x=>({min:x.m,max:x.x,text:x.t})),
       questions
@@ -379,6 +696,7 @@ function defaultDraft(){
     name:'',
     nameSkipped:false,
     title:'',
+    theme:'cute',
     slots:emptySlots(),
     step:0,
     reward:'奶茶券',
@@ -405,7 +723,7 @@ const S = {
 };
 
 function loadDraft(){
-  try{const r=localStorage.getItem(STORAGE_DRAFT);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.slots)){S.draft=d;return}}}catch(e){}
+  try{const r=localStorage.getItem(STORAGE_DRAFT);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.slots)){d.theme=normalizeTheme(d.theme);S.draft=d;return}}}catch(e){}
   S.draft=defaultDraft();
 }
 function saveDraft(){try{localStorage.setItem(STORAGE_DRAFT,JSON.stringify(S.draft))}catch(e){}}
@@ -552,6 +870,7 @@ function normalizeFetchedQuiz(data){
     title:data.title||((data.name||'神秘人')+'的默契测试卷'),
     reward:data.reward||'神秘奖励',
     threshold:typeof data.threshold==='number'?data.threshold:9,
+    theme:normalizeTheme(data.theme||data.tm),
     inventory:data.inventory==null?null:data.inventory,
     bands:(data.bands||[]).map(x=>({min:x.min,max:x.max,text:x.text})),
     questions:data.questions.map(x=>{
@@ -709,18 +1028,30 @@ function render(){
   if(r==='home') app.innerHTML=viewHome();
   else if(r==='create') app.innerHTML=viewCreate();
   else if(r==='reward') app.innerHTML=viewReward();
-  else if(r==='manage'){ app.innerHTML=viewManage(); setTimeout(paintManageQr,0); }
+  else if(r==='manage'){ app.innerHTML=viewManage(); setTimeout(paintManageQr,0); setTimeout(hydrateRemoteBoard,0); }
   else if(r==='play-intro') app.innerHTML=viewPlayIntro();
   else if(r==='play') app.innerHTML=viewPlay();
   else if(r==='result') app.innerHTML=viewResult();
   else app.innerHTML=viewHome();
+  syncThemeForRoute();
   window.scrollTo(0,0);
 }
 
 function viewHome(){
   loadDraft();loadPublished();
+  applyTheme(S.draft.theme||'cute');
   const filled=(S.draft.slots||[]).filter(s=>s.filled).length;
   const hasPub=!!S.published;
+  const curTheme=normalizeTheme(S.draft.theme);
+  const themeChips=THEME_META.map(t=>`
+      <button type="button" class="theme-chip ${curTheme===t.id?'active':''}" onclick="setDraftTheme('${t.id}')">
+        <span class="swatch ${t.id}"></span>${t.label}
+      </button>`).join('');
+  const tplCards=TEMPLATES.map(t=>`
+      <button type="button" class="tpl-card" onclick="applyTemplate('${t.id}')">
+        <span class="te">${t.emoji}</span>
+        <span class="tb"><div class="tn">${escapeHtml(t.name)}</div><div class="td">${escapeHtml(t.desc)}</div></span>
+      </button>`).join('');
   return `
   <div class="view active">
     <header class="app-header">
@@ -731,9 +1062,17 @@ function viewHome(){
       ${memeImg(pickEntryMeme(),'meme-hero')}
       <div class="intro-title">创建你的默契测试卷</div>
       <p class="hint" style="margin:8px 0 16px">随机出题或从分类题库挑选，选好你的答案，生成链接发给好友。</p>
+      <div class="section-label" style="text-align:left">主题皮肤 · 创建前可选</div>
+      <div class="theme-picker">${themeChips}</div>
+      <p class="hint" style="margin:8px 0 14px;text-align:left">主题会写进分享链接，好友打开自动同款样式。</p>
       <button class="btn btn-primary" onclick="startCreate(false)">开始出题</button>
       ${filled>0?`<button class="btn btn-secondary" onclick="startCreate(true)">继续草稿（已完成 ${filled}/10）</button>`:''}
       ${hasPub?`<button class="btn btn-mint" onclick="goManage()">我的已发布试卷</button>`:''}
+    </div>
+    <div class="card">
+      <h2>现成模板 · 点一下加载</h2>
+      <p class="hint" style="margin-top:-4px;margin-bottom:8px">直接灌进 10 题草稿，记得把每题「我的答案」改成你的真实选项。</p>
+      <div class="tpl-list">${tplCards}</div>
     </div>
     <p class="footer-note">纯前端 · 数据保存在本机 localStorage<br>分享链接自带题目，好友打开即可答</p>
   </div>`;
@@ -741,8 +1080,14 @@ function viewHome(){
 
 function startCreate(resume){
   if(hasFriendLink()){ toast('当前为答题链接'); return; }
-  if(!resume){ S.draft=defaultDraft(); saveDraft(); }
+  if(!resume){
+    const prevTheme = normalizeTheme((S.draft&&S.draft.theme) || document.documentElement.getAttribute('data-theme') || 'cute');
+    S.draft=defaultDraft();
+    S.draft.theme=prevTheme;
+    saveDraft();
+  }
   else loadDraft();
+  applyTheme(S.draft.theme);
   if(S.draft.step>=Q_COUNT){ navigate('reward'); return; }
   ensureSlotSeeded();
   navigate('create');
@@ -1034,9 +1379,10 @@ function publishQuiz(){
   const quiz={
     id:d.id||uid(),
     name,
-    title:name+'的默契测试卷',
+    title:(d.title&&String(d.title).trim())||(name+'的默契测试卷'),
     reward,
     threshold:clamp(d.threshold|0,1,10),
+    theme:normalizeTheme(d.theme),
     inventory:d.inventory==null||d.inventory===''?null:Math.max(0,+d.inventory||0),
     bands:d.bands.map(b=>({min:+b.min||0,max:+b.max||0,text:String(b.text||'')})),
     questions:d.slots.map(s=>{const qq={q:s.q,options:[...s.options],answer:s.answer|0}; if(typeof s.bankIdx==='number') qq.bankIdx=s.bankIdx; else {const bi=findBankIdx(s); if(bi>=0) qq.bankIdx=bi;} return qq;})
@@ -1069,6 +1415,7 @@ function buildExportQuiz(quiz){
     title:quiz.title||'',
     reward:quiz.reward||'',
     threshold:quiz.threshold|0,
+    theme:normalizeTheme(quiz.theme),
     inventory:quiz.inventory==null?null:quiz.inventory,
     bands:(quiz.bands||[]).map(b=>({min:b.min,max:b.max,text:b.text})),
     questions:(quiz.questions||[]).map(x=>{
@@ -1131,7 +1478,13 @@ function viewManage(){
     ${(st.board&&st.board.length)?`
     <div class="card"><h2>本机排行榜</h2><div class="leaderboard">
       ${st.board.slice(0,20).map(r=>`<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score}/${Q_COUNT}</span></div>`).join('')}
-    </div></div>`:''}
+    </div>
+    <div class="lb-remote-hook" id="lb-remote-hook">跨设备排行榜：后端就绪后在此汇总好友成绩（LB_API）。</div>
+    </div>`:`
+    <div class="card"><h2>排行榜</h2>
+      <p class="hint">本机暂无记录。跨设备排行榜等后端上线后自动显示。</p>
+      <div class="lb-remote-hook" id="lb-remote-hook">钩子已留：fetchBoardRemote(quizId)</div>
+    </div>`}
     <div class="card">
       <button class="btn btn-secondary" onclick="copyShortLink()">复制短链 ?s=</button>
       <button class="btn btn-secondary" onclick="switchQrMode()">切换二维码（压缩/短链）</button>
@@ -1144,6 +1497,19 @@ function viewManage(){
     </div>
     <div id="q-view"></div>
   </div>`;
+}
+async function hydrateRemoteBoard(){
+  const quiz=S.published; if(!quiz) return;
+  const box=document.getElementById('lb-remote-hook');
+  if(!box) return;
+  if(!LB_API.enabled){
+    box.textContent='跨设备排行榜：后端未启用（LB_API.enabled=false）。本机榜仅当前浏览器。';
+    return;
+  }
+  box.textContent='正在拉取跨设备排行榜…';
+  const board=await fetchBoardRemote(quiz.id);
+  if(!board||!board.length){ box.textContent='远端暂无成绩'; return; }
+  box.innerHTML='<b style="color:var(--primary-dark)">远端排行</b>'+board.slice(0,20).map(r=>`<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score|0}/${Q_COUNT}</span></div>`).join('');
 }
 function clearManageAndHome(){
   history.replaceState(null,'', location.pathname + '#home');
@@ -1434,6 +1800,8 @@ function finishPlay(){
   st.board.sort((a,b)=>b.score-a.score||b.at-a.at);
   st.board=st.board.slice(0,50);
   setStats(quiz.id,st);
+  // HOOK: remote leaderboard (no-op until LB_API.enabled)
+  submitScoreRemote(quiz.id, {nick:S.playNick||'匿名', score, pct, won, at:Date.now()});
   // Mark this quiz id as played (friend share only; preview may retry)
   if(hasFriendLink()) markQuizPlayed(quiz.id, S.result);
   S._activePlay=false;
@@ -1613,7 +1981,8 @@ function viewResult(){
     randomBankSlot,openBankPicker,refreshBankModal,chooseBank,closeModal,
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
     onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,switchQrMode,paintManageQr,
-    previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick
+    previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick,
+    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard
   });
   if(qPayload || sid){
     try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
@@ -1622,6 +1991,7 @@ function viewResult(){
       const quiz=decodeQuiz(qPayload);
       if(quiz){
         S.playQuiz=quiz;
+        applyTheme(quiz.theme);
         S.playIdx=0;S.playAnswers=[];S.result=null;
       }
     }
@@ -1632,6 +2002,7 @@ function viewResult(){
       S._shortLoading=false;
       if(quiz){
         S.playQuiz=quiz;
+        applyTheme(quiz.theme);
         S.playIdx=0;S.playAnswers=[];S.result=null;
         S._shortLoadFailed=false;
       } else {
@@ -1655,6 +2026,9 @@ function viewResult(){
   }
   if((S.route==='create'||S.route==='reward')&&!S.draft) loadDraft();
   if(S.route==='create') ensureSlotSeeded();
+  if(S.draft) applyTheme(S.draft.theme);
+  else if(S.playQuiz) applyTheme(S.playQuiz.theme);
+  else applyTheme('cute');
   render();
 })();
 </script>
