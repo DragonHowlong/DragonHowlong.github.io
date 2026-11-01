@@ -1062,9 +1062,6 @@ function viewHome(){
       ${memeImg(pickEntryMeme(),'meme-hero')}
       <div class="intro-title">创建你的默契测试卷</div>
       <p class="hint" style="margin:8px 0 16px">随机出题或从分类题库挑选，选好你的答案，生成链接发给好友。</p>
-      <div class="section-label" style="text-align:left">主题皮肤 · 创建前可选</div>
-      <div class="theme-picker">${themeChips}</div>
-      <p class="hint" style="margin:8px 0 14px;text-align:left">主题会写进分享链接，好友打开自动同款样式。</p>
       <button class="btn btn-primary" onclick="startCreate(false)">开始出题</button>
       ${filled>0?`<button class="btn btn-secondary" onclick="startCreate(true)">继续草稿（已完成 ${filled}/10）</button>`:''}
       ${hasPub?`<button class="btn btn-mint" onclick="goManage()">我的已发布试卷</button>`:''}
@@ -1073,6 +1070,11 @@ function viewHome(){
       <h2>现成模板 · 点一下加载</h2>
       <p class="hint" style="margin-top:-4px;margin-bottom:8px">直接灌进 10 题草稿，记得把每题「我的答案」改成你的真实选项。</p>
       <div class="tpl-list">${tplCards}</div>
+    </div>
+    <div class="card">
+      <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
+      <div class="theme-picker">${themeChips}</div>
+      <p class="hint" style="margin:8px 0 0;text-align:left">主题会写进分享链接，好友打开自动同款样式。</p>
     </div>
     <p class="footer-note">纯前端 · 数据保存在本机 localStorage<br>分享链接自带题目，好友打开即可答</p>
   </div>`;
