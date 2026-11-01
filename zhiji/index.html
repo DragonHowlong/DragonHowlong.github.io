@@ -1039,7 +1039,6 @@ function render(){
 function viewHome(){
   loadDraft();loadPublished();
   applyTheme(S.draft.theme||'cute');
-  const filled=(S.draft.slots||[]).filter(s=>s.filled).length;
   const hasPub=!!S.published;
   const curTheme=normalizeTheme(S.draft.theme);
   const themeChips=THEME_META.map(t=>`
@@ -1062,7 +1061,6 @@ function viewHome(){
       <div class="intro-title">创建你的默契测试卷</div>
       <p class="hint" style="margin:8px 0 16px">随机出题或从分类题库挑选，选好你的答案，生成链接发给好友。</p>
       <button class="btn btn-primary" onclick="startCreate(false)">开始出题</button>
-      ${filled>0?`<button class="btn btn-secondary" onclick="startCreate(true)">继续草稿（已完成 ${filled}/10）</button>`:''}
       ${hasPub?`<button class="btn btn-mint" onclick="goManage()">我的已发布试卷</button>`:''}
     </div>
     <div class="card">
@@ -1079,17 +1077,14 @@ function viewHome(){
   </div>`;
 }
 
-function startCreate(resume){
+function startCreate(_resume){
+  // Always start a fresh draft from home / 开始出题 — no resume UI
   if(hasFriendLink()){ toast('当前为答题链接'); return; }
-  if(!resume){
-    const prevTheme = normalizeTheme((S.draft&&S.draft.theme) || document.documentElement.getAttribute('data-theme') || 'cute');
-    S.draft=defaultDraft();
-    S.draft.theme=prevTheme;
-    saveDraft();
-  }
-  else loadDraft();
+  const prevTheme = normalizeTheme((S.draft&&S.draft.theme) || document.documentElement.getAttribute('data-theme') || 'cute');
+  S.draft=defaultDraft();
+  S.draft.theme=prevTheme;
+  saveDraft();
   applyTheme(S.draft.theme);
-  if(S.draft.step>=Q_COUNT){ navigate('reward'); return; }
   ensureSlotSeeded();
   navigate('create');
 }
@@ -1390,6 +1385,10 @@ function publishQuiz(){
   };
   savePublished(quiz);
   const st=getStats(quiz.id); setStats(quiz.id,st);
+  // Clear draft after publish to avoid stale resume / crash-recovery confusion
+  S.draft=defaultDraft();
+  S.draft.theme=normalizeTheme(quiz.theme);
+  saveDraft();
   // Creator manage page: NO ?q= so share URL is distinct; friends use ?q=
   history.replaceState(null,'', location.pathname + '?manage=1#manage');
   S.route='manage';
