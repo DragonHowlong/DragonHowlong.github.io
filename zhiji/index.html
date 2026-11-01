@@ -347,7 +347,6 @@ const TEMPLATES = [
     emoji:'👭',
     name:'闺蜜测试模板',
     desc:'抽象整活版闺蜜默契 · 10 题开箱即用',
-    themeSuggest:'cute',
     reward:'奶茶券',
     titleHint:'闺蜜默契挑战',
     nameHint:'闺蜜本人',
@@ -369,7 +368,6 @@ const TEMPLATES = [
     emoji:'💞',
     name:'情侣默契模板',
     desc:'搞怪情侣卷 · 测测对方是不是装懂',
-    themeSuggest:'cute',
     reward:'请客一顿',
     titleHint:'情侣默契挑战',
     nameHint:'对象本人',
@@ -391,7 +389,6 @@ const TEMPLATES = [
     emoji:'👨‍👩‍👧',
     name:'家人版模板',
     desc:'家庭抽象默契 · 适合发给爸妈兄弟姐妹',
-    themeSuggest:'mono',
     reward:'一个拥抱',
     titleHint:'家人默契挑战',
     nameHint:'家里人',
@@ -413,7 +410,6 @@ const TEMPLATES = [
     emoji:'🎉',
     name:'团建聚会破冰模板',
     desc:'聚会破冰搞怪卷 · 十题认识同事/同学',
-    themeSuggest:'dark',
     reward:'请客喝一杯',
     titleHint:'破冰默契挑战',
     nameHint:'局主',
@@ -440,7 +436,8 @@ function applyTemplate(id){
   const tpl=templateById(id);
   if(!tpl){ toast('模板不存在'); return; }
   const d=defaultDraft();
-  d.theme=normalizeTheme(tpl.themeSuggest || (S.draft&&S.draft.theme) || 'cute');
+  // skin stays independent of template
+  d.theme=normalizeTheme((S.draft&&S.draft.theme) || document.documentElement.getAttribute('data-theme') || 'cute');
   d.name=tpl.nameHint||'';
   d.title=tpl.titleHint||'';
   d.reward=tpl.reward||'奶茶券';
