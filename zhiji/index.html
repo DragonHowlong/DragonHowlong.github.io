@@ -98,11 +98,13 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .modal-mask{position:fixed;inset:0;background:rgba(30,50,60,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;max-width:430px;margin:0 auto}
 .modal{background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));width:100%;max-height:88vh;overflow-y:auto}
 .modal h3{font-size:17px;margin-bottom:12px;text-align:center}
-.bank-list{max-height:50vh;overflow-y:auto}
+.bank-list{max-height:46vh;overflow-y:auto}
 .bank-item{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;background:#FAFDFC}
 .bank-item:active{background:var(--primary-soft)}
+.bank-item.used{opacity:.45;cursor:not-allowed;background:#F3F5F7}
 .bank-item .bq{font-size:14px;font-weight:550;margin-bottom:4px}
 .bank-item .bo{font-size:12px;color:var(--text-light);line-height:1.5}
+.bank-item .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);margin-bottom:4px;font-weight:600}
 .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(44,62,80,.9);color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;z-index:200;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s}
 .toast.show{opacity:1}
 .footer-note{text-align:center;padding:8px 20px;font-size:12px;color:var(--text-light);line-height:1.5}
@@ -116,24 +118,36 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .lb-score{color:var(--primary-dark);font-weight:650}
 .search-box{margin-bottom:10px}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.toolbar .btn{flex:1 1 calc(50% - 8px);min-width:120px}
+.toolbar .btn{flex:1 1 calc(50% - 8px);min-width:100px}
 .num-row{display:flex;gap:10px;align-items:center}
 .num-row input{flex:1}
 .q-preview{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:12px;padding:12px;background:var(--bg2);border-radius:12px}
+.cat-tabs{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0 10px;margin-bottom:4px}
+.cat-tabs::-webkit-scrollbar{display:none}
+.cat-tab{flex:0 0 auto;padding:7px 12px;border-radius:16px;border:1.5px solid var(--border);background:#fff;font-size:12px;color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap}
+.cat-tab.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);font-weight:650}
+.tip-box{background:#FFF8E8;border:1px solid #F0D9A0;border-radius:12px;padding:12px;font-size:13px;line-height:1.55;color:#7A5A20;margin-top:10px}
+.tip-box b{display:block;margin-bottom:4px}
+.action-bar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.action-bar .btn{margin-top:0}
+.action-bar .span2{grid-column:1 / -1}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast" class="toast"></div>
 <script>
-/* ========== Built-in bank (≥100) ========== */
-const BANK = [{"q":"我更喜欢怎样的周末？","options":["宅家追剧/游戏","户外走走逛逛","约朋友聚餐","睡到自然醒再看心情"],"answer":0},{"q":"我早上起床后通常第一件事是？","options":["刷手机","洗漱穿衣服","喝水/吃早餐","赖床再睡一会"],"answer":0},{"q":"我更偏好哪种饮品？","options":["咖啡","奶茶","纯茶/花茶","白开水/气泡水"],"answer":1},{"q":"看电影时我更爱选？","options":["喜剧轻松片","悬疑推理片","科幻动作片","爱情文艺片"],"answer":1},{"q":"我吃饭的口味偏？","options":["清淡","偏辣","偏甜","重口咸香"],"answer":1},{"q":"我更喜欢的季节是？","options":["春天","夏天","秋天","冬天"],"answer":2},{"q":"收到礼物时我更在意？","options":["实用价值","心意和仪式感","惊喜程度","包装好看"],"answer":1},{"q":"我压力大时通常会？","options":["吃东西解压","运动发泄","找人倾诉","独处发呆/睡觉"],"answer":3},{"q":"我更擅长的是？","options":["记住别人的事","规划行程","讲冷笑话","照顾别人情绪"],"answer":0},{"q":"我理想中的旅行方式是？","options":["自由行深度游","跟团省心游","特种兵打卡游","度假躺平游"],"answer":0},{"q":"我对迟到的态度是？","options":["自己从不迟到，也反感别人迟到","偶尔可以理解","无所谓","经常自己也会迟到"],"answer":0},{"q":"我更喜欢养什么宠物？","options":["猫","狗","都不想养","都可以/小众宠物"],"answer":0},{"q":"我购物时的风格是？","options":["精打细算比价","看中就买不犹豫","喜欢囤货","能不买就不买"],"answer":0},{"q":"我更喜欢的社交方式？","options":["一对一深聊","小团体热闹","线上聊天为主","能免则免"],"answer":0},{"q":"我对拍照的态度是？","options":["爱拍爱发","能拍但不爱发","勉强配合","坚决拒绝出镜"],"answer":1},{"q":"我睡前最后一件事通常是？","options":["刷手机","看书/听播客","想事情","马上睡着"],"answer":0},{"q":"我更喜欢哪种天气？","options":["晴空万里","阴天微凉","小雨淅沥","下雪天"],"answer":0},{"q":"我对打扫房间的态度？","options":["定期大扫除","乱了才收拾","能外包就外包","享受整理过程"],"answer":1},{"q":"我更偏爱的音乐类型？","options":["流行歌曲","摇滚/电子","古典/轻音乐","说唱/爵士"],"answer":0},{"q":"我做决定时通常？","options":["快速果断","反复纠结","问别人意见","随缘摆烂"],"answer":1},{"q":"我更喜欢的穿着风格？","options":["休闲舒适","简约干净","潮流个性","正式得体"],"answer":0},{"q":"我对早餐的态度是？","options":["必须认真吃","随便对付一下","经常不吃","喜欢丰盛早餐"],"answer":1},{"q":"我更喜欢的运动是？","options":["跑步/快走","球类运动","健身房力量","几乎不运动"],"answer":3},{"q":"我表达喜欢的方式更偏向？","options":["直接说出来","默默付出行动","送小礼物","打趣玩笑"],"answer":1},{"q":"我对鬼片的态度？","options":["超爱看","偶尔看","不敢看","完全无感"],"answer":2},{"q":"我更喜欢的水果是？","options":["西瓜/瓜类","苹果/梨","草莓/莓果","芒果/热带水果"],"answer":2},{"q":"我工作时/学习时习惯？","options":["绝对安静","放点背景音乐","边吃边干","需要人陪着"],"answer":1},{"q":"我对过生日的期待是？","options":["热闹惊喜派对","安静自己过","和亲近的人简单聚","无所谓"],"answer":2},{"q":"我更喜欢的颜色系？","options":["蓝色系","黑白灰","暖色（红橙黄）","绿色/自然色"],"answer":0},{"q":"我对排队的耐心程度？","options":["很有耐心","一般，超过15分钟就烦","几乎零耐心","看值不值得"],"answer":3},{"q":"我更喜欢的零食类型？","options":["薯片膨化","巧克力甜食","坚果健康类","辣条等重口"],"answer":0},{"q":"我对闹钟的态度？","options":["设一个就起","连环闹钟","根本不起作用","自然醒很少用"],"answer":1},{"q":"我更喜欢的小说/故事类型？","options":["现实向","玄幻奇幻","推理破案","甜宠恋爱"],"answer":1},{"q":"我对金钱的态度偏？","options":["能存就存","该花就花","月光族","精明投资理财"],"answer":1},{"q":"我更享受的独处活动？","options":["刷短视频/综艺","看书学习","发呆发呆","做手工/画画"],"answer":0},{"q":"我对辣的接受度？","options":["完全不能吃辣","微微辣可以","中辣无压力","越辣越开心"],"answer":2},{"q":"我更喜欢的交通方式？","options":["开车/打车","地铁公交","骑车","走路"],"answer":1},{"q":"我对游戏的态度？","options":["重度玩家","偶尔玩","几乎不碰","只看别人玩"],"answer":1},{"q":"我生气时通常会？","options":["当场说清楚","冷处理不理人","自己生闷气","用幽默化解"],"answer":1},{"q":"我更喜欢的家居氛围？","options":["温馨杂乱有生活气","极简干净","科技感满满","绿植自然风"],"answer":0},{"q":"我对加班/加课的态度？","options":["能接受偶尔","非常反感","习惯了无所谓","看有没有额外回报"],"answer":3},{"q":"我更喜欢的甜点？","options":["蛋糕","冰淇淋","布丁果冻","不太爱甜食"],"answer":1},{"q":"我对明星/追星的态度？","options":["有爱豆会追","路人粉看看","完全不追","反感追星"],"answer":1},{"q":"我更喜欢的沟通方式？","options":["语音通话","文字聊天","当面聊","视频通话"],"answer":1},{"q":"我对早起的能力？","options":["生物钟很准","勉强能起","困难重重","夜猫子基本起不来"],"answer":2},{"q":"我更喜欢逛的地方？","options":["商场购物","公园自然","博物馆展览","咖啡馆书店"],"answer":3},{"q":"我对穿搭花费的态度？","options":["愿意投资好看衣服","实用优先平价","追求品牌","能穿就行不怎么买"],"answer":1},{"q":"我更害怕的是？","options":["孤独","失败","被误解","高处/黑暗等具体恐惧"],"answer":0},{"q":"我对做饭的态度？","options":["爱做会做","会一点家常菜","完全不会","想学但懒得动手"],"answer":1},{"q":"我更喜欢的饮料温度？","options":["冰的","常温","热的","看天气"],"answer":0},{"q":"我对计划的执行力？","options":["说到做到","常定计划常跳票","随性不为计划束缚","有人监督才行"],"answer":1},{"q":"我更喜欢的聚会规模？","options":["2-3人小聚","5-8人适中","十几人以上热闹","能不去就不去"],"answer":0},{"q":"我对美妆护肤的态度？","options":["精致日常护理","基础清洁保湿","几乎不护肤","男生也在认真护肤"],"answer":1},{"q":"我更喜欢的学习/吸收信息方式？","options":["看视频","读文字","听音频","动手实践"],"answer":0},{"q":"我对雨天的心情？","options":["很喜欢很浪漫","还行不影响","有点郁闷","讨厌湿漉漉"],"answer":0},{"q":"我更常忘记的是？","options":["别人的生日","自己答应的事","钥匙/伞等物品","约会时间地点"],"answer":2},{"q":"我对「仪式感」的看法？","options":["很重要值得花心思","偶尔需要","形式主义没必要","看场合"],"answer":3},{"q":"我更喜欢的睡姿？","options":["仰睡","侧睡","趴睡","怎么都行换来换去"],"answer":1},{"q":"我对「网红店」的态度？","options":["爱打卡尝鲜","看评价再决定","不凑热闹","避之不及"],"answer":1},{"q":"我更喜欢的动物是？","options":["猫科","犬科","海洋动物","鸟类/其他"],"answer":0},{"q":"我对「早C晚A」这类潮流的态度？","options":["紧跟潮流","了解但不跟","完全不懂","觉得无意义"],"answer":1},{"q":"我更喜欢的收纳风格？","options":["分类清晰标签齐全","大致归类就好","堆着也能找到","外包收纳师"],"answer":1},{"q":"我对「熬夜」的频率？","options":["几乎每天","每周几次","偶尔","几乎不熬夜"],"answer":1},{"q":"我更喜欢的花是？","options":["玫瑰","向日葵","满天星/小花","不太关注花"],"answer":0},{"q":"我对「快递」的期待感？","options":["超级期待天天查","还行会看一眼","经常忘记自己买了啥","不爱网购很少收"],"answer":0},{"q":"我更喜欢的博物馆参观方式？","options":["精读每个展品","走马观花拍拍照","听讲解重点看","不太爱逛博物馆"],"answer":1},{"q":"我对「综艺」的偏好？","options":["真人秀","搞笑吐槽","选秀音乐","几乎不看"],"answer":0},{"q":"我更喜欢的面包/主食？","options":["甜面包蛋糕类","咸口肉松/三明治","米饭面食为主","低碳水少吃主食"],"answer":2},{"q":"我对「打卡景点」的态度？","options":["必须去热门点","偏爱小众地方","随缘不想特意去","只想待酒店"],"answer":1},{"q":"我更喜欢的鞋类？","options":["运动鞋","小白鞋/板鞋","皮鞋/正装鞋","拖鞋/舒适鞋"],"answer":0},{"q":"我对「分享欲」的程度？","options":["有事就想告诉人","只和少数人分享","很少主动说","基本自己消化"],"answer":1},{"q":"我更喜欢的汤/粥？","options":["甜汤","咸鲜汤","粥类","不太喝汤"],"answer":1},{"q":"我对「手写字」的态度？","options":["字很好看常写","一般能认","字丑但无所谓","几乎只打字"],"answer":3},{"q":"我更喜欢的季节活动？","options":["春日踏青野餐","夏日海边游泳","秋日登高赏叶","冬日温泉火锅"],"answer":3},{"q":"我对「短视频」的沉迷度？","options":["一刷停不下来","偶尔看看","很少刷","几乎不碰"],"answer":0},{"q":"我更喜欢的香气类型？","options":["清新柑橘","花香甜美","木质沉稳","无香/不敏感"],"answer":0},{"q":"我对「拼单/团购」的态度？","options":["经常拼很划算","偶尔参加","嫌麻烦","从不"],"answer":0},{"q":"我更喜欢的椅/沙发坐姿？","options":["端正坐好","盘腿/蜷着","瘫成一摊","跷二郎腿"],"answer":2},{"q":"我对「日记/记账」的习惯？","options":["坚持记录","三天打鱼","想起来才记","完全不记"],"answer":2},{"q":"我更喜欢的巧克力？","options":["黑巧苦的","牛奶甜的","夹心果仁","不太爱巧克力"],"answer":1},{"q":"我对「地图导航」的依赖？","options":["出门必开","熟悉路就不开","方向感好很少用","经常迷路必须用"],"answer":0},{"q":"我更喜欢的桌面风格？","options":["极简空旷","放满好物","绿植点缀","乱但自己清楚"],"answer":0},{"q":"我对「直播带货」的态度？","options":["经常看会买","看看不买","不感兴趣","反感"],"answer":1},{"q":"我更喜欢的面条类型？","options":["汤面","拌面/干面","炒面","不太吃面"],"answer":0},{"q":"我对「童年动画」的情怀？","options":["超级有情怀常回顾","偶尔怀念","没什么感觉","完全忘了"],"answer":0},{"q":"我更喜欢的包/背包类型？","options":["双肩包","斜挎/单肩","手提包","能不背就不背"],"answer":0},{"q":"我对「占座」行为的看法？","options":["可以理解","反感不文明","自己也会做","看情况"],"answer":3},{"q":"我更喜欢的火锅口味？","options":["麻辣红锅","清汤菌汤","鸳鸯锅","不太爱火锅"],"answer":2},{"q":"我对「天气预报」的关注度？","options":["每天必看","出门前看一眼","从不看","看了也不准"],"answer":1},{"q":"我更喜欢的文具是？","options":["好看的笔","便利贴便签","手账胶带","实用就行不挑"],"answer":3},{"q":"我对「电梯里放音乐」的态度？","options":["喜欢有点氛围","无感","觉得尴尬","宁愿安静"],"answer":1},{"q":"我更喜欢的冰淇淋口味？","options":["香草/奶油","巧克力","抹茶/茶味","水果雪糕"],"answer":2},{"q":"我对「回消息」的速度？","options":["秒回","几小时内","经常已读不回","看心情"],"answer":1},{"q":"我更喜欢的酒店选择？","options":["高性价比连锁","特色民宿","豪华酒店体验","干净就行"],"answer":0},{"q":"我对「自助餐」的态度？","options":["超爱吃到扶墙","适量就好","觉得浪费不爱去","看餐厅质量"],"answer":0},{"q":"我更喜欢的窗户景色？","options":["城市夜景","自然山水","安静小区","无所谓有窗就行"],"answer":1},{"q":"我对「穿袜子睡觉」的习惯？","options":["必须穿","看天气","绝不穿","偶尔忘了脱"],"answer":2},{"q":"我更喜欢的节日氛围？","options":["春节团圆","圣诞浪漫","中秋月光","日常就好不特别"],"answer":0},{"q":"我对「说话音量」通常是？","options":["偏大活力型","正常适中","偏小声","看场合变化大"],"answer":1},{"q":"我最不能忍受朋友的哪种行为？","options":["放鸽子不守时","背后说坏话","借钱不还","过度干涉私事"],"answer":0},{"q":"我对「拼图/乐高」类解压的态度？","options":["超爱慢慢拼","偶尔试试","没耐心","完全无感"],"answer":0},{"q":"我更喜欢的通勤路上做什么？","options":["听播客/音乐","刷手机","发呆看窗外","补觉"],"answer":0},{"q":"我对「水果切盘」的喜好？","options":["爱吃混合果盘","只吃固定几种","不太爱水果","看心情"],"answer":0},{"q":"我更倾向怎样的房间灯光？","options":["明亮白光","暖黄氛围灯","偏暗柔和","随手开关无所谓"],"answer":1},{"q":"我对「追更剧集」的习惯？","options":["更新必看","攒着一口气看","三天打鱼","几乎不追剧"],"answer":1},{"q":"我更喜欢的饮料甜度？","options":["全糖","半糖","少糖/微糖","无糖"],"answer":2},{"q":"我对「手写信/明信片」的感觉？","options":["很浪漫会珍藏","觉得用心","形式大于内容","不如发消息"],"answer":0},{"q":"我更怕冷还是怕热？","options":["怕冷","怕热","都怕","都不太怕"],"answer":0},{"q":"我对「职场/校园八卦」的态度？","options":["爱听爱聊","听听不传","完全不参与","反感八卦"],"answer":1},{"q":"我更喜欢的宵夜类型？","options":["烧烤炸物","粥面轻食","甜品奶茶","几乎不吃宵夜"],"answer":3}];
+/* ========== Built-in bank (≥100) with categories ========== */
+const BANK = [{"q":"我更喜欢怎样的周末？","options":["宅家追剧/游戏","户外走走逛逛","约朋友聚餐","睡到自然醒再看心情"],"answer":0,"cat":"日常习惯"},{"q":"我早上起床后通常第一件事是？","options":["刷手机","洗漱穿衣服","喝水/吃早餐","赖床再睡一会"],"answer":0,"cat":"日常习惯"},{"q":"我更偏好哪种饮品？","options":["咖啡","奶茶","纯茶/花茶","白开水/气泡水"],"answer":1,"cat":"口味偏好"},{"q":"看电影时我更爱选？","options":["喜剧轻松片","悬疑推理片","科幻动作片","爱情文艺片"],"answer":1,"cat":"娱乐消费"},{"q":"我吃饭的口味偏？","options":["清淡","偏辣","偏甜","重口咸香"],"answer":1,"cat":"口味偏好"},{"q":"我更喜欢的季节是？","options":["春天","夏天","秋天","冬天"],"answer":2,"cat":"日常习惯"},{"q":"收到礼物时我更在意？","options":["实用价值","心意和仪式感","惊喜程度","包装好看"],"answer":1,"cat":"社交关系"},{"q":"我压力大时通常会？","options":["吃东西解压","运动发泄","找人倾诉","独处发呆/睡觉"],"answer":3,"cat":"性格情绪"},{"q":"我更擅长的是？","options":["记住别人的事","规划行程","讲冷笑话","照顾别人情绪"],"answer":0,"cat":"性格情绪"},{"q":"我理想中的旅行方式是？","options":["自由行深度游","跟团省心游","特种兵打卡游","度假躺平游"],"answer":0,"cat":"娱乐消费"},{"q":"我对迟到的态度是？","options":["自己从不迟到，也反感别人迟到","偶尔可以理解","无所谓","经常自己也会迟到"],"answer":0,"cat":"社交关系"},{"q":"我更喜欢养什么宠物？","options":["猫","狗","都不想养","都可以/小众宠物"],"answer":0,"cat":"娱乐消费"},{"q":"我购物时的风格是？","options":["精打细算比价","看中就买不犹豫","喜欢囤货","能不买就不买"],"answer":0,"cat":"娱乐消费"},{"q":"我更喜欢的社交方式？","options":["一对一深聊","小团体热闹","线上聊天为主","能免则免"],"answer":0,"cat":"社交关系"},{"q":"我对拍照的态度是？","options":["爱拍爱发","能拍但不爱发","勉强配合","坚决拒绝出镜"],"answer":1,"cat":"社交关系"},{"q":"我睡前最后一件事通常是？","options":["刷手机","看书/听播客","想事情","马上睡着"],"answer":0,"cat":"日常习惯"},{"q":"我更喜欢哪种天气？","options":["晴空万里","阴天微凉","小雨淅沥","下雪天"],"answer":0,"cat":"日常习惯"},{"q":"我对打扫房间的态度？","options":["定期大扫除","乱了才收拾","能外包就外包","享受整理过程"],"answer":1,"cat":"日常习惯"},{"q":"我更偏爱的音乐类型？","options":["流行歌曲","摇滚/电子","古典/轻音乐","说唱/爵士"],"answer":0,"cat":"娱乐消费"},{"q":"我做决定时通常？","options":["快速果断","反复纠结","问别人意见","随缘摆烂"],"answer":1,"cat":"性格情绪"},{"q":"我更喜欢的穿着风格？","options":["休闲舒适","简约干净","潮流个性","正式得体"],"answer":0,"cat":"娱乐消费"},{"q":"我对早餐的态度是？","options":["必须认真吃","随便对付一下","经常不吃","喜欢丰盛早餐"],"answer":1,"cat":"日常习惯"},{"q":"我更喜欢的运动是？","options":["跑步/快走","球类运动","健身房力量","几乎不运动"],"answer":3,"cat":"日常习惯"},{"q":"我表达喜欢的方式更偏向？","options":["直接说出来","默默付出行动","送小礼物","打趣玩笑"],"answer":1,"cat":"性格情绪"},{"q":"我对鬼片的态度？","options":["超爱看","偶尔看","不敢看","完全无感"],"answer":2,"cat":"娱乐消费"},{"q":"我更喜欢的水果是？","options":["西瓜/瓜类","苹果/梨","草莓/莓果","芒果/热带水果"],"answer":2,"cat":"口味偏好"},{"q":"我工作时/学习时习惯？","options":["绝对安静","放点背景音乐","边吃边干","需要人陪着"],"answer":1,"cat":"学习工作"},{"q":"我对过生日的期待是？","options":["热闹惊喜派对","安静自己过","和亲近的人简单聚","无所谓"],"answer":2,"cat":"社交关系"},{"q":"我更喜欢的颜色系？","options":["蓝色系","黑白灰","暖色（红橙黄）","绿色/自然色"],"answer":0,"cat":"娱乐消费"},{"q":"我对排队的耐心程度？","options":["很有耐心","一般，超过15分钟就烦","几乎零耐心","看值不值得"],"answer":3,"cat":"性格情绪"},{"q":"我更喜欢的零食类型？","options":["薯片膨化","巧克力甜食","坚果健康类","辣条等重口"],"answer":0,"cat":"口味偏好"},{"q":"我对闹钟的态度？","options":["设一个就起","连环闹钟","根本不起作用","自然醒很少用"],"answer":1,"cat":"日常习惯"},{"q":"我更喜欢的小说/故事类型？","options":["现实向","玄幻奇幻","推理破案","甜宠恋爱"],"answer":1,"cat":"娱乐消费"},{"q":"我对金钱的态度偏？","options":["能存就存","该花就花","月光族","精明投资理财"],"answer":1,"cat":"性格情绪"},{"q":"我更享受的独处活动？","options":["刷短视频/综艺","看书学习","发呆发呆","做手工/画画"],"answer":0,"cat":"性格情绪"},{"q":"我对辣的接受度？","options":["完全不能吃辣","微微辣可以","中辣无压力","越辣越开心"],"answer":2,"cat":"口味偏好"},{"q":"我更喜欢的交通方式？","options":["开车/打车","地铁公交","骑车","走路"],"answer":1,"cat":"日常习惯"},{"q":"我对游戏的态度？","options":["重度玩家","偶尔玩","几乎不碰","只看别人玩"],"answer":1,"cat":"娱乐消费"},{"q":"我生气时通常会？","options":["当场说清楚","冷处理不理人","自己生闷气","用幽默化解"],"answer":1,"cat":"性格情绪"},{"q":"我更喜欢的家居氛围？","options":["温馨杂乱有生活气","极简干净","科技感满满","绿植自然风"],"answer":0,"cat":"日常习惯"},{"q":"我对加班/加课的态度？","options":["能接受偶尔","非常反感","习惯了无所谓","看有没有额外回报"],"answer":3,"cat":"学习工作"},{"q":"我更喜欢的甜点？","options":["蛋糕","冰淇淋","布丁果冻","不太爱甜食"],"answer":1,"cat":"口味偏好"},{"q":"我对明星/追星的态度？","options":["有爱豆会追","路人粉看看","完全不追","反感追星"],"answer":1,"cat":"娱乐消费"},{"q":"我更喜欢的沟通方式？","options":["语音通话","文字聊天","当面聊","视频通话"],"answer":1,"cat":"社交关系"},{"q":"我对早起的能力？","options":["生物钟很准","勉强能起","困难重重","夜猫子基本起不来"],"answer":2,"cat":"日常习惯"},{"q":"我更喜欢逛的地方？","options":["商场购物","公园自然","博物馆展览","咖啡馆书店"],"answer":3,"cat":"娱乐消费"},{"q":"我对穿搭花费的态度？","options":["愿意投资好看衣服","实用优先平价","追求品牌","能穿就行不怎么买"],"answer":1,"cat":"娱乐消费"},{"q":"我更害怕的是？","options":["孤独","失败","被误解","高处/黑暗等具体恐惧"],"answer":0,"cat":"性格情绪"},{"q":"我对做饭的态度？","options":["爱做会做","会一点家常菜","完全不会","想学但懒得动手"],"answer":1,"cat":"日常习惯"},{"q":"我更喜欢的饮料温度？","options":["冰的","常温","热的","看天气"],"answer":0,"cat":"口味偏好"},{"q":"我对计划的执行力？","options":["说到做到","常定计划常跳票","随性不为计划束缚","有人监督才行"],"answer":1,"cat":"性格情绪"},{"q":"我更喜欢的聚会规模？","options":["2-3人小聚","5-8人适中","十几人以上热闹","能不去就不去"],"answer":0,"cat":"社交关系"},{"q":"我对美妆护肤的态度？","options":["精致日常护理","基础清洁保湿","几乎不护肤","男生也在认真护肤"],"answer":1,"cat":"日常习惯"},{"q":"我更喜欢的学习/吸收信息方式？","options":["看视频","读文字","听音频","动手实践"],"answer":0,"cat":"学习工作"},{"q":"我对雨天的心情？","options":["很喜欢很浪漫","还行不影响","有点郁闷","讨厌湿漉漉"],"answer":0,"cat":"性格情绪"},{"q":"我更常忘记的是？","options":["别人的生日","自己答应的事","钥匙/伞等物品","约会时间地点"],"answer":2,"cat":"性格情绪"},{"q":"我对「仪式感」的看法？","options":["很重要值得花心思","偶尔需要","形式主义没必要","看场合"],"answer":3,"cat":"性格情绪"},{"q":"我更喜欢的睡姿？","options":["仰睡","侧睡","趴睡","怎么都行换来换去"],"answer":1,"cat":"日常习惯"},{"q":"我对「网红店」的态度？","options":["爱打卡尝鲜","看评价再决定","不凑热闹","避之不及"],"answer":1,"cat":"娱乐消费"},{"q":"我更喜欢的动物是？","options":["猫科","犬科","海洋动物","鸟类/其他"],"answer":0,"cat":"娱乐消费"},{"q":"我对「早C晚A」这类潮流的态度？","options":["紧跟潮流","了解但不跟","完全不懂","觉得无意义"],"answer":1,"cat":"娱乐消费"},{"q":"我更喜欢的收纳风格？","options":["分类清晰标签齐全","大致归类就好","堆着也能找到","外包收纳师"],"answer":1,"cat":"日常习惯"},{"q":"我对「熬夜」的频率？","options":["几乎每天","每周几次","偶尔","几乎不熬夜"],"answer":1,"cat":"日常习惯"},{"q":"我更喜欢的花是？","options":["玫瑰","向日葵","满天星/小花","不太关注花"],"answer":0,"cat":"娱乐消费"},{"q":"我对「快递」的期待感？","options":["超级期待天天查","还行会看一眼","经常忘记自己买了啥","不爱网购很少收"],"answer":0,"cat":"娱乐消费"},{"q":"我更喜欢的博物馆参观方式？","options":["精读每个展品","走马观花拍拍照","听讲解重点看","不太爱逛博物馆"],"answer":1,"cat":"娱乐消费"},{"q":"我对「综艺」的偏好？","options":["真人秀","搞笑吐槽","选秀音乐","几乎不看"],"answer":0,"cat":"娱乐消费"},{"q":"我更喜欢的面包/主食？","options":["甜面包蛋糕类","咸口肉松/三明治","米饭面食为主","低碳水少吃主食"],"answer":2,"cat":"口味偏好"},{"q":"我对「打卡景点」的态度？","options":["必须去热门点","偏爱小众地方","随缘不想特意去","只想待酒店"],"answer":1,"cat":"娱乐消费"},{"q":"我更喜欢的鞋类？","options":["运动鞋","小白鞋/板鞋","皮鞋/正装鞋","拖鞋/舒适鞋"],"answer":0,"cat":"娱乐消费"},{"q":"我对「分享欲」的程度？","options":["有事就想告诉人","只和少数人分享","很少主动说","基本自己消化"],"answer":1,"cat":"性格情绪"},{"q":"我更喜欢的汤/粥？","options":["甜汤","咸鲜汤","粥类","不太喝汤"],"answer":1,"cat":"口味偏好"},{"q":"我对「手写字」的态度？","options":["字很好看常写","一般能认","字丑但无所谓","几乎只打字"],"answer":3,"cat":"学习工作"},{"q":"我更喜欢的季节活动？","options":["春日踏青野餐","夏日海边游泳","秋日登高赏叶","冬日温泉火锅"],"answer":3,"cat":"娱乐消费"},{"q":"我对「短视频」的沉迷度？","options":["一刷停不下来","偶尔看看","很少刷","几乎不碰"],"answer":0,"cat":"娱乐消费"},{"q":"我更喜欢的香气类型？","options":["清新柑橘","花香甜美","木质沉稳","无香/不敏感"],"answer":0,"cat":"娱乐消费"},{"q":"我对「拼单/团购」的态度？","options":["经常拼很划算","偶尔参加","嫌麻烦","从不"],"answer":0,"cat":"娱乐消费"},{"q":"我更喜欢的椅/沙发坐姿？","options":["端正坐好","盘腿/蜷着","瘫成一摊","跷二郎腿"],"answer":2,"cat":"日常习惯"},{"q":"我对「日记/记账」的习惯？","options":["坚持记录","三天打鱼","想起来才记","完全不记"],"answer":2,"cat":"日常习惯"},{"q":"我更喜欢的巧克力？","options":["黑巧苦的","牛奶甜的","夹心果仁","不太爱巧克力"],"answer":1,"cat":"口味偏好"},{"q":"我对「地图导航」的依赖？","options":["出门必开","熟悉路就不开","方向感好很少用","经常迷路必须用"],"answer":0,"cat":"日常习惯"},{"q":"我更喜欢的桌面风格？","options":["极简空旷","放满好物","绿植点缀","乱但自己清楚"],"answer":0,"cat":"娱乐消费"},{"q":"我对「直播带货」的态度？","options":["经常看会买","看看不买","不感兴趣","反感"],"answer":1,"cat":"娱乐消费"},{"q":"我更喜欢的面条类型？","options":["汤面","拌面/干面","炒面","不太吃面"],"answer":0,"cat":"口味偏好"},{"q":"我对「童年动画」的情怀？","options":["超级有情怀常回顾","偶尔怀念","没什么感觉","完全忘了"],"answer":0,"cat":"娱乐消费"},{"q":"我更喜欢的包/背包类型？","options":["双肩包","斜挎/单肩","手提包","能不背就不背"],"answer":0,"cat":"娱乐消费"},{"q":"我对「占座」行为的看法？","options":["可以理解","反感不文明","自己也会做","看情况"],"answer":3,"cat":"学习工作"},{"q":"我更喜欢的火锅口味？","options":["麻辣红锅","清汤菌汤","鸳鸯锅","不太爱火锅"],"answer":2,"cat":"口味偏好"},{"q":"我对「天气预报」的关注度？","options":["每天必看","出门前看一眼","从不看","看了也不准"],"answer":1,"cat":"日常习惯"},{"q":"我更喜欢的文具是？","options":["好看的笔","便利贴便签","手账胶带","实用就行不挑"],"answer":3,"cat":"学习工作"},{"q":"我对「电梯里放音乐」的态度？","options":["喜欢有点氛围","无感","觉得尴尬","宁愿安静"],"answer":1,"cat":"学习工作"},{"q":"我更喜欢的冰淇淋口味？","options":["香草/奶油","巧克力","抹茶/茶味","水果雪糕"],"answer":2,"cat":"口味偏好"},{"q":"我对「回消息」的速度？","options":["秒回","几小时内","经常已读不回","看心情"],"answer":1,"cat":"社交关系"},{"q":"我更喜欢的酒店选择？","options":["高性价比连锁","特色民宿","豪华酒店体验","干净就行"],"answer":0,"cat":"娱乐消费"},{"q":"我对「自助餐」的态度？","options":["超爱吃到扶墙","适量就好","觉得浪费不爱去","看餐厅质量"],"answer":0,"cat":"口味偏好"},{"q":"我更喜欢的窗户景色？","options":["城市夜景","自然山水","安静小区","无所谓有窗就行"],"answer":1,"cat":"娱乐消费"},{"q":"我对「穿袜子睡觉」的习惯？","options":["必须穿","看天气","绝不穿","偶尔忘了脱"],"answer":2,"cat":"日常习惯"},{"q":"我更喜欢的节日氛围？","options":["春节团圆","圣诞浪漫","中秋月光","日常就好不特别"],"answer":0,"cat":"娱乐消费"},{"q":"我对「说话音量」通常是？","options":["偏大活力型","正常适中","偏小声","看场合变化大"],"answer":1,"cat":"性格情绪"},{"q":"我最不能忍受朋友的哪种行为？","options":["放鸽子不守时","背后说坏话","借钱不还","过度干涉私事"],"answer":0,"cat":"社交关系"},{"q":"我对「拼图/乐高」类解压的态度？","options":["超爱慢慢拼","偶尔试试","没耐心","完全无感"],"answer":0,"cat":"性格情绪"},{"q":"我更喜欢的通勤路上做什么？","options":["听播客/音乐","刷手机","发呆看窗外","补觉"],"answer":0,"cat":"日常习惯"},{"q":"我对「水果切盘」的喜好？","options":["爱吃混合果盘","只吃固定几种","不太爱水果","看心情"],"answer":0,"cat":"口味偏好"},{"q":"我更倾向怎样的房间灯光？","options":["明亮白光","暖黄氛围灯","偏暗柔和","随手开关无所谓"],"answer":1,"cat":"日常习惯"},{"q":"我对「追更剧集」的习惯？","options":["更新必看","攒着一口气看","三天打鱼","几乎不追剧"],"answer":1,"cat":"娱乐消费"},{"q":"我更喜欢的饮料甜度？","options":["全糖","半糖","少糖/微糖","无糖"],"answer":2,"cat":"口味偏好"},{"q":"我对「手写信/明信片」的感觉？","options":["很浪漫会珍藏","觉得用心","形式大于内容","不如发消息"],"answer":0,"cat":"社交关系"},{"q":"我更怕冷还是怕热？","options":["怕冷","怕热","都怕","都不太怕"],"answer":0,"cat":"日常习惯"},{"q":"我对「职场/校园八卦」的态度？","options":["爱听爱聊","听听不传","完全不参与","反感八卦"],"answer":1,"cat":"社交关系"},{"q":"我更喜欢的宵夜类型？","options":["烧烤炸物","粥面轻食","甜品奶茶","几乎不吃宵夜"],"answer":3,"cat":"口味偏好"}];
+const CATS = ["日常习惯","口味偏好","性格情绪","社交关系","娱乐消费","学习工作"];
 const Q_COUNT = 10;
 const LETTERS = 'ABCDEF';
-const STORAGE_DRAFT = 'moqi-draft-v2';
+const STORAGE_DRAFT = 'moqi-draft-v3';
 const STORAGE_PUB = 'moqi-published-v2';
 const STORAGE_STATS = 'moqi-stats-v2';
-const REWARD_PRESETS = ['奶茶券','红包券','请客吃饭','电影票'];
+const REWARD_PRESETS = ['奶茶券','红包券','请客吃饭','电影票','一个拥抱'];
+const INV_PRESETS = [{label:'不限',value:null},{label:'1 份',value:1},{label:'3 份',value:3},{label:'5 份',value:5},{label:'10 份',value:10}];
+const THRESH_PRESETS = [7,8,9,10];
 const DEFAULT_BANDS = [
   {min:0,max:3,text:'默契值告急！看来我们还需要多了解彼此呢～'},
   {min:4,max:6,text:'有点懂我，但还有不少盲区哦，继续加油！'},
@@ -168,7 +182,6 @@ function fromBase64Url(s){
   return new TextDecoder().decode(bytes);
 }
 function encodeQuiz(quiz){
-  // Compact keys to keep URL shorter
   const compact={
     i:quiz.id,
     n:quiz.name||'',
@@ -205,15 +218,15 @@ function defaultDraft(){
   return {
     id:uid(),
     name:'',
+    nameSkipped:false,
     title:'',
     slots:emptySlots(),
-    step:0, // 0..9 questions, 10=reward config
+    step:0,
     reward:'奶茶券',
     rewardCustom:'',
     threshold:9,
-    inventory:'',
-    bands:DEFAULT_BANDS.map(b=>({...b})),
-    usedBank:[]
+    inventory:null,
+    bands:DEFAULT_BANDS.map(b=>({...b}))
   };
 }
 
@@ -228,7 +241,8 @@ const S = {
   playNick:'',
   result:null,
   bankFilter:'',
-  editingSlot:false
+  bankCat:'全部',
+  answeredHint:false
 };
 
 function loadDraft(){
@@ -250,22 +264,50 @@ function setStats(qid,stats){
   try{const all=JSON.parse(localStorage.getItem(STORAGE_STATS)||'{}');all[qid]=stats;localStorage.setItem(STORAGE_STATS,JSON.stringify(all))}catch(e){}
 }
 
-/* ---------- Routing ---------- */
-function parseRoute(){
+/* ---------- Payload extraction (q first!) ---------- */
+function extractPayload(){
   const params=new URLSearchParams(location.search);
   let qPayload=params.get('q');
   const hash=location.hash||'';
-  const h=(hash.replace(/^#/,'').split('?')[0]||'').toLowerCase();
-  // Support #q=PAYLOAD
-  if(!qPayload && hash.startsWith('#q=')) qPayload=hash.slice(3);
+  // #play/PAYLOAD or #play/PAYLOAD?...
+  if(!qPayload){
+    const hm=hash.match(/^#play\/([^?&#]+)/i);
+    if(hm) qPayload=decodeURIComponent(hm[1]);
+  }
+  // #q=PAYLOAD
+  if(!qPayload && /^#q=/i.test(hash)) qPayload=hash.slice(3);
+  // hash query ?q=
   if(!qPayload){
     const m=hash.match(/[?&]q=([^&]+)/);
     if(m)qPayload=decodeURIComponent(m[1]);
   }
-  // Creator routes win even if ?q= is present (after publish URL keeps payload)
-  if(['home','create','reward','manage'].includes(h)) return h;
-  if(h==='result' && S.result && S.playQuiz) return 'result';
+  return qPayload;
+}
+
+function pathBase(){
+  // Prefer directory form .../zhiji/ for share links
+  let p=location.pathname;
+  if(p.endsWith('play.html')) p=p.replace(/play\.html$/,'');
+  if(p.endsWith('index.html')) p=p.replace(/index\.html$/,'');
+  if(!p.endsWith('/')) p=p.replace(/\/[^/]*$/,'/') || '/';
+  return location.origin + p;
+}
+
+/* ---------- Routing: q ALWAYS forces play ---------- */
+function parseRoute(){
+  const params=new URLSearchParams(location.search);
+  const qPayload=extractPayload();
+  const hash=location.hash||'';
+  const raw=(hash.replace(/^#/,'').split('?')[0]||'');
+  const h=raw.toLowerCase().split('/')[0];
+
+  // Manage ONLY when explicitly requested and not sharing as friend
+  // If ?q= present → NEVER create/home for friends
   if(qPayload){
+    // Creator can open manage with ?manage=1 even if somehow q present — but share links never include manage
+    if(params.get('manage')==='1' && h==='manage'){
+      return 'manage';
+    }
     const quiz=decodeQuiz(qPayload);
     if(quiz){
       if(!S.playQuiz || S.playQuiz.id!==quiz.id){
@@ -274,57 +316,104 @@ function parseRoute(){
       } else {
         S.playQuiz=quiz;
       }
+      // Force play hash for WeChat / share
+      if(h!=='play' && h!=='result'){
+        try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
+      }
       if(h==='result' && S.result) return 'result';
       if(h==='play' && S.playAnswers && S.playAnswers.length>0 && S.playIdx>0 && !S.result) return 'play';
       return 'play-intro';
     }
+    // bad payload — fall through but still not create
+    return 'play-intro';
   }
-  if(['play','result'].includes(h)) return h==='play'?'play-intro':h;
+
+  if(params.get('manage')==='1') return 'manage';
+  if(['home','create','reward','manage'].includes(h)) return h;
+  if(h==='result' && S.result && S.playQuiz) return 'result';
+  if(h==='play') return S.playQuiz ? (S.playAnswers.length>0 && S.playIdx>0 && !S.result ? 'play' : 'play-intro') : 'home';
   return 'home';
 }
 
 function navigate(route, replace){
+  // Friend play with q: never navigate to create/home/reward
+  if(extractPayload() && ['home','create','reward'].includes(route)){
+    route='play-intro';
+  }
   S.route=route;
   const map={home:'#home',create:'#create',reward:'#reward',manage:'#manage','play-intro':'#play',play:'#play',result:'#result'};
-  const target=map[route]||'#home';
-  if(replace) history.replaceState(null,'',target);
+  let target=map[route]||'#home';
+  // keep search when playing
+  const q=extractPayload();
+  if(q && (route==='play-intro'||route==='play'||route==='result')){
+    const path=location.pathname;
+    const search=location.search || ('?q='+encodeURIComponent(q));
+    const url=path+search+target;
+    if(replace) history.replaceState(null,'',url);
+    else if(location.hash!==target){ location.hash=target; }
+    else render();
+    if(location.hash===target || replace) render();
+    return;
+  }
+  if(replace) history.replaceState(null,'', location.pathname + (route==='manage'?'?manage=1':'') + target);
   else if(location.hash!==target) location.hash=target;
   else render();
   if(location.hash===target) render();
 }
 
 function onHash(){
-  // If URL has ?q=, keep play flow unless creator routes forced
   const r=parseRoute();
   S.route=r;
-  if(r==='create'||r==='reward'){ if(!S.draft) loadDraft(); }
+  if(r==='create'||r==='reward'){ if(!S.draft) loadDraft(); ensureSlotSeeded(); }
   if(r==='manage') loadPublished();
   render();
 }
 
-/* ---------- Bank helpers ---------- */
-function pickRandomUnused(){
-  const used=new Set(S.draft.usedBank||[]);
-  const pool=BANK.map((b,i)=>i).filter(i=>!used.has(i));
-  const src=pool.length?pool:BANK.map((_,i)=>i);
-  const idx=src[Math.floor(Math.random()*src.length)];
-  return idx;
+/* ---------- Bank helpers (no duplicates across slots) ---------- */
+function getUsedBankSet(exceptSlot){
+  const used=new Set();
+  if(!S.draft||!S.draft.slots) return used;
+  S.draft.slots.forEach((s,i)=>{
+    if(exceptSlot!=null && i===exceptSlot) return;
+    if(s && typeof s.bankIdx==='number' && s.bankIdx>=0) used.add(s.bankIdx);
+  });
+  return used;
 }
-function applyBankToSlot(slotIdx, bankIdx){
+function pickRandomUnused(exceptSlot){
+  const used=getUsedBankSet(exceptSlot!=null?exceptSlot:S.draft.step);
+  const pool=BANK.map((_,i)=>i).filter(i=>!used.has(i));
+  if(!pool.length){ toast('题库已用完，请自定义或从已选题中换掉'); return null; }
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function applyBankToSlot(slotIdx, bankIdx, keepAnswer){
+  const used=getUsedBankSet(slotIdx);
+  if(used.has(bankIdx)){ toast('这道题已在其他题槽使用'); return false; }
   const b=BANK[bankIdx];
-  const slot={q:b.q,options:[...b.options],answer:0,filled:true,bankIdx};
-  // Creator must pick THEIR answer — default 0 but they can change
-  S.draft.slots[slotIdx]=slot;
-  if(!S.draft.usedBank)S.draft.usedBank=[];
-  if(!S.draft.usedBank.includes(bankIdx))S.draft.usedBank.push(bankIdx);
+  const prev=S.draft.slots[slotIdx];
+  const ans=(keepAnswer && prev && prev.answer!=null)?clamp(prev.answer|0,0,b.options.length-1):0;
+  S.draft.slots[slotIdx]={q:b.q,options:[...b.options],answer:ans,filled:true,bankIdx};
   saveDraft();
+  return true;
+}
+function ensureSlotSeeded(){
+  if(!S.draft) return;
+  const i=clamp(S.draft.step|0,0,Q_COUNT-1);
+  const slot=S.draft.slots[i];
+  if(!slot || slot.filled) return;
+  const idx=pickRandomUnused(i);
+  if(idx!=null) applyBankToSlot(i, idx);
 }
 
 /* ---------- Render ---------- */
 function render(){
   const app=document.getElementById('app');
   let r=S.route;
+  // Guard: never show create UI when friend payload present
+  if(extractPayload() && (r==='home'||r==='create'||r==='reward'||r==='manage' && !(new URLSearchParams(location.search).get('manage')==='1'))){
+    if(r!=='result' || !S.result) r=S.route=(S.result?'result':'play-intro');
+  }
   if(r==='create' && S.draft && (S.draft.step|0)>=Q_COUNT) r='reward';
+  if(r==='create') ensureSlotSeeded();
   if(r==='home') app.innerHTML=viewHome();
   else if(r==='create') app.innerHTML=viewCreate();
   else if(r==='reward') app.innerHTML=viewReward();
@@ -349,7 +438,7 @@ function viewHome(){
     <div class="card" style="text-align:center;padding:28px 18px">
       <div class="hero-emoji">💫</div>
       <div class="intro-title">创建你的默契测试卷</div>
-      <p class="hint" style="margin:8px 0 16px">从 100+ 知己题库选题或自定义，选好你的答案，生成链接发给好友。</p>
+      <p class="hint" style="margin:8px 0 16px">随机出题或从分类题库挑选，选好你的答案，生成链接发给好友。</p>
       <button class="btn btn-primary" onclick="startCreate(false)">开始出题</button>
       ${filled>0?`<button class="btn btn-secondary" onclick="startCreate(true)">继续草稿（已完成 ${filled}/10）</button>`:''}
       ${hasPub?`<button class="btn btn-mint" onclick="goManage()">我的已发布试卷</button>`:''}
@@ -359,50 +448,50 @@ function viewHome(){
 }
 
 function startCreate(resume){
+  if(extractPayload()){ toast('当前为答题链接'); return; }
   if(!resume){ S.draft=defaultDraft(); saveDraft(); }
   else loadDraft();
-  if(S.draft.step>=Q_COUNT) S.route='reward';
-  else S.route='create';
-  navigate(S.route);
+  if(S.draft.step>=Q_COUNT){ navigate('reward'); return; }
+  ensureSlotSeeded();
+  navigate('create');
 }
 
-function goManage(){ loadPublished(); navigate('manage'); }
+function goManage(){
+  if(extractPayload()){ toast('当前为答题链接'); return; }
+  loadPublished();
+  history.replaceState(null,'', location.pathname + '?manage=1#manage');
+  S.route='manage';
+  render();
+}
 
 function viewCreate(){
   const d=S.draft; const i=clamp(d.step|0,0,Q_COUNT-1); d.step=i;
   const slot=d.slots[i];
   const dots=d.slots.map((s,idx)=>`<span class="${idx===i?'cur':(s.filled?'done':'')}"></span>`).join('');
-  let body='';
-  if(!slot.filled){
-    body=`
+  // Random-first: always show a question card once seeded
+  const body = !slot.filled ? `
       <div class="card">
-        <h2>第 ${i+1} / ${Q_COUNT} 题 <span class="badge slot-tag empty">未设置</span></h2>
-        <p class="hint">从题库挑选，或自己写一道关于「你」的题目，并选中你的真实答案（好友要猜的是你的选择）。</p>
-        <div class="toolbar">
-          <button class="btn btn-primary btn-sm" onclick="openBankPicker()">题库选一题</button>
-          <button class="btn btn-secondary btn-sm" onclick="randomBankSlot()">换一题</button>
-          <button class="btn btn-secondary btn-sm" onclick="customSlot()">自定义题目</button>
-        </div>
-      </div>`;
-  } else {
-    body=`
+        <h2>第 ${i+1} / ${Q_COUNT} 题 <span class="badge slot-tag empty">加载中</span></h2>
+        <p class="hint">正在抽取题库题目…</p>
+        <button class="btn btn-primary" onclick="randomBankSlot()">换一题</button>
+      </div>` : `
       <div class="card">
-        <h2>第 ${i+1} / ${Q_COUNT} 题 <span class="badge slot-tag">已设置</span></h2>
+        <h2>第 ${i+1} / ${Q_COUNT} 题 <span class="badge slot-tag">${typeof slot.bankIdx==='number'?'题库':'自定义'}</span></h2>
         <div class="q-preview">${escapeHtml(slot.q)}</div>
         ${slot.options.map((o,j)=>`
           <button type="button" class="opt-btn ${j===slot.answer?'correct-mark selected':''}" onclick="setSlotAnswer(${j})">
             <span class="opt-letter">${LETTERS[j]}</span>${escapeHtml(o)}
             ${j===slot.answer?'<span style="margin-left:auto;color:var(--green);font-size:12px;font-weight:700">我的答案</span>':''}
           </button>`).join('')}
-        <p class="hint">点选项可切换「我的正确答案」。好友答题时需选中该项才算对。</p>
-        <div class="toolbar">
-          <button class="btn btn-secondary btn-sm" onclick="openBankPicker()">题库选一题</button>
-          <button class="btn btn-secondary btn-sm" onclick="randomBankSlot()">换一题</button>
-          <button class="btn btn-secondary btn-sm" onclick="customSlot()">自定义题目</button>
-          <button class="btn btn-ghost btn-sm" onclick="editCurrentSlot()">编辑此题目</button>
+        <p class="hint">点选项切换「我的正确答案」，再点「下一题」确认。</p>
+        <div class="action-bar">
+          <button class="btn btn-primary span2" onclick="nextStep()">${i>=Q_COUNT-1?'下一题 · 去设置奖励':'下一题'}</button>
+          <button class="btn btn-secondary" onclick="randomBankSlot()">换一题</button>
+          <button class="btn btn-secondary" onclick="openBankPicker()">题库选</button>
+          <button class="btn btn-secondary span2" onclick="customSlot()">自定义</button>
         </div>
+        ${typeof slot.bankIdx==='number'?`<button class="btn btn-ghost" style="width:100%;margin-top:4px" onclick="editCurrentSlot()">微调本题文案</button>`:`<button class="btn btn-ghost" style="width:100%;margin-top:4px" onclick="editCurrentSlot()">编辑此题目</button>`}
       </div>`;
-  }
   return `
   <div class="view active">
     <header class="app-header">
@@ -415,52 +504,70 @@ function viewCreate(){
     <div class="card">
       <div class="btn-row">
         <button class="btn btn-secondary" ${i===0?'disabled':''} onclick="prevStep()">上一题</button>
-        <button class="btn btn-primary" onclick="nextStep()">${i>=Q_COUNT-1?'去设置奖励':'下一题'}</button>
+        <button class="btn btn-ghost" onclick="navigate('home',true)">返回首页</button>
       </div>
-      <button class="btn btn-ghost" style="width:100%;margin-top:4px" onclick="navigate('home')">返回首页</button>
     </div>
-  </div>
-  ${S._modal||''}`;
+  </div>`;
 }
 
 function setSlotAnswer(j){
   const i=S.draft.step;
   S.draft.slots[i].answer=j;
+  S.answeredHint=true;
   saveDraft();render();
 }
-function prevStep(){ if(S.draft.step>0){S.draft.step--;saveDraft();render()} }
+function prevStep(){ if(S.draft.step>0){S.draft.step--;saveDraft();ensureSlotSeeded();render()} }
 function nextStep(){
   const i=S.draft.step; const slot=S.draft.slots[i];
   if(!slot.filled || !slot.q.trim()){ toast('请先完成本题设置'); return; }
   if(slot.options.filter(o=>String(o).trim()).length<2){ toast('至少需要 2 个选项'); return; }
-  if(i>=Q_COUNT-1){ S.draft.step=Q_COUNT; saveDraft(); S.route='reward'; navigate('reward'); return; }
-  S.draft.step=i+1; saveDraft(); render();
+  if(i>=Q_COUNT-1){ S.draft.step=Q_COUNT; saveDraft(); navigate('reward'); return; }
+  S.draft.step=i+1; saveDraft(); ensureSlotSeeded(); render();
 }
 
 function randomBankSlot(){
-  const idx=pickRandomUnused();
+  const idx=pickRandomUnused(S.draft.step);
+  if(idx==null) return;
   applyBankToSlot(S.draft.step, idx);
   toast('已换一题，请确认你的答案');
   render();
 }
 function openBankPicker(){
   S.bankFilter='';
+  S.bankCat='全部';
   closeModal();
   document.getElementById('app').insertAdjacentHTML('beforeend', bankModalHtml());
 }
 function bankModalHtml(){
   const f=(S.bankFilter||'').trim();
-  const list=BANK.map((b,i)=>({b,i})).filter(x=>!f || x.b.q.includes(f) || x.b.options.some(o=>o.includes(f)));
+  const cat=S.bankCat||'全部';
+  const used=getUsedBankSet(S.draft.step);
+  const cur=S.draft.slots[S.draft.step];
+  const curBank=cur&&typeof cur.bankIdx==='number'?cur.bankIdx:null;
+  let list=BANK.map((b,i)=>({b,i}));
+  if(cat!=='全部') list=list.filter(x=>x.b.cat===cat);
+  if(f) list=list.filter(x=>x.b.q.includes(f)||x.b.options.some(o=>o.includes(f)));
+  const available=list.filter(x=>!used.has(x.i)||x.i===curBank);
+  const tabs=['全部',...CATS].map(c=>{
+    const n=c==='全部'?BANK.length:BANK.filter(b=>b.cat===c).length;
+    return `<button type="button" class="cat-tab ${cat===c?'active':''}" onclick="S.bankCat='${c}';refreshBankModal()">${c}(${n})</button>`;
+  }).join('');
   return `
   <div class="modal-mask" id="bank-modal" onclick="if(event.target===this)closeModal()">
     <div class="modal">
-      <h3>题库选一题（${BANK.length}）</h3>
+      <h3>题库选一题</h3>
+      <div class="cat-tabs">${tabs}</div>
       <div class="search-box"><input type="text" placeholder="搜索题目…" value="${escapeHtml(f)}" oninput="S.bankFilter=this.value;refreshBankModal()"></div>
-      <div class="bank-list" id="bank-list">${list.slice(0,80).map(({b,i})=>`
-        <div class="bank-item" onclick="chooseBank(${i})">
+      <p class="hint" style="margin:0 0 8px">已选用的题会禁用；当前题槽共可用 ${available.length} 题</p>
+      <div class="bank-list" id="bank-list">${list.map(({b,i})=>{
+        const isUsed=used.has(i)&&i!==curBank;
+        return `
+        <div class="bank-item ${isUsed?'used':''}" ${isUsed?'':'onclick="chooseBank('+i+')"'}>
+          <div class="tag">${escapeHtml(b.cat)}${isUsed?' · 已选用':(i===curBank?' · 当前':'')}</div>
           <div class="bq">${escapeHtml(b.q)}</div>
           <div class="bo">${b.options.map((o,j)=>LETTERS[j]+'. '+escapeHtml(o)).join(' · ')}</div>
-        </div>`).join('')}${list.length>80?'<p class="hint">仅显示前 80 条，请缩小搜索</p>':''}
+        </div>`;
+      }).join('')||'<p class="hint">该分类暂无匹配题目</p>'}
       </div>
       <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
     </div>
@@ -471,8 +578,13 @@ function refreshBankModal(){
   if(!el){openBankPicker();return;}
   el.outerHTML=bankModalHtml();
 }
-function chooseBank(i){ applyBankToSlot(S.draft.step,i); closeModal(); toast('已选题，请点选你的答案'); render(); }
-function closeModal(){ const m=document.querySelector('.modal-mask'); if(m)m.remove(); S._modal=''; }
+function chooseBank(i){
+  const used=getUsedBankSet(S.draft.step);
+  if(used.has(i)){ toast('这道题已选用'); return; }
+  applyBankToSlot(S.draft.step,i);
+  closeModal(); toast('已选题，请点选你的答案'); render();
+}
+function closeModal(){ const m=document.querySelector('.modal-mask'); if(m)m.remove(); }
 
 function customSlot(){ openEditor(true); }
 function editCurrentSlot(){ openEditor(false); }
@@ -480,6 +592,7 @@ function editCurrentSlot(){ openEditor(false); }
 function openEditor(isNew){
   const slot=isNew?{q:'',options:['','',''],answer:0,filled:false}:JSON.parse(JSON.stringify(S.draft.slots[S.draft.step]));
   S._edit=slot;
+  S._editIsNew=!!isNew;
   showEditorModal();
 }
 function showEditorModal(){
@@ -493,10 +606,10 @@ function showEditorModal(){
   const html=`
   <div class="modal-mask" id="edit-modal" onclick="if(event.target===this)closeModal()">
     <div class="modal">
-      <h3>编辑题目</h3>
+      <h3>${S._editIsNew?'自定义题目':'编辑题目'}</h3>
       <label>题目</label>
       <textarea rows="2" oninput="S._edit.q=this.value" placeholder="输入关于你的题目…">${escapeHtml(slot.q)}</textarea>
-      <label>选项（圆点 = 你的正确答案，${2}–${6} 个）</label>
+      <label>选项（圆点 = 你的正确答案，2–6 个）</label>
       <div id="opt-edits">${opts}</div>
       <div class="btn-row">
         <button class="btn btn-secondary btn-sm" ${slot.options.length>=6?'disabled':''} onclick="addOpt()">＋ 加选项</button>
@@ -524,15 +637,29 @@ function saveEditor(){
   if(options.some(o=>!o)){toast('请填完所有选项');return;}
   if(options.length<2||options.length>6){toast('选项需 2–6 个');return;}
   const ans=clamp(S._edit.answer|0,0,options.length-1);
-  S.draft.slots[S.draft.step]={q,options,answer:ans,filled:true};
+  // Custom questions do NOT keep bankIdx — frees previous bank id
+  const slot={q,options,answer:ans,filled:true};
+  if(!S._editIsNew && typeof S._edit.bankIdx==='number' && !S._editIsNew){
+    // editing existing bank question text → treat as custom (no bank id) if user opened custom, else keep if same bank content edit
+  }
+  // Always clear bankIdx for custom/new; for "微调" keep bankIdx only if still same bank q? Spec: custom don't count as bank ids.
+  // If user clicked 自定义 → clear. If 微调本题文案 from bank → clear bankIdx too so duplicates can reuse? Safer: editing text clears bankIdx.
+  if(S._editIsNew){
+    // custom — no bankIdx
+  } else if(typeof S.draft.slots[S.draft.step].bankIdx==='number' && q===S.draft.slots[S.draft.step].q){
+    slot.bankIdx=S.draft.slots[S.draft.step].bankIdx;
+  }
+  // if question text changed from bank, drop bankIdx
+  S.draft.slots[S.draft.step]=slot;
   saveDraft();closeModal();toast('已保存');render();
 }
 
-/* ---------- Reward config ---------- */
+/* ---------- Reward config (chips / presets) ---------- */
 function viewReward(){
   const d=S.draft;
-  const isCustom=!REWARD_PRESETS.includes(d.reward);
+  const isCustom=d.reward && !REWARD_PRESETS.includes(d.reward);
   const rewardVal=isCustom?(d.rewardCustom||d.reward):d.reward;
+  const inv=d.inventory;
   return `
   <div class="view active">
     <header class="app-header">
@@ -540,9 +667,12 @@ function viewReward(){
       <p>答对阈值的人才能领奖</p>
     </header>
     <div class="card">
-      <h2>出题人昵称</h2>
-      <input type="text" maxlength="12" placeholder="例如：小明" value="${escapeHtml(d.name||'')}" oninput="S.draft.name=this.value;saveDraft()">
-      <p class="hint">将生成「昵称的默契测试卷」标题</p>
+      <h2>出题人昵称 <span class="badge">可选</span></h2>
+      <input type="text" maxlength="12" placeholder="例如：小明（可不填）" value="${escapeHtml(d.name||'')}" oninput="S.draft.name=this.value;S.draft.nameSkipped=false;saveDraft()">
+      <div class="chip-row">
+        <button type="button" class="chip ${d.nameSkipped||!(d.name||'').trim()?'active':''}" onclick="skipName()">跳过 / 不填</button>
+      </div>
+      <p class="hint">不填则显示「神秘人的默契测试卷」</p>
     </div>
     <div class="card">
       <h2>奖励内容</h2>
@@ -550,23 +680,26 @@ function viewReward(){
         ${REWARD_PRESETS.map(p=>`<button type="button" class="chip ${d.reward===p?'active':''}" onclick="pickReward('${p}')">${p}</button>`).join('')}
         <button type="button" class="chip ${isCustom?'active':''}" onclick="pickRewardCustom()">自定义</button>
       </div>
-      <label style="margin-top:12px">奖励文案</label>
-      <input type="text" id="reward-input" value="${escapeHtml(rewardVal)}" oninput="onRewardInput(this.value)" placeholder="自定义奖励…">
+      ${isCustom?`<label style="margin-top:12px">自定义奖励</label>
+      <input type="text" id="reward-input" value="${escapeHtml(rewardVal||'')}" oninput="onRewardInput(this.value)" placeholder="写上你的奖励…">`:''}
     </div>
     <div class="card">
       <h2>获奖门槛</h2>
-      <label>答对 N 题可获奖（默认 9）</label>
-      <div class="num-row">
-        <input type="number" min="1" max="10" value="${d.threshold}" oninput="S.draft.threshold=clamp(+this.value||9,1,10);saveDraft()">
-        <span class="hint">/ ${Q_COUNT} 题</span>
+      <p class="hint" style="margin-top:0">答对几题可获奖？</p>
+      <div class="chip-row">
+        ${THRESH_PRESETS.map(n=>`<button type="button" class="chip ${(d.threshold|0)===n?'active':''}" onclick="pickThreshold(${n})">${n} 题</button>`).join('')}
       </div>
-      <label>奖品份数（可选，先到先得展示）</label>
-      <input type="number" min="0" placeholder="不填则不限量展示" value="${escapeHtml(d.inventory)}" oninput="S.draft.inventory=this.value;saveDraft()">
+    </div>
+    <div class="card">
+      <h2>奖品份数</h2>
+      <div class="chip-row">
+        ${INV_PRESETS.map(p=>`<button type="button" class="chip ${(inv===p.value || (inv==null&&p.value==null))?'active':''}" onclick="pickInventory(${p.value===null?'null':p.value})">${p.label}</button>`).join('')}
+      </div>
       <p class="hint">仅作文案展示；真实兑换请出题人自行核对。</p>
     </div>
     <div class="card">
-      <h2>分段评语 <span class="badge">按答对题数</span></h2>
-      <p class="hint">至少 4 档，可改区间与文案。</p>
+      <h2>分段评语 <span class="badge">已预填可改</span></h2>
+      <p class="hint">按答对题数展示评语，可直接用默认文案。</p>
       <div id="band-list">${renderBandsEditor()}</div>
       <button class="btn btn-secondary btn-sm" onclick="addBand()">＋ 增加一档</button>
     </div>
@@ -589,9 +722,12 @@ function renderBandsEditor(){
       <textarea style="width:100%" rows="2" oninput="updBand(${i},'text',this.value)">${escapeHtml(b.text)}</textarea>
     </div>`).join('');
 }
+function skipName(){S.draft.name='';S.draft.nameSkipped=true;saveDraft();render()}
 function pickReward(p){S.draft.reward=p;S.draft.rewardCustom='';saveDraft();render()}
-function pickRewardCustom(){S.draft.reward=S.draft.rewardCustom||'自定义奖励';saveDraft();render();const el=document.getElementById('reward-input');if(el)el.focus()}
+function pickRewardCustom(){S.draft.reward=S.draft.rewardCustom||'';S.draft.rewardCustom=S.draft.rewardCustom||'';saveDraft();render();setTimeout(()=>{const el=document.getElementById('reward-input');if(el)el.focus()},50)}
 function onRewardInput(v){S.draft.reward=v;S.draft.rewardCustom=v;saveDraft()}
+function pickThreshold(n){S.draft.threshold=n;saveDraft();render()}
+function pickInventory(v){S.draft.inventory=v;saveDraft();render()}
 function updBand(i,k,v){ if(k==='text')S.draft.bands[i].text=v; else S.draft.bands[i][k]=clamp(+v||0,0,10); saveDraft(); }
 function addBand(){S.draft.bands.push({min:0,max:0,text:''});saveDraft();render()}
 function rmBand(i){if(S.draft.bands.length<=4){toast('至少保留 4 档');return;}S.draft.bands.splice(i,1);saveDraft();render()}
@@ -600,7 +736,8 @@ function publishQuiz(){
   const d=S.draft;
   if(d.slots.some(s=>!s.filled)){toast('还有题目未完成');navigate('create');return;}
   const name=(d.name||'').trim()||'神秘人';
-  const reward=(d.reward||'').trim()||'神秘奖励';
+  let reward=(d.reward||'').trim();
+  if(!reward){toast('请选择或填写奖励');return;}
   if(!d.bands||d.bands.length<4){toast('请至少设置 4 档评语');return;}
   const quiz={
     id:d.id||uid(),
@@ -608,25 +745,27 @@ function publishQuiz(){
     title:name+'的默契测试卷',
     reward,
     threshold:clamp(d.threshold|0,1,10),
-    inventory:d.inventory===''||d.inventory==null?null:Math.max(0,+d.inventory||0),
+    inventory:d.inventory==null||d.inventory===''?null:Math.max(0,+d.inventory||0),
     bands:d.bands.map(b=>({min:+b.min||0,max:+b.max||0,text:String(b.text||'')})),
     questions:d.slots.map(s=>({q:s.q,options:[...s.options],answer:s.answer|0}))
   };
   savePublished(quiz);
-  // ensure stats entry
   const st=getStats(quiz.id); setStats(quiz.id,st);
+  // Creator manage page: NO ?q= so share URL is distinct; friends use ?q=
+  history.replaceState(null,'', location.pathname + '?manage=1#manage');
   S.route='manage';
-  // put share payload in URL optionally
-  const payload=encodeQuiz(quiz);
-  history.replaceState(null,'', location.pathname + '?q=' + payload + '#manage');
-  toast('已生成！可复制邀请链接');
+  toast('已生成！请复制邀请链接发给好友');
   render();
 }
 
 function shareUrl(quiz){
   const payload=encodeQuiz(quiz);
-  const base=location.href.split('#')[0].split('?')[0];
-  return base + '?q=' + payload + '#play';
+  // Dedicated short path: .../zhiji/?q=PAYLOAD  (no #create / #home)
+  return pathBase() + '?q=' + payload;
+}
+function shareUrlHashFallback(quiz){
+  const payload=encodeQuiz(quiz);
+  return pathBase() + '#play/' + payload;
 }
 
 function viewManage(){
@@ -653,6 +792,10 @@ function viewManage(){
           <span>答对 ≥ ${quiz.threshold} 题可获奖 · 库存 ${invTxt}</span>
         </div>
       </div>
+      <div class="tip-box">
+        <b>微信分享提示</b>
+        发给微信好友请复制下方链接；打开后应直接进入答题介绍页（不会看到出题界面）。若微信去掉了链接参数，可改用「生成纯答题页」备用链接。
+      </div>
     </div>
     <div class="card">
       <h2>数据统计</h2>
@@ -667,13 +810,19 @@ function viewManage(){
       ${st.board.slice(0,20).map(r=>`<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score}/${Q_COUNT}</span></div>`).join('')}
     </div></div>`:''}
     <div class="card">
-      <button class="btn btn-secondary" onclick="showQuestions()">查看题目</button>
       <button class="btn btn-primary" onclick="copyLink()">复制邀请链接</button>
+      <button class="btn btn-secondary" onclick="copyHashLink()">生成纯答题页（备用）</button>
+      <button class="btn btn-secondary" onclick="showQuestions()">查看题目</button>
       <button class="btn btn-mint" onclick="previewAsFriend()">试玩答题</button>
-      <button class="btn btn-ghost" style="width:100%" onclick="startCreate(false)">返回出题（新建）</button>
+      <button class="btn btn-ghost" style="width:100%" onclick="clearManageAndHome()">返回出题（新建）</button>
+      <p class="hint">主链接格式：…/zhiji/?q=…　备用：…/zhiji/#play/…</p>
     </div>
     <div id="q-view"></div>
   </div>`;
+}
+function clearManageAndHome(){
+  history.replaceState(null,'', location.pathname + '#home');
+  startCreate(false);
 }
 function showQuestions(){
   const quiz=S.published; if(!quiz)return;
@@ -688,21 +837,26 @@ function showQuestions(){
 }
 async function copyLink(){
   const url=shareUrl(S.published);
-  try{ await navigator.clipboard.writeText(url); toast('邀请链接已复制'); }
-  catch(e){
-    prompt('复制下面的链接发给好友：', url);
-  }
+  try{ await navigator.clipboard.writeText(url); toast('邀请链接已复制（打开即答题）'); }
+  catch(e){ prompt('复制下面的链接发给好友（打开即答题）：', url); }
+}
+async function copyHashLink(){
+  const url=shareUrlHashFallback(S.published);
+  try{ await navigator.clipboard.writeText(url); toast('纯答题页链接已复制（#play/ 备用）'); }
+  catch(e){ prompt('备用纯答题页链接：', url); }
 }
 function previewAsFriend(){
+  // Simulate friend: use hash fallback without polluting manage
   S.playQuiz=S.published;
   S.playIdx=0;S.playAnswers=[];S.result=null;S.playNick='';
-  navigate('play-intro');
+  S.route='play-intro';
+  render();
 }
 
 /* ---------- Friend play ---------- */
 function viewPlayIntro(){
   const quiz=S.playQuiz;
-  if(!quiz){return `<div class="view active"><div class="card"><p>无效的测试链接</p><button class="btn btn-primary" onclick="navigate('home')">回首页</button></div></div>`;}
+  if(!quiz){return `<div class="view active"><div class="card"><p>无效的测试链接</p><p class="hint">请让出题人重新复制邀请链接。</p></div></div>`;}
   const inv=quiz.inventory==null?'数量有限哦':('剩余展示 '+quiz.inventory+' 份');
   return `
   <div class="view active">
@@ -754,12 +908,10 @@ function pickPlay(j){
 }
 function bandFor(score,bands){
   const list=bands&&bands.length?bands:DEFAULT_BANDS;
-  // prefer inclusive match; if overlap, highest min wins
   let best=list[0];
   for(const b of list){
     if(score>=b.min && score<=b.max) best=b;
   }
-  // fallback by percent-ish
   if(!(score>=best.min&&score<=best.max)){
     const sorted=[...list].sort((a,b)=>a.min-b.min);
     best=sorted[0];
@@ -775,7 +927,6 @@ function finishPlay(){
   const band=bandFor(score, quiz.bands);
   const won=score>=(quiz.threshold|0);
   S.result={score,pct,band,won};
-  // local stats on this device keyed by quiz id
   const st=getStats(quiz.id);
   st.plays=(st.plays|0)+1;
   if(won) st.wins=(st.wins|0)+1;
@@ -785,12 +936,13 @@ function finishPlay(){
   st.board=st.board.slice(0,50);
   setStats(quiz.id,st);
   S.route='result';
-  history.replaceState(null,'', location.pathname+location.search+'#result');
+  const search=location.search||'';
+  history.replaceState(null,'', location.pathname+search+'#result');
   render();
 }
 function viewResult(){
   const quiz=S.playQuiz; const r=S.result;
-  if(!quiz||!r){navigate('play-intro');return''}
+  if(!quiz||!r){S.route='play-intro';render();return''}
   return `
   <div class="view active">
     <header class="app-header">
@@ -810,24 +962,37 @@ function viewResult(){
   </div>`;
 }
 
-/* ---------- Init ---------- */
-loadDraft();
-loadPublished();
-window.addEventListener('hashchange', onHash);
-// Expose for inline handlers
-Object.assign(window,{
-  S,clamp,navigate,startCreate,goManage,setSlotAnswer,prevStep,nextStep,
-  randomBankSlot,openBankPicker,refreshBankModal,chooseBank,closeModal,
-  customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
-  onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,previewAsFriend,
-  beginPlay,pickPlay
-});
-S.route=parseRoute();
-if((S.route==='create'||S.route==='reward')&&!S.draft) loadDraft();
-if(S.route==='reward'|| (S.draft&&S.draft.step>=Q_COUNT && S.route==='create')){
-  // stay
-}
-render();
+/* ---------- Init: detect q BEFORE any create routing ---------- */
+(function boot(){
+  const qPayload=extractPayload();
+  if(qPayload){
+    const quiz=decodeQuiz(qPayload);
+    if(quiz){
+      S.playQuiz=quiz;
+      S.playIdx=0;S.playAnswers=[];S.result=null;
+      // Force #play immediately, ignore stale #create/#home
+      try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
+      S.route='play-intro';
+    } else {
+      S.route='play-intro';
+    }
+  } else {
+    loadDraft();
+    loadPublished();
+    S.route=parseRoute();
+  }
+  window.addEventListener('hashchange', onHash);
+  Object.assign(window,{
+    S,clamp,navigate,startCreate,goManage,setSlotAnswer,prevStep,nextStep,
+    randomBankSlot,openBankPicker,refreshBankModal,chooseBank,closeModal,
+    customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
+    onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyHashLink,
+    previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome
+  });
+  if((S.route==='create'||S.route==='reward')&&!S.draft) loadDraft();
+  if(S.route==='create') ensureSlotSeeded();
+  render();
+})();
 </script>
 </body>
 </html>
