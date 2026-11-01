@@ -140,10 +140,19 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .qr-caption{font-size:14px;font-weight:650;color:var(--primary-dark);margin:12px 0 4px}
 .qr-sub{font-size:12px;color:var(--text-light);line-height:1.5;margin:0 8px 8px}
 
+.bgm-toggle{position:fixed;top:calc(12px + env(safe-area-inset-top));right:max(12px, env(safe-area-inset-right));z-index:300;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:rgba(255,255,255,.92);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;cursor:pointer;color:var(--primary-dark);padding:0;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(6px)}
+.bgm-toggle:active{transform:scale(.94)}
+.bgm-toggle[aria-pressed="true"]{background:var(--primary-soft);border-color:var(--primary)}
+
 </style>
 </head>
 <body>
 <div id="app"></div>
+<audio id="bgm" loop preload="auto">
+  <source src="audio/undead-funeral-march.m4a" type="audio/mp4">
+  <source src="audio/undead-funeral-march.mp3" type="audio/mpeg">
+</audio>
+<button type="button" id="bgm-toggle" class="bgm-toggle" aria-label="切换背景音乐静音" aria-pressed="false" title="背景音乐">🔊</button>
 <div id="toast" class="toast"></div>
 <script>
 /* ========== Built-in bank (≥100) with categories ========== */
@@ -1467,6 +1476,83 @@ function viewResult(){
   const sid=extractShortId();
   S.playNick=loadSavedNick();
   getPlayerFp();
+
+/* ========== Quiet looping BGM + mute toggle ========== */
+(function initBgm(){
+  const MUTE_KEY = 'zhiji_bgm_muted';
+  const audio = document.getElementById('bgm');
+  const btn = document.getElementById('bgm-toggle');
+  if(!audio || !btn) return;
+
+  audio.volume = 0.2;
+  let unlocked = false;
+  let muted = false;
+  try { muted = localStorage.getItem(MUTE_KEY) === '1'; } catch(e) {}
+
+  function syncUi(){
+    btn.textContent = muted ? '🔇' : '🔊';
+    btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+    btn.title = muted ? '点击开启背景音乐' : '点击静音背景音乐';
+  }
+
+  function persist(){
+    try { localStorage.setItem(MUTE_KEY, muted ? '1' : '0'); } catch(e) {}
+  }
+
+  function tryPlay(){
+    if(muted) return Promise.resolve();
+    const p = audio.play();
+    if(p && typeof p.then === 'function'){
+      return p.then(function(){ unlocked = true; }).catch(function(){});
+    }
+    unlocked = true;
+    return Promise.resolve();
+  }
+
+  function unlockAndPlay(){
+    unlocked = true;
+    tryPlay();
+  }
+
+  function onFirstGesture(){
+    unlockAndPlay();
+    document.removeEventListener('touchstart', onFirstGesture, true);
+    document.removeEventListener('click', onFirstGesture, true);
+  }
+
+  btn.addEventListener('click', function(ev){
+    ev.stopPropagation();
+    muted = !muted;
+    persist();
+    syncUi();
+    if(muted){
+      audio.pause();
+    } else {
+      unlockAndPlay();
+    }
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){
+      audio.pause();
+    } else if(!muted && unlocked){
+      tryPlay();
+    }
+  });
+
+  syncUi();
+  if(muted){
+    audio.pause();
+  } else {
+    tryPlay().then(function(){
+      if(audio.paused){
+        document.addEventListener('touchstart', onFirstGesture, {capture:true, once:false, passive:true});
+        document.addEventListener('click', onFirstGesture, {capture:true, once:false});
+      }
+    });
+  }
+})();
+
   window.addEventListener('hashchange', onHash);
   Object.assign(window,{
     S,clamp,navigate,startCreate,goManage,setSlotAnswer,prevStep,nextStep,
