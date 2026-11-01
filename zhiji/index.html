@@ -148,7 +148,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 </head>
 <body>
 <div id="app"></div>
-<audio id="bgm" loop preload="auto">
+<audio id="bgm" loop preload="auto" autoplay playsinline webkit-playsinline>
   <source src="audio/undead-funeral-march.m4a" type="audio/mp4">
   <source src="audio/undead-funeral-march.mp3" type="audio/mpeg">
 </audio>
@@ -1487,6 +1487,7 @@ function viewResult(){
   audio.volume = 0.2;
   let unlocked = false;
   let muted = false;
+  let gestureBound = false;
   try { muted = localStorage.getItem(MUTE_KEY) === '1'; } catch(e) {}
 
   function syncUi(){
@@ -1500,24 +1501,58 @@ function viewResult(){
   }
 
   function tryPlay(){
-    if(muted) return Promise.resolve();
+    if(muted) return Promise.resolve(false);
     const p = audio.play();
     if(p && typeof p.then === 'function'){
-      return p.then(function(){ unlocked = true; }).catch(function(){});
+      return p.then(function(){
+        unlocked = true;
+        return true;
+      }).catch(function(){
+        return false;
+      });
     }
     unlocked = true;
-    return Promise.resolve();
+    return Promise.resolve(true);
   }
 
   function unlockAndPlay(){
-    unlocked = true;
-    tryPlay();
+    return tryPlay();
   }
 
   function onFirstGesture(){
-    unlockAndPlay();
+    unlockAndPlay().then(function(ok){
+      if(ok) unbindGesture();
+    });
+  }
+
+  function unbindGesture(){
+    if(!gestureBound) return;
+    gestureBound = false;
+    document.removeEventListener('pointerdown', onFirstGesture, true);
     document.removeEventListener('touchstart', onFirstGesture, true);
     document.removeEventListener('click', onFirstGesture, true);
+  }
+
+  function bindGesture(){
+    if(gestureBound || muted) return;
+    gestureBound = true;
+    document.addEventListener('pointerdown', onFirstGesture, {capture:true, passive:true});
+    document.addEventListener('touchstart', onFirstGesture, {capture:true, passive:true});
+    document.addEventListener('click', onFirstGesture, {capture:true});
+  }
+
+  function wechatPlay(){
+    tryPlay();
+  }
+
+  function bindWeChat(){
+    if(typeof window.WeixinJSBridge === 'object' && typeof window.WeixinJSBridge.invoke === 'function'){
+      wechatPlay();
+    }
+    document.addEventListener('WeixinJSBridgeReady', wechatPlay, false);
+    document.addEventListener('WeixinJSBridgeReady', function(){
+      try { WeixinJSBridge.invoke('getNetworkType', {}, wechatPlay); } catch(e) { wechatPlay(); }
+    }, false);
   }
 
   btn.addEventListener('click', function(ev){
@@ -1527,29 +1562,48 @@ function viewResult(){
     syncUi();
     if(muted){
       audio.pause();
+      unbindGesture();
     } else {
-      unlockAndPlay();
+      unlockAndPlay().then(function(ok){
+        if(!ok) bindGesture();
+        else unbindGesture();
+      });
     }
   });
 
   document.addEventListener('visibilitychange', function(){
     if(document.hidden){
       audio.pause();
-    } else if(!muted && unlocked){
-      tryPlay();
+    } else if(!muted){
+      tryPlay().then(function(ok){
+        if(ok) unlocked = true;
+      });
     }
   });
 
+  window.addEventListener('pageshow', function(){
+    if(!muted) tryPlay();
+  });
+
+  ['loadeddata','canplay','canplaythrough'].forEach(function(evName){
+    audio.addEventListener(evName, function(){
+      if(!muted && audio.paused) tryPlay();
+    });
+  });
+
   syncUi();
+  bindWeChat();
   if(muted){
     audio.pause();
   } else {
-    tryPlay().then(function(){
-      if(audio.paused){
-        document.addEventListener('touchstart', onFirstGesture, {capture:true, once:false, passive:true});
-        document.addEventListener('click', onFirstGesture, {capture:true, once:false});
-      }
+    tryPlay().then(function(ok){
+      if(!ok || audio.paused) bindGesture();
+      else unbindGesture();
     });
+    // Aggressive immediate + short delayed retries for mobile entry
+    setTimeout(function(){ if(!muted && audio.paused) tryPlay(); }, 0);
+    setTimeout(function(){ if(!muted && audio.paused) tryPlay(); }, 300);
+    setTimeout(function(){ if(!muted && audio.paused) tryPlay(); }, 800);
   }
 })();
 
