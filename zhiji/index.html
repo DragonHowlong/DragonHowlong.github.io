@@ -1626,8 +1626,8 @@ function viewManage(){
       </div>
     </div>
     <div class="corner-msg">
-      <button class="btn btn-secondary" onclick="openMsgInbox('whisper')">悄悄话</button>
-      <button class="btn btn-secondary" onclick="openMsgInbox('anon')">匿名信</button>
+      <button class="btn btn-secondary" onclick="openMsgInbox('whisper')">查看悄悄话</button>
+      <button class="btn btn-secondary" onclick="openMsgInbox('anon')">查看匿名信</button>
     </div>
     <div class="card">
       <h2>邀请二维码</h2>
@@ -2270,15 +2270,14 @@ function viewResult(){
       ${r.won
         ? `<div class="reward">🎁 恭喜获得：${escapeHtml(quiz.reward)}<br><span style="font-weight:500;font-size:12px;color:var(--text-light)">请联系出题人兑换（先到先得）</span></div>`
         : `<div class="no-reward">未获得奖励<br><span style="font-size:12px">需答对 ≥ ${quiz.threshold} 题（你答对 ${r.score} 题）</span></div>`}
-      ${locked
-        ? `<p class="hint" style="margin-bottom:10px">这套题本机已作答，不能再答一次。<br>纯前端仅锁定当前手机浏览器。</p>`
-        : `<button class="btn btn-primary" onclick="beginPlay()">再试一次</button>
-      <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>`}
-      <div class="msg-actions">
-        <button class="btn btn-secondary" onclick="openLeaveMsg('whisper')">留悄悄话</button>
-        <button class="btn btn-secondary" onclick="openLeaveMsg('anon')">写匿名信</button>
+      <div class="corner-msg" style="margin:14px 0 8px">
+        <button class="btn btn-primary" onclick="openLeaveMsg('whisper')">悄悄话</button>
+        <button class="btn btn-primary" onclick="openLeaveMsg('anon')">匿名信</button>
       </div>
-      <p class="hint">悄悄话带昵称；匿名信不显示名字。</p>
+      ${locked
+        ? `<p class="hint" style="margin-bottom:10px">这套题本机已作答，不能再答一次。</p>`
+        : `<button class="btn btn-secondary" onclick="beginPlay()">再试一次</button>
+      <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>`}
       <p style="margin:16px 0 8px;font-size:14px;color:var(--text-light);line-height:1.55">测完了？出一套属于你的题发给朋友。</p>
       <button class="btn btn-mint" onclick="goCreateOwn()">我也要出题</button>
     </div>
