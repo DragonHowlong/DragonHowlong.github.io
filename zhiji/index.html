@@ -154,6 +154,8 @@ const LETTERS = 'ABCDEF';
 const STORAGE_DRAFT = 'moqi-draft-v3';
 const STORAGE_PUB = 'moqi-published-v2';
 const STORAGE_STATS = 'moqi-stats-v2';
+const STORAGE_NICK = 'zhiji-player-nick';
+const STORAGE_FP = 'zhiji-player-fp';
 const REWARD_PRESETS = ['奶茶券','红包券','请客吃饭','电影票','一个拥抱'];
 const INV_PRESETS = [{label:'不限',value:null},{label:'1 份',value:1},{label:'3 份',value:3},{label:'5 份',value:5},{label:'10 份',value:10}];
 const THRESH_PRESETS = [7,8,9,10];
@@ -361,6 +363,92 @@ function getStats(qid){
 }
 function setStats(qid,stats){
   try{const all=JSON.parse(localStorage.getItem(STORAGE_STATS)||'{}');all[qid]=stats;localStorage.setItem(STORAGE_STATS,JSON.stringify(all))}catch(e){}
+}
+function playedKey(qid){ return 'zhiji-played-' + String(qid||''); }
+function getPlayerFp(){
+  try{
+    let fp=localStorage.getItem(STORAGE_FP);
+    if(!fp){ fp='fp_'+uid(); localStorage.setItem(STORAGE_FP,fp); }
+    return fp;
+  }catch(e){ return 'fp_tmp'; }
+}
+function loadSavedNick(){
+  try{ return localStorage.getItem(STORAGE_NICK)||''; }catch(e){ return ''; }
+}
+function savePlayerNick(nick){
+  const n=String(nick||'').trim().slice(0,12);
+  if(!n) return;
+  try{ localStorage.setItem(STORAGE_NICK,n); }catch(e){}
+  S.playNick=n;
+}
+function getPlayedRecord(qid){
+  if(!qid) return null;
+  try{
+    const raw=localStorage.getItem(playedKey(qid));
+    if(!raw) return null;
+    const o=JSON.parse(raw);
+    // Any mark for this quiz id (started or finished) counts as locked on this device
+    return o&&(o.done||o.started)?o:null;
+  }catch(e){ return null; }
+}
+function hasFinishedPlayed(qid){
+  const o=getPlayedRecord(qid);
+  return !!(o&&o.done);
+}
+function markQuizPlayed(qid, result){
+  if(!qid) return;
+  const rec={
+    done:true,
+    at:Date.now(),
+    nick:S.playNick||loadSavedNick()||'',
+    fp:getPlayerFp(),
+    score:result&&result.score|0,
+    pct:result&&result.pct|0,
+    won:!!(result&&result.won),
+    bandText:(result&&result.band&&result.band.text)||'',
+    threshold:S.playQuiz?(S.playQuiz.threshold|0):0,
+    reward:S.playQuiz?S.playQuiz.reward:'',
+    title:S.playQuiz?S.playQuiz.title:''
+  };
+  try{ localStorage.setItem(playedKey(qid), JSON.stringify(rec)); }catch(e){}
+}
+function restoreResultFromPlayed(rec, quiz){
+  if(!rec||!quiz) return null;
+  const score=rec.score|0;
+  const pct=typeof rec.pct==='number'?rec.pct:Math.round(score/Q_COUNT*100);
+  const band=bandFor(score, quiz.bands);
+  if(rec.bandText) band.text=rec.bandText;
+  return {score,pct,band,won:!!rec.won, fromCache:true};
+}
+function goCreateOwn(){
+  // Clear ?q= / ?s= so friend leaves this quiz and opens create
+  let p=location.pathname;
+  if(p.endsWith('play.html')) p=p.replace(/play\.html$/,'');
+  if(p.endsWith('index.html')) p=p.replace(/index\.html$/,'');
+  if(!p.endsWith('/')){
+    // keep directory form when possible
+    if(p.includes('.')) p=p.replace(/\/[^/]*$/,'/') || '/';
+    else p=p+'/';
+  }
+  try{ history.replaceState(null,'', p + '#create'); }catch(e){
+    try{ location.hash='create'; }catch(e2){}
+  }
+  S.playQuiz=null; S.playIdx=0; S.playAnswers=[]; S.result=null;
+  loadDraft();
+  if(!S.draft) S.draft=defaultDraft();
+  ensureSlotSeeded();
+  S.route='create';
+  render();
+}
+function showLastPlayedResult(){
+  const quiz=S.playQuiz; if(!quiz) return;
+  const rec=getPlayedRecord(quiz.id);
+  if(!rec||!rec.done){ toast('没有找到上次成绩'); return; }
+  S.result=restoreResultFromPlayed(rec, quiz);
+  S.route='result';
+  const search=location.search||'';
+  try{ history.replaceState(null,'', location.pathname+search+'#result'); }catch(e){}
+  render();
 }
 
 /* ---------- Payload extraction (q / s first!) ---------- */
@@ -1140,6 +1228,32 @@ function viewPlayIntro(){
     else if(qPayload) hint='链接无法解码。请让出题人重新复制压缩后的邀请链接。';
     return `<div class="view active"><div class="card"><p>无效的测试链接</p><p class="hint">${escapeHtml(hint)}</p></div></div>`;
   }
+  // Per-quiz lock (same quiz id only); other quizzes still playable
+  const lockFriend=hasFriendLink();
+  const played=lockFriend?getPlayedRecord(quiz.id):null;
+  if(played){
+    const finished=!!played.done;
+    return `
+  <div class="view active">
+    <header class="app-header">
+      <h1>${escapeHtml(quiz.title||'默契测试')}</h1>
+      <p>好友挑战</p>
+    </header>
+    <div class="card" style="text-align:center;padding:26px 16px">
+      <div class="hero-emoji">✅</div>
+      <div class="intro-title">你已经答过这套题了</div>
+      <p class="hint" style="margin:12px 0 8px">同一份试卷（同一 quiz id）在本机只能答一次。<br>换一套别人的题仍可继续玩。</p>
+      <p class="hint" style="margin-bottom:14px">说明：纯前端只能按「这台手机 / 这个浏览器」锁定，无法跨设备识别同一个人。</p>
+      ${finished && typeof played.score==='number'
+        ? `<div class="stat-box" style="margin:0 auto 14px;max-width:200px"><div class="n">${played.pct|0}%</div><div class="l">上次答对 ${played.score|0}/${Q_COUNT}</div></div>`
+        : `<p class="hint" style="margin-bottom:14px">本机已记录过对本套题的作答。</p>`}
+      ${finished ? `<button class="btn btn-primary" onclick="showLastPlayedResult()">查看上次成绩</button>` : ''}
+      <button class="btn btn-mint" onclick="goCreateOwn()">我也要出题</button>
+      <p class="hint" style="margin-top:10px">测完了？出一套属于你的题发给朋友。</p>
+    </div>
+  </div>`;
+  }
+  if(!S.playNick) S.playNick=loadSavedNick();
   const inv=quiz.inventory==null?'数量有限哦':('剩余展示 '+quiz.inventory+' 份');
   return `
   <div class="view active">
@@ -1155,17 +1269,60 @@ function viewPlayIntro(){
         <div class="emoji">🎁</div>
         <div class="txt"><b>${escapeHtml(quiz.reward)}</b><span>${escapeHtml(inv)} · 先到先得（展示）</span></div>
       </div>
-      <label style="text-align:left;margin-top:16px">你的昵称（可选，用于本机排行）</label>
-      <input type="text" maxlength="12" placeholder="怎么称呼你" value="${escapeHtml(S.playNick)}" oninput="S.playNick=this.value">
+      <label style="text-align:left;margin-top:16px">你的昵称（可选，用于本机排行；本机记住一次）</label>
+      <input type="text" maxlength="12" placeholder="怎么称呼你" value="${escapeHtml(S.playNick)}" oninput="S.playNick=this.value;savePlayerNick(this.value)">
       <button class="btn btn-primary" style="margin-top:16px" onclick="beginPlay()">开始挑战</button>
+      <p class="hint" style="margin-top:12px">每套题本机限答 1 次（按试卷 id）。纯前端无法跨手机识别身份。</p>
     </div>
   </div>`;
 }
 function beginPlay(){
+  const quiz=S.playQuiz;
+  if(!quiz){ toast('试卷无效'); return; }
+  // Lock only for real friend share links, per quiz id
+  if(hasFriendLink()){
+    const played=getPlayedRecord(quiz.id);
+    if(played){
+      toast('你已经答过这套题了');
+      if(played.done){
+        S.result=restoreResultFromPlayed(played, quiz);
+        S.route='result';
+        const search=location.search||'';
+        try{ history.replaceState(null,'', location.pathname+search+'#result'); }catch(e){}
+      } else {
+        S.route='play-intro';
+      }
+      render();
+      return;
+    }
+    // Soft mark on start so mid-quit still locks this quiz id on device
+    try{
+      localStorage.setItem(playedKey(quiz.id), JSON.stringify({
+        done:false, started:true, at:Date.now(), nick:S.playNick||'', fp:getPlayerFp()
+      }));
+    }catch(e){}
+  }
+  if(S.playNick) savePlayerNick(S.playNick);
+  getPlayerFp();
+  S._activePlay=true;
   S.playIdx=0;S.playAnswers=[];S.result=null;S.route='play';render();
 }
 function viewPlay(){
   const quiz=S.playQuiz; if(!quiz)return viewPlayIntro();
+  // Re-entry guard while answering
+  if(hasFriendLink() && !S._activePlay){
+    const played=getPlayedRecord(quiz.id);
+    if(played && played.done){
+      S.result=restoreResultFromPlayed(played, quiz);
+      S.route='result';
+      return viewResult();
+    }
+    if(played){
+      // Started/finished earlier in another session — block answering
+      S.route='play-intro';
+      return viewPlayIntro();
+    }
+  }
   const i=S.playIdx; const q=quiz.questions[i];
   const pct=Math.round((i/Q_COUNT)*100);
   return `
@@ -1210,6 +1367,7 @@ function finishPlay(){
   const band=bandFor(score, quiz.bands);
   const won=score>=(quiz.threshold|0);
   S.result={score,pct,band,won};
+  if(S.playNick) savePlayerNick(S.playNick);
   const st=getStats(quiz.id);
   st.plays=(st.plays|0)+1;
   if(won) st.wins=(st.wins|0)+1;
@@ -1218,6 +1376,9 @@ function finishPlay(){
   st.board.sort((a,b)=>b.score-a.score||b.at-a.at);
   st.board=st.board.slice(0,50);
   setStats(quiz.id,st);
+  // Mark this quiz id as played (friend share only; preview may retry)
+  if(hasFriendLink()) markQuizPlayed(quiz.id, S.result);
+  S._activePlay=false;
   S.route='result';
   const search=location.search||'';
   history.replaceState(null,'', location.pathname+search+'#result');
@@ -1226,6 +1387,7 @@ function finishPlay(){
 function viewResult(){
   const quiz=S.playQuiz; const r=S.result;
   if(!quiz||!r){S.route='play-intro';render();return''}
+  const locked=hasFriendLink() && hasFinishedPlayed(quiz.id);
   return `
   <div class="view active">
     <header class="app-header">
@@ -1239,8 +1401,12 @@ function viewResult(){
       ${r.won
         ? `<div class="reward">🎁 恭喜获得：${escapeHtml(quiz.reward)}<br><span style="font-weight:500;font-size:12px;color:var(--text-light)">请联系出题人兑换（先到先得）</span></div>`
         : `<div class="no-reward">未获得奖励<br><span style="font-size:12px">需答对 ≥ ${quiz.threshold} 题（你答对 ${r.score} 题）</span></div>`}
-      <button class="btn btn-primary" onclick="beginPlay()">再试一次</button>
-      <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>
+      ${locked
+        ? `<p class="hint" style="margin-bottom:10px">这套题本机已作答，不能再答一次。<br>纯前端仅锁定当前手机浏览器。</p>`
+        : `<button class="btn btn-primary" onclick="beginPlay()">再试一次</button>
+      <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>`}
+      <p style="margin:16px 0 8px;font-size:14px;color:var(--text-light);line-height:1.55">测完了？出一套属于你的题发给朋友。</p>
+      <button class="btn btn-mint" onclick="goCreateOwn()">我也要出题</button>
     </div>
   </div>`;
 }
@@ -1249,13 +1415,15 @@ function viewResult(){
 (async function boot(){
   const qPayload=extractPayload();
   const sid=extractShortId();
+  S.playNick=loadSavedNick();
+  getPlayerFp();
   window.addEventListener('hashchange', onHash);
   Object.assign(window,{
     S,clamp,navigate,startCreate,goManage,setSlotAnswer,prevStep,nextStep,
     randomBankSlot,openBankPicker,refreshBankModal,chooseBank,closeModal,
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
     onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,switchQrMode,paintManageQr,
-    previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome
+    previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick
   });
   if(qPayload || sid){
     try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
@@ -1278,6 +1446,16 @@ function viewResult(){
         S._shortLoadFailed=false;
       } else {
         S._shortLoadFailed=true;
+      }
+    }
+    // Restore finished result for this quiz id after refresh
+    if(S.playQuiz){
+      const rec=getPlayedRecord(S.playQuiz.id);
+      if(rec&&rec.done){
+        S.result=restoreResultFromPlayed(rec, S.playQuiz);
+        const h=(location.hash||'').replace(/^#/,'').split('?')[0].toLowerCase();
+        if(h==='result') S.route='result';
+        else S.route='play-intro'; // intro shows already-played UI
       }
     }
   } else {
