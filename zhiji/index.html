@@ -2,599 +2,832 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>知己测试 · 你有多了解我</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>默契测试 · 你有多了解我</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#E8F4FC;
-  --card:#fff;
-  --primary:#4A9FD8;
-  --primary-dark:#3A8BC4;
-  --accent:#6BB3E0;
+  --bg:#EAF6F3;
+  --bg2:#E8F4FC;
+  --card:#ffffff;
+  --primary:#4BA3C7;
+  --primary-dark:#3A8FB0;
+  --primary-soft:#D6EEF7;
+  --green:#5CB88A;
+  --green-soft:#E6F6EE;
+  --mint:#7BC9A6;
   --text:#2C3E50;
   --text-light:#7A8A9A;
-  --border:#D0E6F5;
+  --border:#D0E8E2;
   --danger:#E8747A;
-  --success:#5CB88A;
-  --radius:14px;
-  --shadow:0 2px 12px rgba(74,159,216,.1);
+  --danger-soft:#FFF0F0;
+  --warn:#E8A838;
+  --radius:16px;
+  --shadow:0 4px 16px rgba(75,163,199,.12);
 }
-html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
-#app{max-width:430px;margin:0 auto;min-height:100%;padding:0 0 40px;position:relative}
-.view{display:none;padding:16px}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);color:var(--text);-webkit-tap-highlight-color:transparent}
+#app{max-width:430px;margin:0 auto;min-height:100%;position:relative;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+.view{display:none;padding:0 0 24px;animation:fadeIn .25s ease}
 .view.active{display:block}
-header.app-header{background:linear-gradient(135deg,#4A9FD8,#6BB3E0);color:#fff;padding:28px 20px 22px;border-radius:0 0 24px 24px;text-align:center;margin-bottom:16px}
-header.app-header h1{font-size:22px;font-weight:700;letter-spacing:1px}
-header.app-header p{font-size:13px;opacity:.9;margin-top:6px}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow);border:1px solid var(--border)}
-.card h2{font-size:16px;margin-bottom:12px;color:var(--primary-dark);display:flex;align-items:center;justify-content:space-between}
-.card h2 .badge{font-size:12px;background:var(--bg);color:var(--primary);padding:2px 8px;border-radius:10px;font-weight:500}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+header.app-header{background:linear-gradient(135deg,#4BA3C7 0%,#6BB3E0 55%,#7BC9A6 100%);color:#fff;padding:28px 20px 24px;border-radius:0 0 28px 28px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
+header.app-header::after{content:"";position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12)}
+header.app-header h1{font-size:22px;font-weight:700;letter-spacing:1px;position:relative}
+header.app-header p{font-size:13px;opacity:.92;margin-top:6px;position:relative}
+.step-pill{display:inline-block;background:rgba(255,255,255,.22);padding:4px 12px;border-radius:20px;font-size:12px;margin-top:10px;position:relative}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin:0 14px 12px;box-shadow:var(--shadow);border:1px solid rgba(208,232,226,.8)}
+.card h2{font-size:16px;margin-bottom:12px;color:var(--primary-dark);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card h2 .badge{font-size:12px;background:var(--primary-soft);color:var(--primary-dark);padding:2px 10px;border-radius:10px;font-weight:600}
 label{display:block;font-size:13px;color:var(--text-light);margin-bottom:4px;margin-top:10px}
-input[type=text],textarea,select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:#FAFCFF;color:var(--text);outline:none;transition:border .2s;font-family:inherit}
-input[type=text]:focus,textarea:focus,select:focus{border-color:var(--primary)}
-textarea{resize:vertical;min-height:60px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 18px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;font-family:inherit;width:100%;margin-top:8px}
+input[type=text],input[type=number],textarea,select{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;background:#FAFDFC;color:var(--text);outline:none;transition:border .2s;font-family:inherit}
+input:focus,textarea:focus,select:focus{border-color:var(--primary)}
+textarea{resize:vertical;min-height:64px;line-height:1.5}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;font-family:inherit;width:100%;margin-top:8px}
 .btn:active{transform:scale(.97);opacity:.9}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:var(--primary-dark)}
-.btn-secondary{background:#fff;color:var(--primary);border:1.5px solid var(--primary)}
-.btn-danger{background:#FFF0F0;color:var(--danger);border:1px solid #F5D0D0;font-size:13px;padding:6px 12px;width:auto;margin:0}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-primary{background:linear-gradient(135deg,var(--primary),#5BB8D4);color:#fff;box-shadow:0 4px 12px rgba(75,163,199,.28)}
+.btn-secondary{background:#fff;color:var(--primary-dark);border:1.5px solid var(--primary)}
+.btn-mint{background:linear-gradient(135deg,var(--mint),var(--green));color:#fff}
+.btn-danger{background:var(--danger-soft);color:var(--danger);border:1px solid #F5D0D0;font-size:13px;padding:7px 12px;width:auto;margin:0}
 .btn-ghost{background:transparent;color:var(--text-light);font-size:13px;padding:8px;width:auto;margin:0}
-.btn-sm{padding:8px 14px;font-size:13px;width:auto;margin:0}
+.btn-sm{padding:9px 12px;font-size:13px;width:auto;margin:0;border-radius:12px}
 .btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .btn-row .btn{flex:1;margin-top:0;min-width:0}
-.q-item{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:#FAFCFF}
-.q-item .q-text{font-size:14px;font-weight:500;margin-bottom:8px;line-height:1.5}
-.q-item .q-opts{font-size:12px;color:var(--text-light);line-height:1.6}
-.q-item .q-opts .correct{color:var(--success);font-weight:600}
-.q-item .q-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end}
-.empty-hint{text-align:center;padding:30px 16px;color:var(--text-light);font-size:14px}
-.empty-hint .emoji{font-size:36px;margin-bottom:10px}
-.band-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px}
-.band-row .band-range{flex:0 0 70px;font-size:12px;color:var(--primary);font-weight:600;padding-top:12px;text-align:center}
-.band-row textarea{flex:1;min-height:48px}
-.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:flex;align-items:flex-end;justify-content:center;max-width:430px;margin:0 auto}
-.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 30px;width:100%;max-height:90vh;overflow-y:auto}
-.modal h3{font-size:17px;margin-bottom:12px;text-align:center}
-.opt-edit{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:13px;color:var(--text);cursor:pointer;font-family:inherit}
+.chip.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);font-weight:600}
+.progress-dots{display:flex;gap:5px;justify-content:center;margin:4px 0 12px;padding:0 16px}
+.progress-dots span{width:8px;height:8px;border-radius:50%;background:#C5DDE8;transition:all .2s}
+.progress-dots span.done{background:var(--green)}
+.progress-dots span.cur{background:var(--primary);width:18px;border-radius:6px}
+.quiz-progress{height:5px;background:rgba(208,232,226,.9);border-radius:3px;margin:0 14px 14px;overflow:hidden}
+.quiz-progress-bar{height:100%;background:linear-gradient(90deg,var(--primary),var(--mint));border-radius:3px;transition:width .3s}
+.quiz-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--text-light);margin:0 16px 10px}
+.quiz-q{font-size:18px;font-weight:650;line-height:1.55;margin-bottom:18px}
+.opt-btn{display:flex;align-items:center;width:100%;text-align:left;padding:13px 14px;margin-bottom:10px;border:1.5px solid var(--border);border-radius:14px;background:#fff;font-size:15px;color:var(--text);cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.4}
+.opt-btn:active{transform:scale(.98)}
+.opt-btn.selected{border-color:var(--primary);background:#F0F9FC;color:var(--primary-dark)}
+.opt-btn.correct-mark{border-color:var(--green);background:var(--green-soft)}
+.opt-letter{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;border-radius:50%;background:var(--bg2);color:var(--primary);font-weight:700;font-size:13px;margin-right:10px;flex-shrink:0}
+.opt-btn.selected .opt-letter{background:var(--primary);color:#fff}
+.opt-btn.correct-mark .opt-letter{background:var(--green);color:#fff}
+.opt-edit{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .opt-edit input[type=radio]{accent-color:var(--primary);width:18px;height:18px;flex-shrink:0}
 .opt-edit input[type=text]{flex:1}
-/* Quiz page */
-.quiz-progress{height:4px;background:var(--border);border-radius:2px;margin-bottom:16px;overflow:hidden}
-.quiz-progress-bar{height:100%;background:var(--primary);border-radius:2px;transition:width .3s}
-.quiz-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--text-light);margin-bottom:12px}
-.quiz-q{font-size:18px;font-weight:600;line-height:1.5;margin-bottom:20px}
-.opt-btn{display:block;width:100%;text-align:left;padding:14px 16px;margin-bottom:10px;border:1.5px solid var(--border);border-radius:12px;background:#fff;font-size:15px;color:var(--text);cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.4}
-.opt-btn:active{transform:scale(.98)}
-.opt-btn.selected{border-color:var(--primary);background:#F0F8FF;color:var(--primary-dark)}
-.opt-btn .opt-letter{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;border-radius:50%;background:var(--bg);color:var(--primary);font-weight:700;font-size:13px;margin-right:10px;flex-shrink:0}
-.opt-btn.selected .opt-letter{background:var(--primary);color:#fff}
-.result-card{text-align:center;padding:28px 20px}
-.result-card .score-num{font-size:48px;font-weight:700;color:var(--primary);line-height:1}
-.result-card .score-label{font-size:14px;color:var(--text-light);margin:6px 0 18px}
-.result-card .comment{font-size:16px;line-height:1.6;margin-bottom:16px;padding:14px;background:var(--bg);border-radius:12px}
-.result-card .reward{font-size:15px;color:var(--primary-dark);font-weight:600;padding:12px 16px;border:1.5px dashed var(--primary);border-radius:12px;margin-bottom:8px}
-.toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(44,62,80,.88);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:200;max-width:80%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s}
+.opt-edit .rm{flex-shrink:0;width:32px;height:32px;border-radius:10px;border:1px solid #F5D0D0;background:var(--danger-soft);color:var(--danger);font-size:16px;cursor:pointer}
+.result-card{text-align:center;padding:26px 18px}
+.result-card .score-num{font-size:52px;font-weight:750;color:var(--primary);line-height:1}
+.result-card .score-label{font-size:14px;color:var(--text-light);margin:6px 0 16px}
+.result-card .comment{font-size:15px;line-height:1.65;margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#F0F9FC,#EAF7F1);border-radius:14px}
+.result-card .reward{font-size:15px;color:var(--primary-dark);font-weight:650;padding:14px 16px;border:1.5px dashed var(--primary);border-radius:14px;margin-bottom:8px;background:#FBFEFF}
+.result-card .no-reward{font-size:14px;color:var(--text-light);padding:12px;background:#F7F8FA;border-radius:12px;margin-bottom:8px}
+.reward-preview{display:flex;align-items:center;gap:12px;padding:12px;background:linear-gradient(135deg,#F0F9FC,#EAF7F1);border-radius:14px;margin-top:8px}
+.reward-preview .emoji{font-size:28px}
+.reward-preview .txt{flex:1;text-align:left}
+.reward-preview .txt b{display:block;font-size:15px;color:var(--primary-dark)}
+.reward-preview .txt span{font-size:12px;color:var(--text-light)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.stat-box{background:var(--bg2);border-radius:12px;padding:14px 10px;text-align:center}
+.stat-box .n{font-size:24px;font-weight:700;color:var(--primary-dark)}
+.stat-box .l{font-size:12px;color:var(--text-light);margin-top:2px}
+.hint{font-size:12px;color:var(--text-light);line-height:1.55;margin-top:8px}
+.band-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px}
+.band-row .band-range{flex:0 0 78px;font-size:12px;color:var(--primary);font-weight:600;padding-top:12px;text-align:center}
+.band-row textarea{flex:1;min-height:52px}
+.modal-mask{position:fixed;inset:0;background:rgba(30,50,60,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;max-width:430px;margin:0 auto}
+.modal{background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));width:100%;max-height:88vh;overflow-y:auto}
+.modal h3{font-size:17px;margin-bottom:12px;text-align:center}
+.bank-list{max-height:50vh;overflow-y:auto}
+.bank-item{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;background:#FAFDFC}
+.bank-item:active{background:var(--primary-soft)}
+.bank-item .bq{font-size:14px;font-weight:550;margin-bottom:4px}
+.bank-item .bo{font-size:12px;color:var(--text-light);line-height:1.5}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(44,62,80,.9);color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;z-index:200;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s}
 .toast.show{opacity:1}
-.footer-nav{text-align:center;padding:16px;font-size:13px}
-.footer-nav a{color:var(--primary);text-decoration:none}
-.section-divider{height:1px;background:var(--border);margin:16px 0}
-.import-info{font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.5}
+.footer-note{text-align:center;padding:8px 20px;font-size:12px;color:var(--text-light);line-height:1.5}
+.hero-emoji{font-size:42px;margin-bottom:8px}
+.intro-title{font-size:20px;font-weight:700;line-height:1.4;margin-bottom:8px;color:var(--text)}
+.slot-tag{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);font-weight:600}
+.slot-tag.empty{background:#F3F5F7;color:var(--text-light)}
+.leaderboard{margin-top:10px}
+.lb-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.lb-row:last-child{border-bottom:none}
+.lb-score{color:var(--primary-dark);font-weight:650}
+.search-box{margin-bottom:10px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.toolbar .btn{flex:1 1 calc(50% - 8px);min-width:120px}
+.num-row{display:flex;gap:10px;align-items:center}
+.num-row input{flex:1}
+.q-preview{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:12px;padding:12px;background:var(--bg2);border-radius:12px}
 </style>
 </head>
 <body>
-<div id="app">
-  <!-- ========== SETUP VIEW ========== -->
-  <div id="view-setup" class="view">
-    <header class="app-header">
-      <h1>知己测试</h1>
-      <p>出题设置 · 看看谁最懂你</p>
-    </header>
-
-    <div class="card">
-      <h2>题目列表 <span class="badge" id="q-count">0 题</span></h2>
-      <div id="q-list"></div>
-      <div class="btn-row">
-        <button class="btn btn-secondary btn-sm" onclick="openQEditor(-1)">＋ 添加题目</button>
-        <button class="btn btn-primary btn-sm" onclick="importBank()">一键导入题库</button>
-      </div>
-      <p class="import-info">内置 100 道通用知己题。导入时若已有题目将询问：替换 / 追加。</p>
-    </div>
-
-    <div class="card">
-      <h2>奖励文案</h2>
-      <label>答完后展示给好友的奖品说明</label>
-      <textarea id="reward-text" rows="2" placeholder="例如：奶茶券一张 / 红包券 / 请客吃饭 / 电影票…"></textarea>
-    </div>
-
-    <div class="card">
-      <h2>分段评语 <span class="badge">按正确数分档</span></h2>
-      <p class="import-info" style="margin-bottom:10px" id="band-hint">根据当前题数自动划分 4 档区间，可自由编辑评语。</p>
-      <div id="band-list"></div>
-    </div>
-
-    <button class="btn btn-primary" onclick="goQuiz()" style="margin:8px 16px;width:calc(100% - 32px)">开始答题 / 分享给好友 →</button>
-    <div class="footer-nav">
-      <span style="color:var(--text-light)">数据保存在本机浏览器 · 刷新不丢失</span>
-    </div>
-  </div>
-
-  <!-- ========== QUIZ VIEW ========== -->
-  <div id="view-quiz" class="view">
-    <header class="app-header">
-      <h1>知己测试</h1>
-      <p id="quiz-subtitle">你有多了解我？</p>
-    </header>
-    <div id="quiz-area" style="padding:0 16px"></div>
-    <div class="footer-nav">
-      <a href="#setup" onclick="goSetup();return false;">✎ 编辑入口（出题人）</a>
-    </div>
-  </div>
-</div>
-
-<!-- Question Editor Modal -->
-<div id="modal-mask" class="modal-mask" style="display:none" onclick="if(event.target===this)closeQEditor()">
-  <div class="modal">
-    <h3 id="modal-title">添加题目</h3>
-    <label>题目</label>
-    <textarea id="edit-q" rows="2" placeholder="输入题目…"></textarea>
-    <label>选项（选中圆点表示正确答案）</label>
-    <div class="opt-edit"><input type="radio" name="edit-ans" value="0" checked><input type="text" id="edit-o0" placeholder="选项 A"></div>
-    <div class="opt-edit"><input type="radio" name="edit-ans" value="1"><input type="text" id="edit-o1" placeholder="选项 B"></div>
-    <div class="opt-edit"><input type="radio" name="edit-ans" value="2"><input type="text" id="edit-o2" placeholder="选项 C"></div>
-    <div class="opt-edit"><input type="radio" name="edit-ans" value="3"><input type="text" id="edit-o3" placeholder="选项 D"></div>
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-secondary" onclick="closeQEditor()">取消</button>
-      <button class="btn btn-primary" onclick="saveQEditor()">保存</button>
-    </div>
-  </div>
-</div>
-
+<div id="app"></div>
 <div id="toast" class="toast"></div>
-
 <script>
-/* ========== Question Bank: 100 知己题 ========== */
-const BANK = [
-{q:"我更喜欢怎样的周末？",options:["宅家追剧/游戏","户外走走逛逛","约朋友聚餐","睡到自然醒再看心情"],answer:0},
-{q:"我早上起床后通常第一件事是？",options:["刷手机","洗漱穿衣服","喝水/吃早餐","赖床再睡一会"],answer:0},
-{q:"我更偏好哪种饮品？",options:["咖啡","奶茶","纯茶/花茶","白开水/气泡水"],answer:1},
-{q:"看电影时我更爱选？",options:["喜剧轻松片","悬疑推理片","科幻动作片","爱情文艺片"],answer:1},
-{q:"我吃饭的口味偏？",options:["清淡","偏辣","偏甜","重口咸香"],answer:1},
-{q:"我更喜欢的季节是？",options:["春天","夏天","秋天","冬天"],answer:2},
-{q:"收到礼物时我更在意？",options:["实用价值","心意和仪式感","惊喜程度","包装好看"],answer:1},
-{q:"我压力大时通常会？",options:["吃东西解压","运动发泄","找人倾诉","独处发呆/睡觉"],answer:3},
-{q:"我更擅长的是？",options:["记住别人的事","规划行程","讲冷笑话","照顾别人情绪"],answer:0},
-{q:"我理想中的旅行方式是？",options:["自由行深度游","跟团省心游","特种兵打卡游","度假躺平游"],answer:0},
-{q:"我对迟到的态度是？",options:["自己从不迟到，也反感别人迟到","偶尔可以理解","无所谓","经常自己也会迟到"],answer:0},
-{q:"我更喜欢养什么宠物？",options:["猫","狗","都不想养","都可以/小众宠物"],answer:0},
-{q:"我购物时的风格是？",options:["精打细算比价","看中就买不犹豫","喜欢囤货","能不买就不买"],answer:0},
-{q:"我更喜欢的社交方式？",options:["一对一深聊","小团体热闹","线上聊天为主","能免则免"],answer:0},
-{q:"我对拍照的态度是？",options:["爱拍爱发","能拍但不爱发","勉强配合","坚决拒绝出镜"],answer:1},
-{q:"我睡前最后一件事通常是？",options:["刷手机","看书/听播客","想事情","马上睡着"],answer:0},
-{q:"我更喜欢哪种天气？",options:["晴空万里","阴天微凉","小雨淅沥","下雪天"],answer:0},
-{q:"我对打扫房间的态度？",options:["定期大扫除","乱了才收拾","能外包就外包","享受整理过程"],answer:1},
-{q:"我更偏爱的音乐类型？",options:["流行歌曲","摇滚/电子","古典/轻音乐","说唱/爵士"],answer:0},
-{q:"我做决定时通常？",options:["快速果断","反复纠结","问别人意见","随缘摆烂"],answer:1},
-{q:"我更喜欢的穿着风格？",options:["休闲舒适","简约干净","潮流个性","正式得体"],answer:0},
-{q:"我对早餐的态度是？",options:["必须认真吃","随便对付一下","经常不吃","喜欢丰盛早餐"],answer:1},
-{q:"我更喜欢的运动是？",options:["跑步/快走","球类运动","健身房力量","几乎不运动"],answer:3},
-{q:"我表达喜欢的方式更偏向？",options:["直接说出来","默默付出行动","送小礼物","打趣玩笑"],answer:1},
-{q:"我对鬼片的态度？",options:["超爱看","偶尔看","不敢看","完全无感"],answer:2},
-{q:"我更喜欢的水果是？",options:["西瓜/瓜类","苹果/梨","草莓/莓果","芒果/热带水果"],answer:2},
-{q:"我工作时/学习时习惯？",options:["绝对安静","放点背景音乐","边吃边干","需要人陪着"],answer:1},
-{q:"我对过生日的期待是？",options:["热闹惊喜派对","安静自己过","和亲近的人简单聚","无所谓"],answer:2},
-{q:"我更喜欢的颜色系？",options:["蓝色系","黑白灰","暖色（红橙黄）","绿色/自然色"],answer:0},
-{q:"我对排队的耐心程度？",options:["很有耐心","一般，超过15分钟就烦","几乎零耐心","看值不值得"],answer:3},
-{q:"我更喜欢的零食类型？",options:["薯片膨化","巧克力甜食","坚果健康类","辣条等重口"],answer:0},
-{q:"我对闹钟的态度？",options:["设一个就起","连环闹钟","根本不起作用","自然醒很少用"],answer:1},
-{q:"我更喜欢的小说/故事类型？",options:["现实向","玄幻奇幻","推理破案","甜宠恋爱"],answer:1},
-{q:"我对金钱的态度偏？",options:["能存就存","该花就花","月光族","精明投资理财"],answer:1},
-{q:"我更享受的独处活动？",options:["刷短视频/综艺","看书学习","发呆发呆","做手工/画画"],answer:0},
-{q:"我对辣的接受度？",options:["完全不能吃辣","微微辣可以","中辣无压力","越辣越开心"],answer:2},
-{q:"我更喜欢的交通方式？",options:["开车/打车","地铁公交","骑车","走路"],answer:1},
-{q:"我对游戏的态度？",options:["重度玩家","偶尔玩","几乎不碰","只看别人玩"],answer:1},
-{q:"我生气时通常会？",options:["当场说清楚","冷处理不理人","自己生闷气","用幽默化解"],answer:1},
-{q:"我更喜欢的家居氛围？",options:["温馨杂乱有生活气","极简干净","科技感满满","绿植自然风"],answer:0},
-{q:"我对加班/加课的态度？",options:["能接受偶尔","非常反感","习惯了无所谓","看有没有额外回报"],answer:3},
-{q:"我更喜欢的甜点？",options:["蛋糕","冰淇淋","布丁果冻","不太爱甜食"],answer:1},
-{q:"我对明星/追星的态度？",options:["有爱豆会追","路人粉看看","完全不追","反感追星"],answer:1},
-{q:"我更喜欢的沟通方式？",options:["语音通话","文字聊天","当面聊","视频通话"],answer:1},
-{q:"我对早起的能力？",options:["生物钟很准","勉强能起","困难重重","夜猫子基本起不来"],answer:2},
-{q:"我更喜欢逛的地方？",options:["商场购物","公园自然","博物馆展览","咖啡馆书店"],answer:3},
-{q:"我对穿搭花费的态度？",options:["愿意投资好看衣服","实用优先平价","追求品牌","能穿就行不怎么买"],answer:1},
-{q:"我更害怕的是？",options:["孤独","失败","被误解","高处/黑暗等具体恐惧"],answer:0},
-{q:"我对做饭的态度？",options:["爱做会做","会一点家常菜","完全不会","想学但懒得动手"],answer:1},
-{q:"我更喜欢的饮料温度？",options:["冰的","常温","热的","看天气"],answer:0},
-{q:"我对计划的执行力？",options:["说到做到","常定计划常跳票","随性不为计划束缚","有人监督才行"],answer:1},
-{q:"我更喜欢的聚会规模？",options:["2-3人小聚","5-8人适中","十几人以上热闹","能不去就不去"],answer:0},
-{q:"我对美妆护肤的态度？",options:["精致日常护理","基础清洁保湿","几乎不护肤","男生也在认真护肤"],answer:1},
-{q:"我更喜欢的学习/吸收信息方式？",options:["看视频","读文字","听音频","动手实践"],answer:0},
-{q:"我对雨天的心情？",options:["很喜欢很浪漫","还行不影响","有点郁闷","讨厌湿漉漉"],answer:0},
-{q:"我更常忘记的是？",options:["别人的生日","自己答应的事","钥匙/伞等物品","约会时间地点"],answer:2},
-{q:"我对「仪式感」的看法？",options:["很重要值得花心思","偶尔需要","形式主义没必要","看场合"],answer:3},
-{q:"我更喜欢的睡姿？",options:["仰睡","侧睡","趴睡","怎么都行换来换去"],answer:1},
-{q:"我对「网红店」的态度？",options:["爱打卡尝鲜","看评价再决定","不凑热闹","避之不及"],answer:1},
-{q:"我更喜欢的动物是？",options:["猫科","犬科","海洋动物","鸟类/其他"],answer:0},
-{q:"我对「早C晚A」这类潮流的态度？",options:["紧跟潮流","了解但不跟","完全不懂","觉得无意义"],answer:1},
-{q:"我更喜欢的收纳风格？",options:["分类清晰标签齐全","大致归类就好","堆着也能找到","外包收纳师"],answer:1},
-{q:"我对「熬夜」的频率？",options:["几乎每天","每周几次","偶尔","几乎不熬夜"],answer:1},
-{q:"我更喜欢的花是？",options:["玫瑰","向日葵","满天星/小花","不太关注花"],answer:0},
-{q:"我对「快递」的期待感？",options:["超级期待天天查","还行会看一眼","经常忘记自己买了啥","不爱网购很少收"],answer:0},
-{q:"我更喜欢的博物馆参观方式？",options:["精读每个展品","走马观花拍拍照","听讲解重点看","不太爱逛博物馆"],answer:1},
-{q:"我对「综艺」的偏好？",options:["真人秀","搞笑吐槽","选秀音乐","几乎不看"],answer:0},
-{q:"我更喜欢的面包/主食？",options:["甜面包蛋糕类","咸口肉松/三明治","米饭面食为主","低碳水少吃主食"],answer:2},
-{q:"我对「打卡景点」的态度？",options:["必须去热门点","偏爱小众地方","随缘不想特意去","只想待酒店"],answer:1},
-{q:"我更喜欢的鞋类？",options:["运动鞋","小白鞋/板鞋","皮鞋/正装鞋","拖鞋/舒适鞋"],answer:0},
-{q:"我对「分享欲」的程度？",options:["有事就想告诉人","只和少数人分享","很少主动说","基本自己消化"],answer:1},
-{q:"我更喜欢的汤/粥？",options:["甜汤","咸鲜汤","粥类","不太喝汤"],answer:1},
-{q:"我对「手写字」的态度？",options:["字很好看常写","一般能认","字丑但无所谓","几乎只打字"],answer:3},
-{q:"我更喜欢的季节活动？",options:["春日踏青野餐","夏日海边游泳","秋日登高赏叶","冬日温泉火锅"],answer:3},
-{q:"我对「短视频」的沉迷度？",options:["一刷停不下来","偶尔看看","很少刷","几乎不碰"],answer:0},
-{q:"我更喜欢的香气类型？",options:["清新柑橘","花香甜美","木质沉稳","无香/不敏感"],answer:0},
-{q:"我对「拼单/团购」的态度？",options:["经常拼很划算","偶尔参加","嫌麻烦","从不"],answer:0},
-{q:"我更喜欢的椅/沙发坐姿？",options:["端正坐好","盘腿/蜷着","瘫成一摊","跷二郎腿"],answer:2},
-{q:"我对「日记/记账」的习惯？",options:["坚持记录","三天打鱼","想起来才记","完全不记"],answer:2},
-{q:"我更喜欢的巧克力？",options:["黑巧苦的","牛奶甜的","夹心果仁","不太爱巧克力"],answer:1},
-{q:"我对「地图导航」的依赖？",options:["出门必开","熟悉路就不开","方向感好很少用","经常迷路必须用"],answer:0},
-{q:"我更喜欢的桌面风格？",options:["极简空旷","放满好物","绿植点缀","乱但自己清楚"],answer:0},
-{q:"我对「直播带货」的态度？",options:["经常看会买","看看不买","不感兴趣","反感"],answer:1},
-{q:"我更喜欢的面条类型？",options:["汤面","拌面/干面","炒面","不太吃面"],answer:0},
-{q:"我对「童年动画」的情怀？",options:["超级有情怀常回顾","偶尔怀念","没什么感觉","完全忘了"],answer:0},
-{q:"我更喜欢的包/背包类型？",options:["双肩包","斜挎/单肩","手提包","能不背就不背"],answer:0},
-{q:"我对「占座」行为的看法？",options:["可以理解","反感不文明","自己也会做","看情况"],answer:3},
-{q:"我更喜欢的火锅口味？",options:["麻辣红锅","清汤菌汤","鸳鸯锅","不太爱火锅"],answer:2},
-{q:"我对「天气预报」的关注度？",options:["每天必看","出门前看一眼","从不看","看了也不准"],answer:1},
-{q:"我更喜欢的文具是？",options:["好看的笔","便利贴便签","手账胶带","实用就行不挑"],answer:3},
-{q:"我对「电梯里放音乐」的态度？",options:["喜欢有点氛围","无感","觉得尴尬","宁愿安静"],answer:1},
-{q:"我更喜欢的冰淇淋口味？",options:["香草/奶油","巧克力","抹茶/茶味","水果雪糕"],answer:2},
-{q:"我对「回消息」的速度？",options:["秒回","几小时内","经常已读不回","看心情"],answer:1},
-{q:"我更喜欢的酒店选择？",options:["高性价比连锁","特色民宿","豪华酒店体验","干净就行"],answer:0},
-{q:"我对「自助餐」的态度？",options:["超爱吃到扶墙","适量就好","觉得浪费不爱去","看餐厅质量"],answer:0},
-{q:"我更喜欢的窗户景色？",options:["城市夜景","自然山水","安静小区","无所谓有窗就行"],answer:1},
-{q:"我对「穿袜子睡觉」的习惯？",options:["必须穿","看天气","绝不穿","偶尔忘了脱"],answer:2},
-{q:"我更喜欢的节日氛围？",options:["春节团圆","圣诞浪漫","中秋月光","日常就好不特别"],answer:0},
-{q:"我对「说话音量」通常是？",options:["偏大活力型","正常适中","偏小声","看场合变化大"],answer:1},
-{q:"我最不能忍受朋友的哪种行为？",options:["放鸽子不守时","背后说坏话","借钱不还","过度干涉私事"],answer:0}
+/* ========== Built-in bank (≥100) ========== */
+const BANK = [{"q":"我更喜欢怎样的周末？","options":["宅家追剧/游戏","户外走走逛逛","约朋友聚餐","睡到自然醒再看心情"],"answer":0},{"q":"我早上起床后通常第一件事是？","options":["刷手机","洗漱穿衣服","喝水/吃早餐","赖床再睡一会"],"answer":0},{"q":"我更偏好哪种饮品？","options":["咖啡","奶茶","纯茶/花茶","白开水/气泡水"],"answer":1},{"q":"看电影时我更爱选？","options":["喜剧轻松片","悬疑推理片","科幻动作片","爱情文艺片"],"answer":1},{"q":"我吃饭的口味偏？","options":["清淡","偏辣","偏甜","重口咸香"],"answer":1},{"q":"我更喜欢的季节是？","options":["春天","夏天","秋天","冬天"],"answer":2},{"q":"收到礼物时我更在意？","options":["实用价值","心意和仪式感","惊喜程度","包装好看"],"answer":1},{"q":"我压力大时通常会？","options":["吃东西解压","运动发泄","找人倾诉","独处发呆/睡觉"],"answer":3},{"q":"我更擅长的是？","options":["记住别人的事","规划行程","讲冷笑话","照顾别人情绪"],"answer":0},{"q":"我理想中的旅行方式是？","options":["自由行深度游","跟团省心游","特种兵打卡游","度假躺平游"],"answer":0},{"q":"我对迟到的态度是？","options":["自己从不迟到，也反感别人迟到","偶尔可以理解","无所谓","经常自己也会迟到"],"answer":0},{"q":"我更喜欢养什么宠物？","options":["猫","狗","都不想养","都可以/小众宠物"],"answer":0},{"q":"我购物时的风格是？","options":["精打细算比价","看中就买不犹豫","喜欢囤货","能不买就不买"],"answer":0},{"q":"我更喜欢的社交方式？","options":["一对一深聊","小团体热闹","线上聊天为主","能免则免"],"answer":0},{"q":"我对拍照的态度是？","options":["爱拍爱发","能拍但不爱发","勉强配合","坚决拒绝出镜"],"answer":1},{"q":"我睡前最后一件事通常是？","options":["刷手机","看书/听播客","想事情","马上睡着"],"answer":0},{"q":"我更喜欢哪种天气？","options":["晴空万里","阴天微凉","小雨淅沥","下雪天"],"answer":0},{"q":"我对打扫房间的态度？","options":["定期大扫除","乱了才收拾","能外包就外包","享受整理过程"],"answer":1},{"q":"我更偏爱的音乐类型？","options":["流行歌曲","摇滚/电子","古典/轻音乐","说唱/爵士"],"answer":0},{"q":"我做决定时通常？","options":["快速果断","反复纠结","问别人意见","随缘摆烂"],"answer":1},{"q":"我更喜欢的穿着风格？","options":["休闲舒适","简约干净","潮流个性","正式得体"],"answer":0},{"q":"我对早餐的态度是？","options":["必须认真吃","随便对付一下","经常不吃","喜欢丰盛早餐"],"answer":1},{"q":"我更喜欢的运动是？","options":["跑步/快走","球类运动","健身房力量","几乎不运动"],"answer":3},{"q":"我表达喜欢的方式更偏向？","options":["直接说出来","默默付出行动","送小礼物","打趣玩笑"],"answer":1},{"q":"我对鬼片的态度？","options":["超爱看","偶尔看","不敢看","完全无感"],"answer":2},{"q":"我更喜欢的水果是？","options":["西瓜/瓜类","苹果/梨","草莓/莓果","芒果/热带水果"],"answer":2},{"q":"我工作时/学习时习惯？","options":["绝对安静","放点背景音乐","边吃边干","需要人陪着"],"answer":1},{"q":"我对过生日的期待是？","options":["热闹惊喜派对","安静自己过","和亲近的人简单聚","无所谓"],"answer":2},{"q":"我更喜欢的颜色系？","options":["蓝色系","黑白灰","暖色（红橙黄）","绿色/自然色"],"answer":0},{"q":"我对排队的耐心程度？","options":["很有耐心","一般，超过15分钟就烦","几乎零耐心","看值不值得"],"answer":3},{"q":"我更喜欢的零食类型？","options":["薯片膨化","巧克力甜食","坚果健康类","辣条等重口"],"answer":0},{"q":"我对闹钟的态度？","options":["设一个就起","连环闹钟","根本不起作用","自然醒很少用"],"answer":1},{"q":"我更喜欢的小说/故事类型？","options":["现实向","玄幻奇幻","推理破案","甜宠恋爱"],"answer":1},{"q":"我对金钱的态度偏？","options":["能存就存","该花就花","月光族","精明投资理财"],"answer":1},{"q":"我更享受的独处活动？","options":["刷短视频/综艺","看书学习","发呆发呆","做手工/画画"],"answer":0},{"q":"我对辣的接受度？","options":["完全不能吃辣","微微辣可以","中辣无压力","越辣越开心"],"answer":2},{"q":"我更喜欢的交通方式？","options":["开车/打车","地铁公交","骑车","走路"],"answer":1},{"q":"我对游戏的态度？","options":["重度玩家","偶尔玩","几乎不碰","只看别人玩"],"answer":1},{"q":"我生气时通常会？","options":["当场说清楚","冷处理不理人","自己生闷气","用幽默化解"],"answer":1},{"q":"我更喜欢的家居氛围？","options":["温馨杂乱有生活气","极简干净","科技感满满","绿植自然风"],"answer":0},{"q":"我对加班/加课的态度？","options":["能接受偶尔","非常反感","习惯了无所谓","看有没有额外回报"],"answer":3},{"q":"我更喜欢的甜点？","options":["蛋糕","冰淇淋","布丁果冻","不太爱甜食"],"answer":1},{"q":"我对明星/追星的态度？","options":["有爱豆会追","路人粉看看","完全不追","反感追星"],"answer":1},{"q":"我更喜欢的沟通方式？","options":["语音通话","文字聊天","当面聊","视频通话"],"answer":1},{"q":"我对早起的能力？","options":["生物钟很准","勉强能起","困难重重","夜猫子基本起不来"],"answer":2},{"q":"我更喜欢逛的地方？","options":["商场购物","公园自然","博物馆展览","咖啡馆书店"],"answer":3},{"q":"我对穿搭花费的态度？","options":["愿意投资好看衣服","实用优先平价","追求品牌","能穿就行不怎么买"],"answer":1},{"q":"我更害怕的是？","options":["孤独","失败","被误解","高处/黑暗等具体恐惧"],"answer":0},{"q":"我对做饭的态度？","options":["爱做会做","会一点家常菜","完全不会","想学但懒得动手"],"answer":1},{"q":"我更喜欢的饮料温度？","options":["冰的","常温","热的","看天气"],"answer":0},{"q":"我对计划的执行力？","options":["说到做到","常定计划常跳票","随性不为计划束缚","有人监督才行"],"answer":1},{"q":"我更喜欢的聚会规模？","options":["2-3人小聚","5-8人适中","十几人以上热闹","能不去就不去"],"answer":0},{"q":"我对美妆护肤的态度？","options":["精致日常护理","基础清洁保湿","几乎不护肤","男生也在认真护肤"],"answer":1},{"q":"我更喜欢的学习/吸收信息方式？","options":["看视频","读文字","听音频","动手实践"],"answer":0},{"q":"我对雨天的心情？","options":["很喜欢很浪漫","还行不影响","有点郁闷","讨厌湿漉漉"],"answer":0},{"q":"我更常忘记的是？","options":["别人的生日","自己答应的事","钥匙/伞等物品","约会时间地点"],"answer":2},{"q":"我对「仪式感」的看法？","options":["很重要值得花心思","偶尔需要","形式主义没必要","看场合"],"answer":3},{"q":"我更喜欢的睡姿？","options":["仰睡","侧睡","趴睡","怎么都行换来换去"],"answer":1},{"q":"我对「网红店」的态度？","options":["爱打卡尝鲜","看评价再决定","不凑热闹","避之不及"],"answer":1},{"q":"我更喜欢的动物是？","options":["猫科","犬科","海洋动物","鸟类/其他"],"answer":0},{"q":"我对「早C晚A」这类潮流的态度？","options":["紧跟潮流","了解但不跟","完全不懂","觉得无意义"],"answer":1},{"q":"我更喜欢的收纳风格？","options":["分类清晰标签齐全","大致归类就好","堆着也能找到","外包收纳师"],"answer":1},{"q":"我对「熬夜」的频率？","options":["几乎每天","每周几次","偶尔","几乎不熬夜"],"answer":1},{"q":"我更喜欢的花是？","options":["玫瑰","向日葵","满天星/小花","不太关注花"],"answer":0},{"q":"我对「快递」的期待感？","options":["超级期待天天查","还行会看一眼","经常忘记自己买了啥","不爱网购很少收"],"answer":0},{"q":"我更喜欢的博物馆参观方式？","options":["精读每个展品","走马观花拍拍照","听讲解重点看","不太爱逛博物馆"],"answer":1},{"q":"我对「综艺」的偏好？","options":["真人秀","搞笑吐槽","选秀音乐","几乎不看"],"answer":0},{"q":"我更喜欢的面包/主食？","options":["甜面包蛋糕类","咸口肉松/三明治","米饭面食为主","低碳水少吃主食"],"answer":2},{"q":"我对「打卡景点」的态度？","options":["必须去热门点","偏爱小众地方","随缘不想特意去","只想待酒店"],"answer":1},{"q":"我更喜欢的鞋类？","options":["运动鞋","小白鞋/板鞋","皮鞋/正装鞋","拖鞋/舒适鞋"],"answer":0},{"q":"我对「分享欲」的程度？","options":["有事就想告诉人","只和少数人分享","很少主动说","基本自己消化"],"answer":1},{"q":"我更喜欢的汤/粥？","options":["甜汤","咸鲜汤","粥类","不太喝汤"],"answer":1},{"q":"我对「手写字」的态度？","options":["字很好看常写","一般能认","字丑但无所谓","几乎只打字"],"answer":3},{"q":"我更喜欢的季节活动？","options":["春日踏青野餐","夏日海边游泳","秋日登高赏叶","冬日温泉火锅"],"answer":3},{"q":"我对「短视频」的沉迷度？","options":["一刷停不下来","偶尔看看","很少刷","几乎不碰"],"answer":0},{"q":"我更喜欢的香气类型？","options":["清新柑橘","花香甜美","木质沉稳","无香/不敏感"],"answer":0},{"q":"我对「拼单/团购」的态度？","options":["经常拼很划算","偶尔参加","嫌麻烦","从不"],"answer":0},{"q":"我更喜欢的椅/沙发坐姿？","options":["端正坐好","盘腿/蜷着","瘫成一摊","跷二郎腿"],"answer":2},{"q":"我对「日记/记账」的习惯？","options":["坚持记录","三天打鱼","想起来才记","完全不记"],"answer":2},{"q":"我更喜欢的巧克力？","options":["黑巧苦的","牛奶甜的","夹心果仁","不太爱巧克力"],"answer":1},{"q":"我对「地图导航」的依赖？","options":["出门必开","熟悉路就不开","方向感好很少用","经常迷路必须用"],"answer":0},{"q":"我更喜欢的桌面风格？","options":["极简空旷","放满好物","绿植点缀","乱但自己清楚"],"answer":0},{"q":"我对「直播带货」的态度？","options":["经常看会买","看看不买","不感兴趣","反感"],"answer":1},{"q":"我更喜欢的面条类型？","options":["汤面","拌面/干面","炒面","不太吃面"],"answer":0},{"q":"我对「童年动画」的情怀？","options":["超级有情怀常回顾","偶尔怀念","没什么感觉","完全忘了"],"answer":0},{"q":"我更喜欢的包/背包类型？","options":["双肩包","斜挎/单肩","手提包","能不背就不背"],"answer":0},{"q":"我对「占座」行为的看法？","options":["可以理解","反感不文明","自己也会做","看情况"],"answer":3},{"q":"我更喜欢的火锅口味？","options":["麻辣红锅","清汤菌汤","鸳鸯锅","不太爱火锅"],"answer":2},{"q":"我对「天气预报」的关注度？","options":["每天必看","出门前看一眼","从不看","看了也不准"],"answer":1},{"q":"我更喜欢的文具是？","options":["好看的笔","便利贴便签","手账胶带","实用就行不挑"],"answer":3},{"q":"我对「电梯里放音乐」的态度？","options":["喜欢有点氛围","无感","觉得尴尬","宁愿安静"],"answer":1},{"q":"我更喜欢的冰淇淋口味？","options":["香草/奶油","巧克力","抹茶/茶味","水果雪糕"],"answer":2},{"q":"我对「回消息」的速度？","options":["秒回","几小时内","经常已读不回","看心情"],"answer":1},{"q":"我更喜欢的酒店选择？","options":["高性价比连锁","特色民宿","豪华酒店体验","干净就行"],"answer":0},{"q":"我对「自助餐」的态度？","options":["超爱吃到扶墙","适量就好","觉得浪费不爱去","看餐厅质量"],"answer":0},{"q":"我更喜欢的窗户景色？","options":["城市夜景","自然山水","安静小区","无所谓有窗就行"],"answer":1},{"q":"我对「穿袜子睡觉」的习惯？","options":["必须穿","看天气","绝不穿","偶尔忘了脱"],"answer":2},{"q":"我更喜欢的节日氛围？","options":["春节团圆","圣诞浪漫","中秋月光","日常就好不特别"],"answer":0},{"q":"我对「说话音量」通常是？","options":["偏大活力型","正常适中","偏小声","看场合变化大"],"answer":1},{"q":"我最不能忍受朋友的哪种行为？","options":["放鸽子不守时","背后说坏话","借钱不还","过度干涉私事"],"answer":0},{"q":"我对「拼图/乐高」类解压的态度？","options":["超爱慢慢拼","偶尔试试","没耐心","完全无感"],"answer":0},{"q":"我更喜欢的通勤路上做什么？","options":["听播客/音乐","刷手机","发呆看窗外","补觉"],"answer":0},{"q":"我对「水果切盘」的喜好？","options":["爱吃混合果盘","只吃固定几种","不太爱水果","看心情"],"answer":0},{"q":"我更倾向怎样的房间灯光？","options":["明亮白光","暖黄氛围灯","偏暗柔和","随手开关无所谓"],"answer":1},{"q":"我对「追更剧集」的习惯？","options":["更新必看","攒着一口气看","三天打鱼","几乎不追剧"],"answer":1},{"q":"我更喜欢的饮料甜度？","options":["全糖","半糖","少糖/微糖","无糖"],"answer":2},{"q":"我对「手写信/明信片」的感觉？","options":["很浪漫会珍藏","觉得用心","形式大于内容","不如发消息"],"answer":0},{"q":"我更怕冷还是怕热？","options":["怕冷","怕热","都怕","都不太怕"],"answer":0},{"q":"我对「职场/校园八卦」的态度？","options":["爱听爱聊","听听不传","完全不参与","反感八卦"],"answer":1},{"q":"我更喜欢的宵夜类型？","options":["烧烤炸物","粥面轻食","甜品奶茶","几乎不吃宵夜"],"answer":3}];
+const Q_COUNT = 10;
+const LETTERS = 'ABCDEF';
+const STORAGE_DRAFT = 'moqi-draft-v2';
+const STORAGE_PUB = 'moqi-published-v2';
+const STORAGE_STATS = 'moqi-stats-v2';
+const REWARD_PRESETS = ['奶茶券','红包券','请客吃饭','电影票'];
+const DEFAULT_BANDS = [
+  {min:0,max:3,text:'默契值告急！看来我们还需要多了解彼此呢～'},
+  {min:4,max:6,text:'有点懂我，但还有不少盲区哦，继续加油！'},
+  {min:7,max:8,text:'不错嘛！你真的有在认真观察我～'},
+  {min:9,max:10,text:'默契爆棚！！你也太懂我了吧，奖励安排上！'}
 ];
 
-const STORAGE_KEY = 'zhiji-quiz-v1';
-const LETTERS = ['A','B','C','D'];
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function escapeHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
 
-const DEFAULT_REWARD = '恭喜获得：奶茶券一张（可找出题人兑换～）';
-const DEFAULT_BAND_TEXTS = [
-  '看来我们还需要多了解彼此呢，下次再来挑战！',
-  '有点懂我，但还有盲区哦，继续加油！',
-  '不错嘛，你真的有在认真观察我！',
-  '知己啊！！你也太懂我了吧，奖励安排上！'
-];
-
-let state = {
-  questions: [],
-  reward: DEFAULT_REWARD,
-  bandTexts: [...DEFAULT_BAND_TEXTS],
-  quizIndex: 0,
-  answers: [],
-  phase: 'answering' // answering | result
-};
-let editIndex = -1;
-
-/* ---------- Persistence ---------- */
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const data = JSON.parse(raw);
-      if (Array.isArray(data.questions)) state.questions = data.questions;
-      if (typeof data.reward === 'string') state.reward = data.reward;
-      if (Array.isArray(data.bandTexts) && data.bandTexts.length === 4) state.bandTexts = data.bandTexts;
-    }
-  } catch (e) {}
-  if (state.questions.length === 0) {
-    // first load: 5 sample questions from bank
-    state.questions = BANK.slice(0, 5).map(q => ({...q, options: [...q.options]}));
-  }
+let toastTimer=null;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
 }
 
-function saveState() {
-  const data = {
-    questions: state.questions,
-    reward: state.reward,
-    bandTexts: state.bandTexts
+/* ---------- Encode / decode share payload ---------- */
+function toBase64Url(str){
+  const bytes=new TextEncoder().encode(str);
+  let bin='';
+  bytes.forEach(b=>bin+=String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function fromBase64Url(s){
+  s=s.replace(/-/g,'+').replace(/_/g,'/');
+  while(s.length%4)s+='=';
+  const bin=atob(s);
+  const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+function encodeQuiz(quiz){
+  // Compact keys to keep URL shorter
+  const compact={
+    i:quiz.id,
+    n:quiz.name||'',
+    t:quiz.title||'',
+    r:quiz.reward||'',
+    th:quiz.threshold|0,
+    inv:quiz.inventory==null?null:quiz.inventory,
+    b:(quiz.bands||[]).map(x=>({m:x.min,x:x.max,t:x.text})),
+    q:(quiz.questions||[]).map(x=>({q:x.q,o:x.options,a:x.answer}))
   };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  return toBase64Url(JSON.stringify(compact));
+}
+function decodeQuiz(payload){
+  try{
+    const c=JSON.parse(fromBase64Url(payload));
+    if(!c||!Array.isArray(c.q)||c.q.length!==Q_COUNT)return null;
+    return {
+      id:c.i||uid(),
+      name:c.n||'',
+      title:c.t||((c.n||'神秘人')+'的默契测试卷'),
+      reward:c.r||'神秘奖励',
+      threshold:typeof c.th==='number'?c.th:9,
+      inventory:c.inv==null?null:c.inv,
+      bands:(c.b||[]).map(x=>({min:x.m,max:x.x,text:x.t})),
+      questions:c.q.map(x=>({q:x.q,options:x.o,answer:x.a}))
+    };
+  }catch(e){return null}
 }
 
-/* ---------- Band ranges (dynamic by question count) ---------- */
-function getBandRanges(n) {
-  if (n <= 0) return [[0,0],[0,0],[0,0],[0,0]];
-  // 4 bands by percentage: 0-30%, 31-55%, 56-80%, 81-100%
-  const cuts = [
-    0,
-    Math.max(0, Math.floor(n * 0.3)),
-    Math.max(0, Math.floor(n * 0.55)),
-    Math.max(0, Math.floor(n * 0.8)),
-    n
-  ];
-  // ensure non-decreasing and cover 0..n
-  for (let i = 1; i < cuts.length; i++) {
-    if (cuts[i] < cuts[i-1]) cuts[i] = cuts[i-1];
-  }
-  cuts[cuts.length - 1] = n;
-  const ranges = [];
-  for (let i = 0; i < 4; i++) {
-    let lo = i === 0 ? 0 : cuts[i] + 1;
-    let hi = cuts[i + 1];
-    if (lo > hi) { lo = hi; }
-    // fix overlapping when n is small
-    ranges.push([lo, hi]);
-  }
-  // special handling for small n to avoid empty weird ranges
-  if (n <= 3) {
-    return [[0,0],[1,1],[2, Math.min(2,n)],[Math.min(3,n), n]].map(r => [Math.min(r[0],n), Math.min(r[1],n)]);
-  }
-  return ranges;
+function emptySlots(){
+  return Array.from({length:Q_COUNT},()=>({q:'',options:['','',''],answer:0,filled:false}));
+}
+function defaultDraft(){
+  return {
+    id:uid(),
+    name:'',
+    title:'',
+    slots:emptySlots(),
+    step:0, // 0..9 questions, 10=reward config
+    reward:'奶茶券',
+    rewardCustom:'',
+    threshold:9,
+    inventory:'',
+    bands:DEFAULT_BANDS.map(b=>({...b})),
+    usedBank:[]
+  };
 }
 
-function bandIndexForScore(score, n) {
-  const ranges = getBandRanges(n);
-  for (let i = ranges.length - 1; i >= 0; i--) {
-    if (score >= ranges[i][0] && score <= ranges[i][1]) return i;
-  }
-  return 0;
-}
+/* ---------- App state ---------- */
+const S = {
+  route:'home',
+  draft:null,
+  published:null,
+  playQuiz:null,
+  playIdx:0,
+  playAnswers:[],
+  playNick:'',
+  result:null,
+  bankFilter:'',
+  editingSlot:false
+};
 
-/* ---------- Toast ---------- */
-let toastTimer = null;
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+function loadDraft(){
+  try{const r=localStorage.getItem(STORAGE_DRAFT);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.slots)){S.draft=d;return}}}catch(e){}
+  S.draft=defaultDraft();
 }
-
-/* ---------- Setup UI ---------- */
-function renderSetup() {
-  document.getElementById('reward-text').value = state.reward;
-  document.getElementById('q-count').textContent = state.questions.length + ' 题';
-  const list = document.getElementById('q-list');
-  if (state.questions.length === 0) {
-    list.innerHTML = '<div class="empty-hint"><div class="emoji">📝</div>还没有题目<br>点击下方添加，或一键导入 100 道题库</div>';
-  } else {
-    list.innerHTML = state.questions.map((q, i) => `
-      <div class="q-item">
-        <div class="q-text">${i + 1}. ${escapeHtml(q.q)}</div>
-        <div class="q-opts">${q.options.map((o, j) =>
-          `<div class="${j === q.answer ? 'correct' : ''}">${LETTERS[j]}. ${escapeHtml(o)}${j === q.answer ? ' ✓' : ''}</div>`
-        ).join('')}</div>
-        <div class="q-actions">
-          <button class="btn btn-ghost btn-sm" onclick="openQEditor(${i})">编辑</button>
-          <button class="btn btn-danger" onclick="deleteQ(${i})">删除</button>
-        </div>
-      </div>
-    `).join('');
-  }
-  renderBands();
+function saveDraft(){try{localStorage.setItem(STORAGE_DRAFT,JSON.stringify(S.draft))}catch(e){}}
+function loadPublished(){
+  try{const r=localStorage.getItem(STORAGE_PUB);if(r)S.published=JSON.parse(r)}catch(e){}
 }
-
-function renderBands() {
-  const n = state.questions.length;
-  const ranges = getBandRanges(n);
-  document.getElementById('band-hint').textContent =
-    n === 0 ? '请先添加题目，评语区间将按题数自动划分。'
-    : `当前共 ${n} 题，按答对数量分为 4 档（可改文案）：`;
-  const box = document.getElementById('band-list');
-  box.innerHTML = ranges.map((r, i) => `
-    <div class="band-row">
-      <div class="band-range">${r[0] === r[1] ? r[0] + ' 题' : r[0] + '-' + r[1] + ' 题'}</div>
-      <textarea data-band="${i}" rows="2" onchange="onBandChange(${i}, this.value)" oninput="onBandChange(${i}, this.value)">${escapeHtml(state.bandTexts[i] || '')}</textarea>
-    </div>
-  `).join('');
+function savePublished(quiz){
+  S.published=quiz;
+  try{localStorage.setItem(STORAGE_PUB,JSON.stringify(quiz))}catch(e){}
 }
-
-function onBandChange(i, val) {
-  state.bandTexts[i] = val;
-  saveState();
+function getStats(qid){
+  try{const all=JSON.parse(localStorage.getItem(STORAGE_STATS)||'{}');return all[qid]||{plays:0,wins:0,board:[]}}catch(e){return{plays:0,wins:0,board:[]}}
 }
-
-function onRewardChange() {
-  state.reward = document.getElementById('reward-text').value;
-  saveState();
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ---------- Question CRUD ---------- */
-function openQEditor(idx) {
-  editIndex = idx;
-  document.getElementById('modal-title').textContent = idx < 0 ? '添加题目' : '编辑题目';
-  if (idx >= 0) {
-    const q = state.questions[idx];
-    document.getElementById('edit-q').value = q.q;
-    for (let i = 0; i < 4; i++) document.getElementById('edit-o' + i).value = q.options[i] || '';
-    const radios = document.querySelectorAll('input[name="edit-ans"]');
-    radios.forEach(r => { r.checked = Number(r.value) === q.answer; });
-  } else {
-    document.getElementById('edit-q').value = '';
-    for (let i = 0; i < 4; i++) document.getElementById('edit-o' + i).value = '';
-    document.querySelector('input[name="edit-ans"][value="0"]').checked = true;
-  }
-  document.getElementById('modal-mask').style.display = 'flex';
-}
-
-function closeQEditor() {
-  document.getElementById('modal-mask').style.display = 'none';
-}
-
-function saveQEditor() {
-  const qText = document.getElementById('edit-q').value.trim();
-  const options = [0,1,2,3].map(i => document.getElementById('edit-o' + i).value.trim());
-  const ansEl = document.querySelector('input[name="edit-ans"]:checked');
-  const answer = ansEl ? Number(ansEl.value) : 0;
-  if (!qText) { toast('请填写题目'); return; }
-  if (options.some(o => !o)) { toast('请填完四个选项'); return; }
-  const item = { q: qText, options, answer };
-  if (editIndex < 0) state.questions.push(item);
-  else state.questions[editIndex] = item;
-  saveState();
-  closeQEditor();
-  renderSetup();
-  toast(editIndex < 0 ? '已添加' : '已保存');
-}
-
-function deleteQ(i) {
-  if (!confirm('确定删除这道题？')) return;
-  state.questions.splice(i, 1);
-  saveState();
-  renderSetup();
-  toast('已删除');
-}
-
-function importBank() {
-  if (state.questions.length === 0) {
-    state.questions = BANK.map(q => ({ q: q.q, options: [...q.options], answer: q.answer }));
-    saveState();
-    renderSetup();
-    toast('已导入 100 道题库');
-    return;
-  }
-  const choice = confirm('当前已有 ' + state.questions.length + ' 道题。\n\n点击「确定」= 替换为题库 100 题\n点击「取消」= 追加题库到现有题目');
-  if (choice) {
-    state.questions = BANK.map(q => ({ q: q.q, options: [...q.options], answer: q.answer }));
-    toast('已替换为 100 道题库');
-  } else {
-    // append — ask again? cancel means append per our message
-    const doAppend = confirm('是否将 100 道题库追加到现有题目之后？\n（点取消则不做任何操作）');
-    if (!doAppend) return;
-    const existing = state.questions.map(q => q.q);
-    let added = 0;
-    BANK.forEach(q => {
-      if (!existing.includes(q.q)) {
-        state.questions.push({ q: q.q, options: [...q.options], answer: q.answer });
-        added++;
-      }
-    });
-    toast('已追加 ' + added + ' 道新题');
-  }
-  saveState();
-  renderSetup();
+function setStats(qid,stats){
+  try{const all=JSON.parse(localStorage.getItem(STORAGE_STATS)||'{}');all[qid]=stats;localStorage.setItem(STORAGE_STATS,JSON.stringify(all))}catch(e){}
 }
 
 /* ---------- Routing ---------- */
-function goSetup() {
-  location.hash = '#setup';
-  showView('setup');
-}
-
-function goQuiz() {
-  if (state.questions.length === 0) {
-    toast('请先添加或导入题目');
-    return;
+function parseRoute(){
+  const params=new URLSearchParams(location.search);
+  let qPayload=params.get('q');
+  const hash=location.hash||'';
+  const h=(hash.replace(/^#/,'').split('?')[0]||'').toLowerCase();
+  // Support #q=PAYLOAD
+  if(!qPayload && hash.startsWith('#q=')) qPayload=hash.slice(3);
+  if(!qPayload){
+    const m=hash.match(/[?&]q=([^&]+)/);
+    if(m)qPayload=decodeURIComponent(m[1]);
   }
-  // sync reward before leave
-  onRewardChange();
-  state.quizIndex = 0;
-  state.answers = [];
-  state.phase = 'answering';
-  location.hash = '#quiz';
-  showView('quiz');
-  renderQuiz();
+  // Creator routes win even if ?q= is present (after publish URL keeps payload)
+  if(['home','create','reward','manage'].includes(h)) return h;
+  if(h==='result' && S.result && S.playQuiz) return 'result';
+  if(qPayload){
+    const quiz=decodeQuiz(qPayload);
+    if(quiz){
+      if(!S.playQuiz || S.playQuiz.id!==quiz.id){
+        S.playQuiz=quiz;
+        S.playIdx=0;S.playAnswers=[];S.result=null;
+      } else {
+        S.playQuiz=quiz;
+      }
+      if(h==='result' && S.result) return 'result';
+      if(h==='play' && S.playAnswers && S.playAnswers.length>0 && S.playIdx>0 && !S.result) return 'play';
+      return 'play-intro';
+    }
+  }
+  if(['play','result'].includes(h)) return h==='play'?'play-intro':h;
+  return 'home';
 }
 
-function showView(name) {
-  document.getElementById('view-setup').classList.toggle('active', name === 'setup');
-  document.getElementById('view-quiz').classList.toggle('active', name === 'quiz');
-  if (name === 'setup') renderSetup();
-  window.scrollTo(0, 0);
+function navigate(route, replace){
+  S.route=route;
+  const map={home:'#home',create:'#create',reward:'#reward',manage:'#manage','play-intro':'#play',play:'#play',result:'#result'};
+  const target=map[route]||'#home';
+  if(replace) history.replaceState(null,'',target);
+  else if(location.hash!==target) location.hash=target;
+  else render();
+  if(location.hash===target) render();
 }
 
-function applyHash() {
-  const h = (location.hash || '#setup').replace('#', '');
-  if (h === 'quiz') {
-    if (state.questions.length === 0) {
-      location.hash = '#setup';
-      showView('setup');
-      toast('请先添加题目');
-      return;
-    }
-    if (state.phase !== 'result') {
-      state.quizIndex = 0;
-      state.answers = [];
-      state.phase = 'answering';
-    }
-    showView('quiz');
-    renderQuiz();
+function onHash(){
+  // If URL has ?q=, keep play flow unless creator routes forced
+  const r=parseRoute();
+  S.route=r;
+  if(r==='create'||r==='reward'){ if(!S.draft) loadDraft(); }
+  if(r==='manage') loadPublished();
+  render();
+}
+
+/* ---------- Bank helpers ---------- */
+function pickRandomUnused(){
+  const used=new Set(S.draft.usedBank||[]);
+  const pool=BANK.map((b,i)=>i).filter(i=>!used.has(i));
+  const src=pool.length?pool:BANK.map((_,i)=>i);
+  const idx=src[Math.floor(Math.random()*src.length)];
+  return idx;
+}
+function applyBankToSlot(slotIdx, bankIdx){
+  const b=BANK[bankIdx];
+  const slot={q:b.q,options:[...b.options],answer:0,filled:true,bankIdx};
+  // Creator must pick THEIR answer — default 0 but they can change
+  S.draft.slots[slotIdx]=slot;
+  if(!S.draft.usedBank)S.draft.usedBank=[];
+  if(!S.draft.usedBank.includes(bankIdx))S.draft.usedBank.push(bankIdx);
+  saveDraft();
+}
+
+/* ---------- Render ---------- */
+function render(){
+  const app=document.getElementById('app');
+  let r=S.route;
+  if(r==='create' && S.draft && (S.draft.step|0)>=Q_COUNT) r='reward';
+  if(r==='home') app.innerHTML=viewHome();
+  else if(r==='create') app.innerHTML=viewCreate();
+  else if(r==='reward') app.innerHTML=viewReward();
+  else if(r==='manage') app.innerHTML=viewManage();
+  else if(r==='play-intro') app.innerHTML=viewPlayIntro();
+  else if(r==='play') app.innerHTML=viewPlay();
+  else if(r==='result') app.innerHTML=viewResult();
+  else app.innerHTML=viewHome();
+  window.scrollTo(0,0);
+}
+
+function viewHome(){
+  loadDraft();loadPublished();
+  const filled=(S.draft.slots||[]).filter(s=>s.filled).length;
+  const hasPub=!!S.published;
+  return `
+  <div class="view active">
+    <header class="app-header">
+      <h1>默契测试</h1>
+      <p>出 10 道关于你的题 · 看谁最懂你</p>
+    </header>
+    <div class="card" style="text-align:center;padding:28px 18px">
+      <div class="hero-emoji">💫</div>
+      <div class="intro-title">创建你的默契测试卷</div>
+      <p class="hint" style="margin:8px 0 16px">从 100+ 知己题库选题或自定义，选好你的答案，生成链接发给好友。</p>
+      <button class="btn btn-primary" onclick="startCreate(false)">开始出题</button>
+      ${filled>0?`<button class="btn btn-secondary" onclick="startCreate(true)">继续草稿（已完成 ${filled}/10）</button>`:''}
+      ${hasPub?`<button class="btn btn-mint" onclick="goManage()">我的已发布试卷</button>`:''}
+    </div>
+    <p class="footer-note">纯前端 · 数据保存在本机 localStorage<br>分享链接自带题目，好友打开即可答</p>
+  </div>`;
+}
+
+function startCreate(resume){
+  if(!resume){ S.draft=defaultDraft(); saveDraft(); }
+  else loadDraft();
+  if(S.draft.step>=Q_COUNT) S.route='reward';
+  else S.route='create';
+  navigate(S.route);
+}
+
+function goManage(){ loadPublished(); navigate('manage'); }
+
+function viewCreate(){
+  const d=S.draft; const i=clamp(d.step|0,0,Q_COUNT-1); d.step=i;
+  const slot=d.slots[i];
+  const dots=d.slots.map((s,idx)=>`<span class="${idx===i?'cur':(s.filled?'done':'')}"></span>`).join('');
+  let body='';
+  if(!slot.filled){
+    body=`
+      <div class="card">
+        <h2>第 ${i+1} / ${Q_COUNT} 题 <span class="badge slot-tag empty">未设置</span></h2>
+        <p class="hint">从题库挑选，或自己写一道关于「你」的题目，并选中你的真实答案（好友要猜的是你的选择）。</p>
+        <div class="toolbar">
+          <button class="btn btn-primary btn-sm" onclick="openBankPicker()">题库选一题</button>
+          <button class="btn btn-secondary btn-sm" onclick="randomBankSlot()">换一题</button>
+          <button class="btn btn-secondary btn-sm" onclick="customSlot()">自定义题目</button>
+        </div>
+      </div>`;
   } else {
-    showView('setup');
+    body=`
+      <div class="card">
+        <h2>第 ${i+1} / ${Q_COUNT} 题 <span class="badge slot-tag">已设置</span></h2>
+        <div class="q-preview">${escapeHtml(slot.q)}</div>
+        ${slot.options.map((o,j)=>`
+          <button type="button" class="opt-btn ${j===slot.answer?'correct-mark selected':''}" onclick="setSlotAnswer(${j})">
+            <span class="opt-letter">${LETTERS[j]}</span>${escapeHtml(o)}
+            ${j===slot.answer?'<span style="margin-left:auto;color:var(--green);font-size:12px;font-weight:700">我的答案</span>':''}
+          </button>`).join('')}
+        <p class="hint">点选项可切换「我的正确答案」。好友答题时需选中该项才算对。</p>
+        <div class="toolbar">
+          <button class="btn btn-secondary btn-sm" onclick="openBankPicker()">题库选一题</button>
+          <button class="btn btn-secondary btn-sm" onclick="randomBankSlot()">换一题</button>
+          <button class="btn btn-secondary btn-sm" onclick="customSlot()">自定义题目</button>
+          <button class="btn btn-ghost btn-sm" onclick="editCurrentSlot()">编辑此题目</button>
+        </div>
+      </div>`;
   }
+  return `
+  <div class="view active">
+    <header class="app-header">
+      <h1>默契测试</h1>
+      <p>出题中 · 设置你的 10 道题</p>
+      <div class="step-pill">进度 ${d.slots.filter(s=>s.filled).length} / ${Q_COUNT}</div>
+    </header>
+    <div class="progress-dots">${dots}</div>
+    ${body}
+    <div class="card">
+      <div class="btn-row">
+        <button class="btn btn-secondary" ${i===0?'disabled':''} onclick="prevStep()">上一题</button>
+        <button class="btn btn-primary" onclick="nextStep()">${i>=Q_COUNT-1?'去设置奖励':'下一题'}</button>
+      </div>
+      <button class="btn btn-ghost" style="width:100%;margin-top:4px" onclick="navigate('home')">返回首页</button>
+    </div>
+  </div>
+  ${S._modal||''}`;
 }
 
-/* ---------- Quiz UI ---------- */
-function renderQuiz() {
-  const area = document.getElementById('quiz-area');
-  const n = state.questions.length;
-  if (state.phase === 'result') {
-    const score = state.answers.reduce((s, a, i) => s + (a === state.questions[i].answer ? 1 : 0), 0);
-    const bi = bandIndexForScore(score, n);
-    const comment = state.bandTexts[bi] || '';
-    area.innerHTML = `
-      <div class="card result-card">
-        <div class="score-num">${score}<span style="font-size:20px;color:var(--text-light)"> / ${n}</span></div>
-        <div class="score-label">答对题数</div>
-        <div class="comment">${escapeHtml(comment)}</div>
-        <div class="reward">🎁 ${escapeHtml(state.reward || DEFAULT_REWARD)}</div>
-        <button class="btn btn-primary" onclick="restartQuiz()" style="margin-top:16px">再测一次</button>
-        <button class="btn btn-secondary" onclick="goSetup()" style="margin-top:8px">返回编辑</button>
+function setSlotAnswer(j){
+  const i=S.draft.step;
+  S.draft.slots[i].answer=j;
+  saveDraft();render();
+}
+function prevStep(){ if(S.draft.step>0){S.draft.step--;saveDraft();render()} }
+function nextStep(){
+  const i=S.draft.step; const slot=S.draft.slots[i];
+  if(!slot.filled || !slot.q.trim()){ toast('请先完成本题设置'); return; }
+  if(slot.options.filter(o=>String(o).trim()).length<2){ toast('至少需要 2 个选项'); return; }
+  if(i>=Q_COUNT-1){ S.draft.step=Q_COUNT; saveDraft(); S.route='reward'; navigate('reward'); return; }
+  S.draft.step=i+1; saveDraft(); render();
+}
+
+function randomBankSlot(){
+  const idx=pickRandomUnused();
+  applyBankToSlot(S.draft.step, idx);
+  toast('已换一题，请确认你的答案');
+  render();
+}
+function openBankPicker(){
+  S.bankFilter='';
+  closeModal();
+  document.getElementById('app').insertAdjacentHTML('beforeend', bankModalHtml());
+}
+function bankModalHtml(){
+  const f=(S.bankFilter||'').trim();
+  const list=BANK.map((b,i)=>({b,i})).filter(x=>!f || x.b.q.includes(f) || x.b.options.some(o=>o.includes(f)));
+  return `
+  <div class="modal-mask" id="bank-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <h3>题库选一题（${BANK.length}）</h3>
+      <div class="search-box"><input type="text" placeholder="搜索题目…" value="${escapeHtml(f)}" oninput="S.bankFilter=this.value;refreshBankModal()"></div>
+      <div class="bank-list" id="bank-list">${list.slice(0,80).map(({b,i})=>`
+        <div class="bank-item" onclick="chooseBank(${i})">
+          <div class="bq">${escapeHtml(b.q)}</div>
+          <div class="bo">${b.options.map((o,j)=>LETTERS[j]+'. '+escapeHtml(o)).join(' · ')}</div>
+        </div>`).join('')}${list.length>80?'<p class="hint">仅显示前 80 条，请缩小搜索</p>':''}
       </div>
-    `;
-    return;
+      <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
+    </div>
+  </div>`;
+}
+function refreshBankModal(){
+  const el=document.getElementById('bank-modal');
+  if(!el){openBankPicker();return;}
+  el.outerHTML=bankModalHtml();
+}
+function chooseBank(i){ applyBankToSlot(S.draft.step,i); closeModal(); toast('已选题，请点选你的答案'); render(); }
+function closeModal(){ const m=document.querySelector('.modal-mask'); if(m)m.remove(); S._modal=''; }
+
+function customSlot(){ openEditor(true); }
+function editCurrentSlot(){ openEditor(false); }
+
+function openEditor(isNew){
+  const slot=isNew?{q:'',options:['','',''],answer:0,filled:false}:JSON.parse(JSON.stringify(S.draft.slots[S.draft.step]));
+  S._edit=slot;
+  showEditorModal();
+}
+function showEditorModal(){
+  const slot=S._edit;
+  const opts=slot.options.map((o,j)=>`
+    <div class="opt-edit">
+      <input type="radio" name="edit-ans" value="${j}" ${j===slot.answer?'checked':''} onchange="S._edit.answer=${j}">
+      <input type="text" value="${escapeHtml(o)}" placeholder="选项 ${LETTERS[j]}" oninput="S._edit.options[${j}]=this.value">
+      ${slot.options.length>2?`<button class="rm" type="button" onclick="removeOpt(${j})">×</button>`:''}
+    </div>`).join('');
+  const html=`
+  <div class="modal-mask" id="edit-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <h3>编辑题目</h3>
+      <label>题目</label>
+      <textarea rows="2" oninput="S._edit.q=this.value" placeholder="输入关于你的题目…">${escapeHtml(slot.q)}</textarea>
+      <label>选项（圆点 = 你的正确答案，${2}–${6} 个）</label>
+      <div id="opt-edits">${opts}</div>
+      <div class="btn-row">
+        <button class="btn btn-secondary btn-sm" ${slot.options.length>=6?'disabled':''} onclick="addOpt()">＋ 加选项</button>
+      </div>
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveEditor()">保存</button>
+      </div>
+    </div>
+  </div>`;
+  closeModal();
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+}
+function addOpt(){ if(S._edit.options.length>=6)return; S._edit.options.push(''); showEditorModal(); }
+function removeOpt(j){
+  if(S._edit.options.length<=2)return;
+  S._edit.options.splice(j,1);
+  if(S._edit.answer>=S._edit.options.length)S._edit.answer=S._edit.options.length-1;
+  showEditorModal();
+}
+function saveEditor(){
+  const q=String(S._edit.q||'').trim();
+  const options=S._edit.options.map(o=>String(o||'').trim());
+  if(!q){toast('请填写题目');return;}
+  if(options.some(o=>!o)){toast('请填完所有选项');return;}
+  if(options.length<2||options.length>6){toast('选项需 2–6 个');return;}
+  const ans=clamp(S._edit.answer|0,0,options.length-1);
+  S.draft.slots[S.draft.step]={q,options,answer:ans,filled:true};
+  saveDraft();closeModal();toast('已保存');render();
+}
+
+/* ---------- Reward config ---------- */
+function viewReward(){
+  const d=S.draft;
+  const isCustom=!REWARD_PRESETS.includes(d.reward);
+  const rewardVal=isCustom?(d.rewardCustom||d.reward):d.reward;
+  return `
+  <div class="view active">
+    <header class="app-header">
+      <h1>设置奖励</h1>
+      <p>答对阈值的人才能领奖</p>
+    </header>
+    <div class="card">
+      <h2>出题人昵称</h2>
+      <input type="text" maxlength="12" placeholder="例如：小明" value="${escapeHtml(d.name||'')}" oninput="S.draft.name=this.value;saveDraft()">
+      <p class="hint">将生成「昵称的默契测试卷」标题</p>
+    </div>
+    <div class="card">
+      <h2>奖励内容</h2>
+      <div class="chip-row">
+        ${REWARD_PRESETS.map(p=>`<button type="button" class="chip ${d.reward===p?'active':''}" onclick="pickReward('${p}')">${p}</button>`).join('')}
+        <button type="button" class="chip ${isCustom?'active':''}" onclick="pickRewardCustom()">自定义</button>
+      </div>
+      <label style="margin-top:12px">奖励文案</label>
+      <input type="text" id="reward-input" value="${escapeHtml(rewardVal)}" oninput="onRewardInput(this.value)" placeholder="自定义奖励…">
+    </div>
+    <div class="card">
+      <h2>获奖门槛</h2>
+      <label>答对 N 题可获奖（默认 9）</label>
+      <div class="num-row">
+        <input type="number" min="1" max="10" value="${d.threshold}" oninput="S.draft.threshold=clamp(+this.value||9,1,10);saveDraft()">
+        <span class="hint">/ ${Q_COUNT} 题</span>
+      </div>
+      <label>奖品份数（可选，先到先得展示）</label>
+      <input type="number" min="0" placeholder="不填则不限量展示" value="${escapeHtml(d.inventory)}" oninput="S.draft.inventory=this.value;saveDraft()">
+      <p class="hint">仅作文案展示；真实兑换请出题人自行核对。</p>
+    </div>
+    <div class="card">
+      <h2>分段评语 <span class="badge">按答对题数</span></h2>
+      <p class="hint">至少 4 档，可改区间与文案。</p>
+      <div id="band-list">${renderBandsEditor()}</div>
+      <button class="btn btn-secondary btn-sm" onclick="addBand()">＋ 增加一档</button>
+    </div>
+    <div class="card">
+      <button class="btn btn-primary" onclick="publishQuiz()">生成并发布测试卷</button>
+      <button class="btn btn-secondary" onclick="S.draft.step=Q_COUNT-1;saveDraft();navigate('create')">返回改题</button>
+    </div>
+  </div>`;
+}
+function renderBandsEditor(){
+  return (S.draft.bands||[]).map((b,i)=>`
+    <div class="band-row" style="flex-wrap:wrap">
+      <div style="display:flex;gap:4px;align-items:center;width:100%;margin-bottom:4px">
+        <input type="number" style="width:64px" min="0" max="10" value="${b.min}" onchange="updBand(${i},'min',this.value)">
+        <span class="hint">至</span>
+        <input type="number" style="width:64px" min="0" max="10" value="${b.max}" onchange="updBand(${i},'max',this.value)">
+        <span class="hint">题</span>
+        ${S.draft.bands.length>4?`<button class="btn btn-danger" onclick="rmBand(${i})">删</button>`:''}
+      </div>
+      <textarea style="width:100%" rows="2" oninput="updBand(${i},'text',this.value)">${escapeHtml(b.text)}</textarea>
+    </div>`).join('');
+}
+function pickReward(p){S.draft.reward=p;S.draft.rewardCustom='';saveDraft();render()}
+function pickRewardCustom(){S.draft.reward=S.draft.rewardCustom||'自定义奖励';saveDraft();render();const el=document.getElementById('reward-input');if(el)el.focus()}
+function onRewardInput(v){S.draft.reward=v;S.draft.rewardCustom=v;saveDraft()}
+function updBand(i,k,v){ if(k==='text')S.draft.bands[i].text=v; else S.draft.bands[i][k]=clamp(+v||0,0,10); saveDraft(); }
+function addBand(){S.draft.bands.push({min:0,max:0,text:''});saveDraft();render()}
+function rmBand(i){if(S.draft.bands.length<=4){toast('至少保留 4 档');return;}S.draft.bands.splice(i,1);saveDraft();render()}
+
+function publishQuiz(){
+  const d=S.draft;
+  if(d.slots.some(s=>!s.filled)){toast('还有题目未完成');navigate('create');return;}
+  const name=(d.name||'').trim()||'神秘人';
+  const reward=(d.reward||'').trim()||'神秘奖励';
+  if(!d.bands||d.bands.length<4){toast('请至少设置 4 档评语');return;}
+  const quiz={
+    id:d.id||uid(),
+    name,
+    title:name+'的默契测试卷',
+    reward,
+    threshold:clamp(d.threshold|0,1,10),
+    inventory:d.inventory===''||d.inventory==null?null:Math.max(0,+d.inventory||0),
+    bands:d.bands.map(b=>({min:+b.min||0,max:+b.max||0,text:String(b.text||'')})),
+    questions:d.slots.map(s=>({q:s.q,options:[...s.options],answer:s.answer|0}))
+  };
+  savePublished(quiz);
+  // ensure stats entry
+  const st=getStats(quiz.id); setStats(quiz.id,st);
+  S.route='manage';
+  // put share payload in URL optionally
+  const payload=encodeQuiz(quiz);
+  history.replaceState(null,'', location.pathname + '?q=' + payload + '#manage');
+  toast('已生成！可复制邀请链接');
+  render();
+}
+
+function shareUrl(quiz){
+  const payload=encodeQuiz(quiz);
+  const base=location.href.split('#')[0].split('?')[0];
+  return base + '?q=' + payload + '#play';
+}
+
+function viewManage(){
+  loadPublished();
+  const quiz=S.published;
+  if(!quiz){
+    return `<div class="view active"><header class="app-header"><h1>默契测试</h1></header>
+      <div class="card"><p class="hint">还没有已发布的试卷</p>
+      <button class="btn btn-primary" onclick="startCreate(false)">去出题</button></div></div>`;
   }
-  const i = state.quizIndex;
-  const q = state.questions[i];
-  const pct = Math.round((i / n) * 100);
-  area.innerHTML = `
+  const st=getStats(quiz.id);
+  const invTxt=quiz.inventory==null?'不限量':(quiz.inventory+' 份');
+  return `
+  <div class="view active">
+    <header class="app-header">
+      <h1>${escapeHtml(quiz.title)}</h1>
+      <p>出题人主页</p>
+    </header>
+    <div class="card">
+      <div class="reward-preview">
+        <div class="emoji">🎁</div>
+        <div class="txt">
+          <b>${escapeHtml(quiz.reward)}</b>
+          <span>答对 ≥ ${quiz.threshold} 题可获奖 · 库存 ${invTxt}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>数据统计</h2>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="n">${st.plays|0}</div><div class="l">答题人数</div></div>
+        <div class="stat-box"><div class="n">${st.wins|0}</div><div class="l">获奖人数</div></div>
+      </div>
+      <p class="hint">统计仅保存在本机浏览器，换设备/清缓存会丢失；好友端各自本地记录，不会自动汇总到你这里。</p>
+    </div>
+    ${(st.board&&st.board.length)?`
+    <div class="card"><h2>本机排行榜</h2><div class="leaderboard">
+      ${st.board.slice(0,20).map(r=>`<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score}/${Q_COUNT}</span></div>`).join('')}
+    </div></div>`:''}
+    <div class="card">
+      <button class="btn btn-secondary" onclick="showQuestions()">查看题目</button>
+      <button class="btn btn-primary" onclick="copyLink()">复制邀请链接</button>
+      <button class="btn btn-mint" onclick="previewAsFriend()">试玩答题</button>
+      <button class="btn btn-ghost" style="width:100%" onclick="startCreate(false)">返回出题（新建）</button>
+    </div>
+    <div id="q-view"></div>
+  </div>`;
+}
+function showQuestions(){
+  const quiz=S.published; if(!quiz)return;
+  const box=document.getElementById('q-view');
+  if(box.dataset.open==='1'){box.innerHTML='';box.dataset.open='';return;}
+  box.dataset.open='1';
+  box.innerHTML=`<div class="card"><h2>题目一览</h2>${quiz.questions.map((q,i)=>`
+    <div style="margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+      <div style="font-weight:600;margin-bottom:6px">${i+1}. ${escapeHtml(q.q)}</div>
+      ${q.options.map((o,j)=>`<div style="font-size:13px;color:${j===q.answer?'var(--green)':'var(--text-light)'};padding:2px 0">${LETTERS[j]}. ${escapeHtml(o)}${j===q.answer?' ✓':''}</div>`).join('')}
+    </div>`).join('')}</div>`;
+}
+async function copyLink(){
+  const url=shareUrl(S.published);
+  try{ await navigator.clipboard.writeText(url); toast('邀请链接已复制'); }
+  catch(e){
+    prompt('复制下面的链接发给好友：', url);
+  }
+}
+function previewAsFriend(){
+  S.playQuiz=S.published;
+  S.playIdx=0;S.playAnswers=[];S.result=null;S.playNick='';
+  navigate('play-intro');
+}
+
+/* ---------- Friend play ---------- */
+function viewPlayIntro(){
+  const quiz=S.playQuiz;
+  if(!quiz){return `<div class="view active"><div class="card"><p>无效的测试链接</p><button class="btn btn-primary" onclick="navigate('home')">回首页</button></div></div>`;}
+  const inv=quiz.inventory==null?'数量有限哦':('剩余展示 '+quiz.inventory+' 份');
+  return `
+  <div class="view active">
+    <header class="app-header">
+      <h1>${escapeHtml(quiz.title||'默契测试')}</h1>
+      <p>好友挑战</p>
+    </header>
+    <div class="card" style="text-align:center;padding:26px 16px">
+      <div class="hero-emoji">🎯</div>
+      <div class="intro-title">关于我的 10 道题<br>你能答对多少？</div>
+      <p class="hint" style="margin:10px 0 14px">答对 ≥ ${quiz.threshold} 题才有机会拿走奖励</p>
+      <div class="reward-preview" style="text-align:left">
+        <div class="emoji">🎁</div>
+        <div class="txt"><b>${escapeHtml(quiz.reward)}</b><span>${escapeHtml(inv)} · 先到先得（展示）</span></div>
+      </div>
+      <label style="text-align:left;margin-top:16px">你的昵称（可选，用于本机排行）</label>
+      <input type="text" maxlength="12" placeholder="怎么称呼你" value="${escapeHtml(S.playNick)}" oninput="S.playNick=this.value">
+      <button class="btn btn-primary" style="margin-top:16px" onclick="beginPlay()">开始挑战</button>
+    </div>
+  </div>`;
+}
+function beginPlay(){
+  S.playIdx=0;S.playAnswers=[];S.result=null;S.route='play';render();
+}
+function viewPlay(){
+  const quiz=S.playQuiz; if(!quiz)return viewPlayIntro();
+  const i=S.playIdx; const q=quiz.questions[i];
+  const pct=Math.round((i/Q_COUNT)*100);
+  return `
+  <div class="view active">
+    <header class="app-header">
+      <h1>默契挑战</h1>
+      <p>${escapeHtml(quiz.name||'出题人')} 的 10 道题</p>
+    </header>
     <div class="quiz-progress"><div class="quiz-progress-bar" style="width:${pct}%"></div></div>
-    <div class="quiz-meta"><span>第 ${i + 1} / ${n} 题</span><span>知己挑战</span></div>
+    <div class="quiz-meta"><span>第 ${i+1} / ${Q_COUNT} 题</span><span>猜 TA 的选择</span></div>
     <div class="card">
       <div class="quiz-q">${escapeHtml(q.q)}</div>
-      ${q.options.map((o, j) => `
-        <button class="opt-btn" onclick="pickOption(${j})">
-          <span class="opt-letter">${LETTERS[j]}</span>${escapeHtml(o)}
-        </button>
+      ${q.options.map((o,j)=>`
+        <button class="opt-btn" onclick="pickPlay(${j})"><span class="opt-letter">${LETTERS[j]}</span>${escapeHtml(o)}</button>
       `).join('')}
     </div>
-  `;
+  </div>`;
 }
-
-function pickOption(j) {
-  state.answers[state.quizIndex] = j;
-  if (state.quizIndex >= state.questions.length - 1) {
-    state.phase = 'result';
-    renderQuiz();
-  } else {
-    state.quizIndex++;
-    renderQuiz();
+function pickPlay(j){
+  S.playAnswers[S.playIdx]=j;
+  if(S.playIdx>=Q_COUNT-1){ finishPlay(); }
+  else { S.playIdx++; render(); }
+}
+function bandFor(score,bands){
+  const list=bands&&bands.length?bands:DEFAULT_BANDS;
+  // prefer inclusive match; if overlap, highest min wins
+  let best=list[0];
+  for(const b of list){
+    if(score>=b.min && score<=b.max) best=b;
   }
+  // fallback by percent-ish
+  if(!(score>=best.min&&score<=best.max)){
+    const sorted=[...list].sort((a,b)=>a.min-b.min);
+    best=sorted[0];
+    for(const b of sorted){ if(score>=b.min) best=b; }
+  }
+  return best;
 }
-
-function restartQuiz() {
-  state.quizIndex = 0;
-  state.answers = [];
-  state.phase = 'answering';
-  renderQuiz();
+function finishPlay(){
+  const quiz=S.playQuiz;
+  let score=0;
+  for(let i=0;i<Q_COUNT;i++) if(S.playAnswers[i]===quiz.questions[i].answer) score++;
+  const pct=Math.round(score/Q_COUNT*100);
+  const band=bandFor(score, quiz.bands);
+  const won=score>=(quiz.threshold|0);
+  S.result={score,pct,band,won};
+  // local stats on this device keyed by quiz id
+  const st=getStats(quiz.id);
+  st.plays=(st.plays|0)+1;
+  if(won) st.wins=(st.wins|0)+1;
+  st.board=st.board||[];
+  st.board.push({nick:S.playNick||'匿名',score,pct,at:Date.now(),won});
+  st.board.sort((a,b)=>b.score-a.score||b.at-a.at);
+  st.board=st.board.slice(0,50);
+  setStats(quiz.id,st);
+  S.route='result';
+  history.replaceState(null,'', location.pathname+location.search+'#result');
+  render();
+}
+function viewResult(){
+  const quiz=S.playQuiz; const r=S.result;
+  if(!quiz||!r){navigate('play-intro');return''}
+  return `
+  <div class="view active">
+    <header class="app-header">
+      <h1>挑战结果</h1>
+      <p>${escapeHtml(quiz.title)}</p>
+    </header>
+    <div class="card result-card">
+      <div class="score-num">${r.pct}<span style="font-size:22px">%</span></div>
+      <div class="score-label">答对 ${r.score} / ${Q_COUNT} 题</div>
+      <div class="comment">${escapeHtml(r.band&&r.band.text||'')}</div>
+      ${r.won
+        ? `<div class="reward">🎁 恭喜获得：${escapeHtml(quiz.reward)}<br><span style="font-weight:500;font-size:12px;color:var(--text-light)">请联系出题人兑换（先到先得）</span></div>`
+        : `<div class="no-reward">未获得奖励<br><span style="font-size:12px">需答对 ≥ ${quiz.threshold} 题（你答对 ${r.score} 题）</span></div>`}
+      <button class="btn btn-primary" onclick="beginPlay()">再试一次</button>
+      <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>
+    </div>
+  </div>`;
 }
 
 /* ---------- Init ---------- */
-document.getElementById('reward-text').addEventListener('change', onRewardChange);
-document.getElementById('reward-text').addEventListener('blur', onRewardChange);
-window.addEventListener('hashchange', applyHash);
-
-loadState();
-if (!location.hash) location.hash = '#setup';
-applyHash();
+loadDraft();
+loadPublished();
+window.addEventListener('hashchange', onHash);
+// Expose for inline handlers
+Object.assign(window,{
+  S,clamp,navigate,startCreate,goManage,setSlotAnswer,prevStep,nextStep,
+  randomBankSlot,openBankPicker,refreshBankModal,chooseBank,closeModal,
+  customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
+  onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,previewAsFriend,
+  beginPlay,pickPlay
+});
+S.route=parseRoute();
+if((S.route==='create'||S.route==='reward')&&!S.draft) loadDraft();
+if(S.route==='reward'|| (S.draft&&S.draft.step>=Q_COUNT && S.route==='create')){
+  // stay
+}
+render();
 </script>
 </body>
 </html>
