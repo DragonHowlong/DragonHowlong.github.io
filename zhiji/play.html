@@ -6,11 +6,11 @@
 <title>默契测试 · 进入答题</title>
 <script>
 (function () {
-  // Thin redirect: keep ?q= / hash payload, land on index play flow
+  // Thin redirect: keep ?q= / ?s= / hash payload, land on index play flow
   var q = location.search || '';
   var h = location.hash || '';
-  // If only hash #play/PAYLOAD or #q=, keep it; else ensure #play when q present
-  if (/[?&]q=/.test(q) && !h) h = '#play';
+  // If only hash #play/PAYLOAD or #q=, keep it; else ensure #play when q or s present
+  if (/[?&](q|s)=/.test(q) && !h) h = '#play';
   if (!q && !h) {
     // no payload — go home create entry
     location.replace('./#home');
