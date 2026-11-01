@@ -712,6 +712,7 @@ const S = {
   playAnswers:[],
   playNick:'',
   result:null,
+  lastRemoteBoard:null, // {quizId, board} from last successful POST /zhiji/score
   bankFilter:'',
   bankCat:'全部',
   answeredHint:false
@@ -1494,6 +1495,15 @@ function viewManage(){
     <div id="q-view"></div>
   </div>`;
 }
+function renderBoardRows(board){
+  return '<div class="leaderboard">'+board.slice(0,20).map(r=>
+    `<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${(r.score|0)}/${Q_COUNT}</span></div>`
+  ).join('')+'</div>';
+}
+function selfBoardFallback(){
+  if(!S.result) return null;
+  return [{nick:S.playNick||'匿名', score:S.result.score|0, pct:S.result.pct|0, won:!!S.result.won, at:Date.now()}];
+}
 async function hydrateRemoteBoard(quizId){
   const id=quizId || (S.published&&S.published.id) || (S.playQuiz&&S.playQuiz.id);
   if(!id) return;
@@ -1503,15 +1513,33 @@ async function hydrateRemoteBoard(quizId){
     box.innerHTML='<p class="hint">跨设备排行榜未启用</p>';
     return;
   }
-  box.innerHTML='<p class="hint">正在加载排行榜…</p>';
-  const board=await fetchBoardRemote(id);
-  if(!board||!board.length){
-    box.innerHTML='<p class="hint">还没有人答完；好友答完后会出现在这里</p>';
+  // Prefer board returned by the just-finished POST (avoids WeChat/*.workers.dev flaky GET)
+  if(S.lastRemoteBoard && S.lastRemoteBoard.quizId===id && Array.isArray(S.lastRemoteBoard.board) && S.lastRemoteBoard.board.length){
+    box.innerHTML=renderBoardRows(S.lastRemoteBoard.board);
     return;
   }
-  box.innerHTML='<div class="leaderboard">'+board.slice(0,20).map(r=>
-    `<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score|0}/${Q_COUNT}</span></div>`
-  ).join('')+'</div>';
+  box.innerHTML='<p class="hint">正在加载排行榜…</p>';
+  const board=await fetchBoardRemote(id);
+  if(board===null){
+    const self=selfBoardFallback();
+    if(self){
+      box.innerHTML='<p class="hint">排行榜加载失败，可能是网络拦截（如微信内置浏览器拦 *.workers.dev）。以下先显示你自己的成绩：</p>'+renderBoardRows(self);
+    } else {
+      box.innerHTML='<p class="hint">排行榜加载失败，可能是网络拦截（如微信内置浏览器拦 *.workers.dev）。请用系统浏览器打开再试，或稍后再看。</p>';
+    }
+    return;
+  }
+  if(!board.length){
+    const self=selfBoardFallback();
+    if(self){
+      // Just finished but remote still empty / lag — never look blank for the finisher
+      box.innerHTML=renderBoardRows(self)+'<p class="hint">成绩已提交；若其他人还没出现，稍后再刷新。</p>';
+    } else {
+      box.innerHTML='<p class="hint">还没有人答完；好友答完后会出现在这里</p>';
+    }
+    return;
+  }
+  box.innerHTML=renderBoardRows(board);
 }
 function clearManageAndHome(){
   history.replaceState(null,'', location.pathname + '#home');
@@ -1769,7 +1797,7 @@ function viewPlay(){
 }
 function pickPlay(j){
   S.playAnswers[S.playIdx]=j;
-  if(S.playIdx>=Q_COUNT-1){ finishPlay(); }
+  if(S.playIdx>=Q_COUNT-1){ void finishPlay(); } // finishPlay awaits submit then render+hydrate
   else { S.playIdx++; render(); }
 }
 function bandFor(score,bands){
@@ -1802,7 +1830,13 @@ async function finishPlay(){
   st.board.sort((a,b)=>b.score-a.score||b.at-a.at);
   st.board=st.board.slice(0,50);
   setStats(quiz.id,st);
-  await submitScoreRemote(quiz.id, {nick:S.playNick||'匿名', score, pct, won, at:Date.now()});
+  const remote=await submitScoreRemote(quiz.id, {nick:S.playNick||'匿名', score, pct, won, at:Date.now()});
+  if(remote && Array.isArray(remote.board)){
+    S.lastRemoteBoard={quizId:quiz.id, board:remote.board};
+  } else {
+    // Keep prior board for this quiz if any; otherwise clear so hydrate can show honest fail/self
+    if(!(S.lastRemoteBoard && S.lastRemoteBoard.quizId===quiz.id)) S.lastRemoteBoard=null;
+  }
   // Mark this quiz id as played (friend share only; preview may retry)
   if(hasFriendLink()) markQuizPlayed(quiz.id, S.result);
   S._activePlay=false;
