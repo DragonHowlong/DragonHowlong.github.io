@@ -244,6 +244,9 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .qr-wrap img,.qr-wrap canvas{width:min(72vw,260px);height:auto;border-radius:12px;background:#fff;padding:10px;box-shadow:0 2px 10px rgba(var(--primary-rgb),.15);border:1px solid var(--border);image-rendering:pixelated}
 .qr-caption{font-size:14px;font-weight:650;color:var(--primary-dark);margin:12px 0 4px}
 .qr-sub{font-size:12px;color:var(--text-light);line-height:1.5;margin:0 8px 8px}
+.poster-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:4px 0 8px;margin-top:8px}
+.poster-wrap img{width:min(86vw,320px);height:auto;border-radius:16px;background:#d6e4ff;box-shadow:0 4px 16px rgba(var(--primary-rgb),.18);border:1px solid var(--border);-webkit-touch-callout:default}
+.poster-wrap .hint{margin-top:8px}
 
 .bgm-toggle{position:fixed;top:calc(12px + env(safe-area-inset-top));right:max(12px, env(safe-area-inset-right));z-index:300;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:var(--bgm-bg);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;cursor:pointer;color:var(--primary-dark);padding:0;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(6px)}
 .bgm-toggle:active{transform:scale(.94)}
@@ -1451,7 +1454,7 @@ function viewManage(){
       </div>
       <div class="tip-box">
         <b>微信分享提示</b>
-        保存二维码发到微信，好友扫码直接答题。也可复制压缩邀请链接（通常 &lt;800 字）。超长旧链接易被微信截断。
+        点「生成分享海报」发朋友圈最香；也可只存二维码或复制压缩链接（通常 &lt;800 字）。
       </div>
     </div>
     <div class="card">
@@ -1461,9 +1464,15 @@ function viewManage(){
         <div class="qr-caption">保存二维码发到微信，好友扫码直接答题</div>
         <p class="qr-sub" id="share-qr-meta">编码压缩邀请链接，打开即答题</p>
       </div>
-      <button class="btn btn-primary" onclick="saveQrImage()">保存二维码</button>
+      <button class="btn btn-primary" onclick="generateSharePoster()">生成分享海报</button>
+      <button class="btn btn-secondary" onclick="saveQrImage()">保存二维码</button>
       <button class="btn btn-secondary" onclick="copyLink()">复制邀请链接（压缩）</button>
-      <p class="hint">手机微信里可长按二维码图片 → 保存到相册后再发给好友。</p>
+      <p class="hint">海报可发朋友圈；手机长按预览图保存。二维码也可单独保存。</p>
+      <div class="poster-wrap" id="share-poster-wrap" hidden>
+        <div id="share-poster"><p class="hint">海报预览会出现在这里</p></div>
+        <button class="btn btn-primary" onclick="savePosterImage()">保存海报</button>
+        <p class="hint">长按上方海报 → 保存到相册 → 发朋友圈</p>
+      </div>
     </div>
     <div class="card">
       <h2>跨设备排行榜</h2>
@@ -1617,6 +1626,220 @@ function paintManageQr(){
     console&&console.warn&&console.warn(e);
     el.innerHTML='<p class="hint">二维码生成失败（链接可能过长），请复制压缩邀请链接或短链。</p>';
     S._qrDataUrl='';
+  }
+}
+function drawQrToCanvas(url, pixelSize){
+  if(typeof qrcode!=='function') throw new Error('no qrcode');
+  const q=qrcode(0,'L');
+  q.addData(url,'Byte');
+  q.make();
+  const n=q.getModuleCount();
+  const margin=2;
+  const cell=Math.max(2, Math.floor(pixelSize/(n+margin*2)));
+  const size=(n+margin*2)*cell;
+  const canvas=document.createElement('canvas');
+  canvas.width=size; canvas.height=size;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,size,size);
+  ctx.fillStyle='#111111';
+  for(let r=0;r<n;r++){
+    for(let c=0;c<n;c++){
+      if(q.isDark(r,c)) ctx.fillRect((c+margin)*cell,(r+margin)*cell,cell,cell);
+    }
+  }
+  return canvas;
+}
+function roundRectPath(ctx,x,y,w,h,r){
+  const rr=Math.min(r,w/2,h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+rr,y);
+  ctx.arcTo(x+w,y,x+w,y+h,rr);
+  ctx.arcTo(x+w,y+h,x,y+h,rr);
+  ctx.arcTo(x,y+h,x,y,rr);
+  ctx.arcTo(x,y,x+w,y,rr);
+  ctx.closePath();
+}
+function posterTitleLines(quiz){
+  const name=(quiz.name||'').trim()||'神秘人';
+  const qn=(quiz.questions&&quiz.questions.length)||Q_COUNT;
+  // Prefer Moments-style hook; keep short for ninth-grader UX
+  if(name && name!=='神秘人') return ['关于'+name+'的'+qn+'道题','你能答对多少？'];
+  return ['关于我的'+qn+'道题','你能答对多少？'];
+}
+function buildSharePoster(quiz){
+  const SIZE=1080;
+  const dpr=Math.min(Math.max(window.devicePixelRatio||1, 1), 3);
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.round(SIZE*dpr);
+  canvas.height=Math.round(SIZE*dpr);
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  // soft blue Moments bg
+  ctx.fillStyle='#D6E4FF';
+  ctx.fillRect(0,0,SIZE,SIZE);
+
+  const cardX=78, cardY=150, cardW=SIZE-156, cardH=820;
+  const cardR=28;
+  // ticket card shadow
+  ctx.save();
+  ctx.shadowColor='rgba(74,122,199,.22)';
+  ctx.shadowBlur=28;
+  ctx.shadowOffsetY=10;
+  ctx.fillStyle='#ffffff';
+  roundRectPath(ctx,cardX,cardY,cardW,cardH,cardR);
+  ctx.fill();
+  ctx.restore();
+
+  // side ticket notches (paint bg blue over card edge)
+  const notchY=cardY+cardH*0.62;
+  const notchR=22;
+  ctx.fillStyle='#D6E4FF';
+  ctx.beginPath(); ctx.arc(cardX, notchY, notchR, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cardX+cardW, notchY, notchR, 0, Math.PI*2); ctx.fill();
+
+  // dashed divider at notch level
+  ctx.strokeStyle='#E5ECF7';
+  ctx.lineWidth=3;
+  ctx.setLineDash([10,10]);
+  ctx.beginPath();
+  ctx.moveTo(cardX+36, notchY);
+  ctx.lineTo(cardX+cardW-36, notchY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // avatar circle (placeholder: initial / gift)
+  const ax=SIZE/2, ay=cardY, ar=78;
+  ctx.save();
+  ctx.beginPath(); ctx.arc(ax,ay,ar+6,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(ax,ay,ar,0,Math.PI*2);
+  const grad=ctx.createLinearGradient(ax-ar,ay-ar,ax+ar,ay+ar);
+  grad.addColorStop(0,'#B7D4FF');
+  grad.addColorStop(1,'#7BC9A6');
+  ctx.fillStyle=grad;
+  ctx.fill();
+  ctx.lineWidth=6; ctx.strokeStyle='#fff'; ctx.stroke();
+  const initial=((quiz.name||'').trim().charAt(0)) || '🎁';
+  ctx.fillStyle='#2F5FA8';
+  ctx.font='700 54px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText(initial, ax, ay+2);
+  ctx.restore();
+
+  // optional name under avatar
+  const showName=(quiz.name||'').trim();
+  if(showName){
+    ctx.fillStyle='#6B7C93';
+    ctx.font='600 28px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+    ctx.textAlign='center';
+    ctx.textBaseline='alphabetic';
+    ctx.fillText(showName.length>10?showName.slice(0,10)+'…':showName, ax, ay+ar+42);
+  }
+
+  // big blue title
+  const titles=posterTitleLines(quiz);
+  ctx.fillStyle='#4A7AC7';
+  ctx.font='700 64px "Songti SC","STSong","Noto Serif SC","PingFang SC",serif';
+  ctx.textAlign='center';
+  let titleY=ay+ar+(showName?88:56);
+  titles.forEach((line,i)=>{
+    ctx.fillText(line, ax, titleY+i*78);
+  });
+
+  // prize row
+  const prizeY=titleY+titles.length*78+36;
+  ctx.font='700 36px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+  ctx.fillStyle='#C9A227';
+  ctx.textAlign='left';
+  const label='奖品:';
+  const reward=String(quiz.reward||'神秘奖励');
+  ctx.font='600 34px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+  const chipPadX=22, chipH=64;
+  ctx.font='700 32px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+  const chipText='🧋  '+(reward.length>10?reward.slice(0,10)+'…':reward);
+  const chipW=Math.min(cardW-200, Math.max(200, ctx.measureText(chipText).width+chipPadX*2));
+  ctx.font='700 36px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+  const labelW=ctx.measureText(label).width;
+  const rowW=labelW+18+chipW;
+  const rowX=ax-rowW/2;
+  ctx.fillStyle='#C9A227';
+  ctx.fillText(label, rowX, prizeY+44);
+  const chipX=rowX+labelW+18;
+  ctx.fillStyle='#F9D460';
+  roundRectPath(ctx,chipX,prizeY,chipW,chipH,16);
+  ctx.fill();
+  ctx.fillStyle='#8A5A10';
+  ctx.font='700 32px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText(chipText, chipX+chipW/2, prizeY+chipH/2+1);
+  ctx.textBaseline='alphabetic';
+
+  // bottom left copy
+  const leftX=cardX+48;
+  const bottomY=notchY+70;
+  ctx.textAlign='left';
+  ctx.fillStyle='#333333';
+  ctx.font='700 36px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+  ctx.fillText('你真的懂我吗?', leftX, bottomY);
+  ctx.fillStyle='#999999';
+  ctx.font='500 26px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+  ctx.fillText('长按识别二维码答题', leftX, bottomY+44);
+
+  // QR bottom right — same invite URL as manage QR
+  const url=pickQrUrl(quiz) || shareUrl(quiz);
+  const qrBox=250;
+  const qrCanvas=drawQrToCanvas(url, qrBox);
+  const qrX=cardX+cardW-48-qrBox;
+  const qrY=notchY+36;
+  ctx.fillStyle='#fff';
+  roundRectPath(ctx,qrX-10,qrY-10,qrBox+20,qrBox+20,12);
+  ctx.fill();
+  ctx.drawImage(qrCanvas, qrX, qrY, qrBox, qrBox);
+
+  return {canvas, dataUrl:canvas.toDataURL('image/png'), url};
+}
+function generateSharePoster(){
+  const quiz=S.published;
+  if(!quiz){ toast('还没有已发布的试卷'); return; }
+  const wrap=document.getElementById('share-poster-wrap');
+  const box=document.getElementById('share-poster');
+  if(wrap) wrap.hidden=false;
+  if(box) box.innerHTML='<p class="hint">正在生成海报…</p>';
+  try{
+    const {dataUrl,url}=buildSharePoster(quiz);
+    S._posterDataUrl=dataUrl;
+    S._posterUrl=url;
+    if(box){
+      const img=document.createElement('img');
+      img.src=dataUrl;
+      img.alt='默契测试分享海报';
+      img.width=320;
+      img.height=320;
+      box.innerHTML='';
+      box.appendChild(img);
+    }
+    toast('海报已生成 · 头像用名字首字占位（暂无上传）');
+  }catch(e){
+    console&&console.warn&&console.warn(e);
+    if(box) box.innerHTML='<p class="hint">海报生成失败，请先保存二维码或复制链接</p>';
+    toast('海报生成失败，试试保存二维码');
+  }
+}
+function savePosterImage(){
+  if(!S._posterDataUrl){ toast('先点生成分享海报'); generateSharePoster(); return; }
+  try{
+    const a=document.createElement('a');
+    a.href=S._posterDataUrl;
+    a.download='默契测试-分享海报.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    toast('若未下载，请长按海报图片保存到相册');
+  }catch(e){
+    toast('请长按海报图片 → 保存到相册');
   }
 }
 function saveQrImage(){
@@ -2019,7 +2242,7 @@ function viewResult(){
     S,clamp,navigate,startCreate,goManage,setSlotAnswer,prevStep,nextStep,
     randomBankSlot,openBankPicker,refreshBankModal,chooseBank,closeModal,
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
-    onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,switchQrMode,paintManageQr,
+    onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,savePosterImage,generateSharePoster,buildSharePoster,switchQrMode,paintManageQr,
     previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick,
     applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard
   });
