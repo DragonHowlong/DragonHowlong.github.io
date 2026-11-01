@@ -622,17 +622,8 @@ async function submitLeaveMsg(kind){
   toast('已记录本地确认；若网络拦截，出题人可能收不到');
   if(st) st.textContent='发送可能失败（网络拦截）。你可换系统浏览器再试。';
 }
-async function hydrateDevStats(){
-  const box=document.getElementById('dev-stats-hook');
-  if(!box) return;
-  box.innerHTML='<p class="hint">正在加载全站数据…</p>';
-  const data=await fetchSiteStatsRemote();
-  if(!data||!data.site){
-    box.innerHTML='<p class="hint">加载失败。Worker 未部署新接口，或网络拦截 *.workers.dev。</p>';
-    return;
-  }
-  const s=data.site;
-  box.innerHTML='<div class="dev-grid">'
+function renderDevSite(s, note){
+  return '<div class="dev-grid">'
     +'<div class="stat-box"><div class="n">'+(s.opens|0)+'</div><div class="l">打开次数</div></div>'
     +'<div class="stat-box"><div class="n">'+(s.finishes|0)+'</div><div class="l">答完次数</div></div>'
     +'<div class="stat-box"><div class="n">'+(s.wins|0)+'</div><div class="l">获奖次数</div></div>'
@@ -641,7 +632,29 @@ async function hydrateDevStats(){
     +'<div class="stat-box"><div class="n">'+(s.whispers|0)+'</div><div class="l">悄悄话</div></div>'
     +'<div class="stat-box"><div class="n">'+(s.anons|0)+'</div><div class="l">匿名信</div></div>'
     +'<div class="stat-box"><div class="n">'+(s.plays|0)+'</div><div class="l">开始答题</div></div>'
-    +'</div><p class="hint">仅开发者可见。更新于 '+escapeHtml(fmtMsgTime(s.updatedAt))+'</p>';
+    +'</div><p class="hint">'+escapeHtml(note||('仅开发者可见。更新于 '+fmtMsgTime(s.updatedAt)))+'</p>';
+}
+async function hydrateDevStats(){
+  const box=document.getElementById('dev-stats-hook');
+  if(!box) return;
+  box.innerHTML='<p class="hint">正在加载全站数据…</p>';
+  // keep secret query on refresh button path
+  try{
+    if(isDevMode()) history.replaceState(null,'', location.pathname + '?dev=' + encodeURIComponent(DEV_TOKEN) + '#dev');
+  }catch(e){}
+  const data=await fetchSiteStatsRemote();
+  if(data&&data.site){
+    try{ localStorage.setItem('zhiji_dev_stats_cache', JSON.stringify({site:data.site, at:Date.now()})); }catch(e){}
+    box.innerHTML=renderDevSite(data.site);
+    return;
+  }
+  let cached=null;
+  try{ cached=JSON.parse(localStorage.getItem('zhiji_dev_stats_cache')||'null'); }catch(e){}
+  if(cached&&cached.site){
+    box.innerHTML=renderDevSite(cached.site, '实时拉取失败（常见：微信拦截 workers.dev）。以下是上次成功缓存 · '+fmtMsgTime(cached.at));
+    return;
+  }
+  box.innerHTML='<p class="hint">加载失败：当前网络访问不了排行榜后台（*.workers.dev）。请用 Safari/Chrome 打开密链，不要用微信内置浏览器。</p>';
 }
 function viewDev(){
   return `<div class="view active">
@@ -2424,7 +2437,7 @@ function viewResult(){
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
     onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,savePosterImage,generateSharePoster,buildSharePoster,switchQrMode,paintManageQr,
     previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick,
-    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,DEV_TOKEN,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,hydrateDevStats,viewDev,trackFriendOpen
+    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,DEV_TOKEN,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,hydrateDevStats,renderDevSite,viewDev,trackFriendOpen
   });
   if(qPayload || sid){
     try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
