@@ -266,7 +266,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .section-label{font-size:13px;font-weight:650;color:var(--primary-dark);margin:4px 0 2px}
 html[data-theme="mono"] .btn-primary,html[data-theme="mono"] .btn-mint{background:#111;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2)}
 html[data-theme="mono"] header.app-header{background:#111}
-.lb-remote-hook{margin-top:8px;padding:10px;border:1px dashed var(--border);border-radius:12px;font-size:12px;color:var(--text-light);line-height:1.5}
+.lb-remote-hook{min-height:24px}
 
 
 </style>
@@ -462,9 +462,7 @@ function applyTemplate(id){
   toast('已加载模板，请确认每题你的答案');
 }
 
-/* HOOK: remote leaderboard backend (parallel track — leave disabled)
- * Flip LB_API.enabled when server is ready. finishPlay / viewManage already call these.
- */
+/* Remote leaderboard API — used by finishPlay, viewManage, viewResult */
 const LB_API = {
   enabled: true,
   base: 'https://zhiji-board.wanghowlonggg-jcwmny.workers.dev',
@@ -1031,7 +1029,7 @@ function render(){
   else if(r==='manage'){ app.innerHTML=viewManage(); setTimeout(paintManageQr,0); setTimeout(hydrateRemoteBoard,0); }
   else if(r==='play-intro') app.innerHTML=viewPlayIntro();
   else if(r==='play') app.innerHTML=viewPlay();
-  else if(r==='result') app.innerHTML=viewResult();
+  else if(r==='result'){ app.innerHTML=viewResult(); setTimeout(function(){ hydrateRemoteBoard(S.playQuiz&&S.playQuiz.id); },0); }
   else app.innerHTML=viewHome();
   syncThemeForRoute();
   window.scrollTo(0,0);
@@ -1470,23 +1468,22 @@ function viewManage(){
       <p class="hint">手机微信里可长按二维码图片 → 保存到相册后再发给好友。</p>
     </div>
     <div class="card">
+      <h2>跨设备排行榜</h2>
+      <p class="hint">好友答完后会同步到这里，换手机也能看到。</p>
+      <div class="lb-remote-hook" id="lb-remote-hook"><p class="hint">正在加载排行榜…</p></div>
+    </div>
+    <div class="card">
       <h2>数据统计</h2>
       <div class="stat-grid">
         <div class="stat-box"><div class="n">${st.plays|0}</div><div class="l">答题人数</div></div>
         <div class="stat-box"><div class="n">${st.wins|0}</div><div class="l">获奖人数</div></div>
       </div>
-      <p class="hint">答题人数/获奖人数仅保存在本机；下方跨设备排行榜会汇总好友成绩。</p>
+      <p class="hint">答题人数/获奖人数仅保存在本机。</p>
     </div>
     ${(st.board&&st.board.length)?`
-    <div class="card"><h2>本机排行榜</h2><div class="leaderboard">
+    <div class="card"><h2>本机记录</h2><div class="leaderboard">
       ${st.board.slice(0,20).map(r=>`<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score}/${Q_COUNT}</span></div>`).join('')}
-    </div>
-    <div class="lb-remote-hook" id="lb-remote-hook">正在加载跨设备排行榜…</div>
-    </div>`:`
-    <div class="card"><h2>排行榜</h2>
-      <p class="hint">本机暂无记录；跨设备成绩会显示在下方。</p>
-      <div class="lb-remote-hook" id="lb-remote-hook">正在加载跨设备排行榜…</div>
-    </div>`}
+    </div></div>`:''}
     <div class="card">
       <button class="btn btn-secondary" onclick="copyShortLink()">复制短链 ?s=</button>
       <button class="btn btn-secondary" onclick="switchQrMode()">切换二维码（压缩/短链）</button>
@@ -1500,18 +1497,24 @@ function viewManage(){
     <div id="q-view"></div>
   </div>`;
 }
-async function hydrateRemoteBoard(){
-  const quiz=S.published; if(!quiz) return;
+async function hydrateRemoteBoard(quizId){
+  const id=quizId || (S.published&&S.published.id) || (S.playQuiz&&S.playQuiz.id);
+  if(!id) return;
   const box=document.getElementById('lb-remote-hook');
   if(!box) return;
   if(!LB_API.enabled){
-    box.textContent='跨设备排行榜：后端未启用（LB_API.enabled=false）。本机榜仅当前浏览器。';
+    box.innerHTML='<p class="hint">跨设备排行榜未启用</p>';
     return;
   }
-  box.textContent='正在拉取跨设备排行榜…';
-  const board=await fetchBoardRemote(quiz.id);
-  if(!board||!board.length){ box.textContent='远端暂无成绩'; return; }
-  box.innerHTML='<b style="color:var(--primary-dark)">远端排行</b>'+board.slice(0,20).map(r=>`<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score|0}/${Q_COUNT}</span></div>`).join('');
+  box.innerHTML='<p class="hint">正在加载排行榜…</p>';
+  const board=await fetchBoardRemote(id);
+  if(!board||!board.length){
+    box.innerHTML='<p class="hint">还没有人答完；好友答完后会出现在这里</p>';
+    return;
+  }
+  box.innerHTML='<div class="leaderboard">'+board.slice(0,20).map(r=>
+    `<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score|0}/${Q_COUNT}</span></div>`
+  ).join('')+'</div>';
 }
 function clearManageAndHome(){
   history.replaceState(null,'', location.pathname + '#home');
@@ -1785,7 +1788,7 @@ function bandFor(score,bands){
   }
   return best;
 }
-function finishPlay(){
+async function finishPlay(){
   const quiz=S.playQuiz;
   let score=0;
   for(let i=0;i<Q_COUNT;i++) if(S.playAnswers[i]===quiz.questions[i].answer) score++;
@@ -1802,8 +1805,7 @@ function finishPlay(){
   st.board.sort((a,b)=>b.score-a.score||b.at-a.at);
   st.board=st.board.slice(0,50);
   setStats(quiz.id,st);
-  // HOOK: remote leaderboard (no-op until LB_API.enabled)
-  submitScoreRemote(quiz.id, {nick:S.playNick||'匿名', score, pct, won, at:Date.now()});
+  await submitScoreRemote(quiz.id, {nick:S.playNick||'匿名', score, pct, won, at:Date.now()});
   // Mark this quiz id as played (friend share only; preview may retry)
   if(hasFriendLink()) markQuizPlayed(quiz.id, S.result);
   S._activePlay=false;
@@ -1836,6 +1838,10 @@ function viewResult(){
       <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>`}
       <p style="margin:16px 0 8px;font-size:14px;color:var(--text-light);line-height:1.55">测完了？出一套属于你的题发给朋友。</p>
       <button class="btn btn-mint" onclick="goCreateOwn()">我也要出题</button>
+    </div>
+    <div class="card">
+      <h2>排行榜</h2>
+      <div class="lb-remote-hook" id="lb-remote-hook"><p class="hint">正在加载排行榜…</p></div>
     </div>
   </div>`;
 }
