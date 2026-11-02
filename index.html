@@ -6,32 +6,32 @@
 <title>滅海襲 · Dragon·W·howlong</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;background:#f6f5f2;color:#222;line-height:1.7;min-height:100vh;display:flex;justify-content:center;padding:48px 20px}
+body{font-family:-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;background:#f6f5f2;color:#222;line-height:1.7;min-height:100vh;display:flex;justify-content:center;padding:40px 20px 56px}
 main{max-width:640px;width:100%}
-.topnav{display:flex;justify-content:flex-end;gap:16px;margin-bottom:28px;font-size:14px}
-.topnav a{color:#666;text-decoration:none;letter-spacing:1px}
+.topnav{display:flex;justify-content:flex-end;gap:18px;margin-bottom:24px;font-size:14px}
+.topnav a{color:#666;text-decoration:none;letter-spacing:1px;min-height:44px;display:inline-flex;align-items:center}
 .topnav a:hover{color:#222}
-header{text-align:center;margin-bottom:40px}
-.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+header{text-align:center;margin-bottom:36px}
+.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 18px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 h1{font-size:32px;letter-spacing:4px;font-weight:700}
 .en{color:#777;font-size:15px;letter-spacing:1px;margin-top:4px}
 h2{font-size:14px;color:#666;font-weight:600;letter-spacing:3px;margin-bottom:16px;text-align:center}
 .play-grid{display:grid;grid-template-columns:1fr;gap:14px}
-@media(min-width:520px){.play-grid{grid-template-columns:1fr 1fr 1fr}}
-.slot{background:#fff;border-radius:14px;padding:22px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:140px;justify-content:center;transition:transform .2s,box-shadow .2s}
-.slot:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.slot .icon{font-size:28px;margin-bottom:10px;line-height:1}
-.slot h3{font-size:17px;margin-bottom:6px;letter-spacing:1px}
-.slot p{font-size:13px;color:#777;line-height:1.5}
-.slot-live{border:1px solid #d6eef7;background:linear-gradient(135deg,#fbfeff,#eaf7f1)}
-.slot-live .tag{display:inline-block;font-size:11px;color:#7a5a20;background:#fff4d6;padding:1px 8px;border-radius:999px;margin-bottom:8px}
-.slot-more{background:#fafaf8;border:1px solid #e8e6e0;opacity:.92}
-.slot-more:hover{transform:none;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.slot-more .soon{font-size:12px;color:#999;margin-top:4px}
-.slot-reserved{background:transparent;border:1.5px dashed #ccc;box-shadow:none;color:#aaa;cursor:default}
-.slot-reserved:hover{transform:none;box-shadow:none}
-.slot-reserved h3{font-weight:500;color:#aaa}
-footer{text-align:center;color:#aaa;font-size:13px;margin-top:48px}
+@media(min-width:520px){.play-grid{grid-template-columns:1fr 1fr}}
+.slot{border-radius:16px;padding:22px 18px;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:168px;justify-content:center;transition:transform .2s,box-shadow .2s}
+.slot-live{background:linear-gradient(145deg,#e8f6fb 0%,#d9f0e8 55%,#eef8f4 100%);border:1px solid #b9dce8;box-shadow:0 2px 8px rgba(75,163,199,.12)}
+.slot-live:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(75,163,199,.18)}
+.slot-live .thumb{width:72px;height:72px;border-radius:16px;object-fit:cover;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.slot-live .tag{display:inline-block;font-size:11px;color:#1f5f78;background:rgba(75,163,199,.18);padding:2px 10px;border-radius:999px;margin-bottom:8px}
+.slot-live h3{font-size:20px;letter-spacing:2px;color:#1a4d63;margin-bottom:2px}
+.slot-live .sub{font-size:12px;color:#5a7a88;letter-spacing:.5px;margin-bottom:12px}
+.slot-live .cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:999px;background:#4BA3C7;color:#fff;font-size:14px;font-weight:600;letter-spacing:1px;width:100%;max-width:220px}
+.slot-more{background:#fafaf8;border:1px solid #e5e2da;box-shadow:0 1px 3px rgba(0,0,0,.04);opacity:.95}
+.slot-more:hover{transform:translateY(-1px)}
+.slot-more .icon{font-size:28px;margin-bottom:10px;line-height:1;opacity:.7}
+.slot-more h3{font-size:18px;letter-spacing:2px;margin-bottom:4px;color:#555}
+.slot-more p{font-size:13px;color:#999}
+footer{text-align:center;color:#aaa;font-size:13px;margin-top:44px}
 footer a{color:#999;text-decoration:none}
 footer a:hover{color:#666}
 </style>
@@ -39,7 +39,7 @@ footer a:hover{color:#666}
 <body>
 <main>
 <nav class="topnav" aria-label="站点导航">
-  <a href="#play">Play</a>
+  <a href="https://dragonhowlong.github.io/zhiji/">测试题</a>
   <a href="about.html">关于</a>
 </nav>
 <header>
@@ -51,21 +51,17 @@ footer a:hover{color:#666}
   <h2>Play</h2>
   <div class="play-grid">
     <a class="slot slot-live" href="https://dragonhowlong.github.io/zhiji/">
+      <img class="thumb" src="memes/m08.jpg" alt="测试题" onerror="this.style.display='none'">
       <span class="tag">本站主打 · H5</span>
-      <div class="icon">💬</div>
       <h3>测试题</h3>
-      <p>出题测默契，发给朋友玩</p>
+      <div class="sub">Quiz · 默契测试</div>
+      <span class="cta">立即开玩</span>
     </a>
     <a class="slot slot-more" href="more.html">
-      <div class="icon">⋯</div>
-      <h3>More</h3>
-      <p class="soon">更多 / 即将开放</p>
+      <div class="icon">🔒</div>
+      <h3>更多</h3>
+      <p>More · 即将开放</p>
     </a>
-    <div class="slot slot-reserved" aria-label="预留位">
-      <div class="icon">○</div>
-      <h3>预留</h3>
-      <p>第 3 位 · 暂空</p>
-    </div>
   </div>
 </section>
 <footer>
