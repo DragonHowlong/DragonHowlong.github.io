@@ -230,9 +230,10 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .num-row{display:flex;gap:10px;align-items:center}
 .num-row input{flex:1}
 .q-preview{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:12px;padding:12px;background:var(--bg2);border-radius:12px}
-.cat-tabs{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0 10px;margin-bottom:4px}
-.cat-tabs::-webkit-scrollbar{display:none}
-.cat-tab{flex:0 0 auto;padding:7px 12px;border-radius:16px;border:1.5px solid var(--border);background:var(--chip-bg);font-size:12px;color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap}
+.cat-tabs{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x;padding:2px 0 10px;margin:0 0 4px;max-width:100%;width:100%;box-sizing:border-box}
+.cat-tabs::-webkit-scrollbar{height:3px}
+.cat-tabs::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.cat-tab{flex:0 0 auto;padding:7px 12px;border-radius:16px;border:1.5px solid var(--border);background:var(--chip-bg);font-size:12px;color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap;word-break:keep-all}
 .cat-tab.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);font-weight:650}
 .tip-box{background:var(--tip-bg);border:1px solid var(--tip-border);border-radius:12px;padding:12px;font-size:13px;line-height:1.55;color:var(--tip-text);margin-top:10px}
 .tip-box b{display:block;margin-bottom:4px}
@@ -457,6 +458,7 @@ function applyTemplate(id){
   d.title=tpl.titleHint||'';
   d.reward=tpl.reward||'奶茶券';
   d.rewardCustom='';
+  d.rewardIsCustom=false;
   d.step=0;
   d.slots=(tpl.questions||[]).slice(0,Q_COUNT).map(q=>({
     q:q.q,
@@ -946,6 +948,7 @@ function defaultDraft(){
     step:0,
     reward:'奶茶券',
     rewardCustom:'',
+    rewardIsCustom:false,
     threshold:9,
     inventory:null,
     bands:DEFAULT_BANDS.map(b=>({...b}))
@@ -1248,7 +1251,9 @@ function applyBankToSlot(slotIdx, bankIdx, keepAnswer){
   if(used.has(bankIdx)){ toast('这道题已在其他题槽使用'); return false; }
   const b=BANK[bankIdx];
   const prev=S.draft.slots[slotIdx];
-  const ans=(keepAnswer && prev && prev.answer!=null)?clamp(prev.answer|0,0,b.options.length-1):0;
+  const maxA=Math.max(0,b.options.length-1);
+  const bankAns=clamp((typeof b.answer==='number'?b.answer:0)|0,0,maxA);
+  const ans=(keepAnswer && prev && typeof prev.answer==='number')?clamp(prev.answer|0,0,maxA):bankAns;
   S.draft.slots[slotIdx]={q:b.q,options:[...b.options],answer:ans,filled:true,bankIdx};
   saveDraft();
   return true;
@@ -1319,7 +1324,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">纯前端 · 数据保存在本机 localStorage<br>分享链接自带题目，好友打开即可答</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答</p>
   </div>`;
 }
 
@@ -1375,7 +1380,7 @@ function viewCreate(){
     <header class="app-header">
       <h1>默契测试</h1>
       <p>出题中 · 设置你的 10 道题</p>
-      <div class="step-pill">进度 ${d.slots.filter(s=>s.filled).length} / ${Q_COUNT}</div>
+      <div class="step-pill">进度 ${i+1} / ${Q_COUNT}</div>
     </header>
     <div class="progress-dots">${dots}</div>
     ${body}
@@ -1399,6 +1404,7 @@ function nextStep(){
   const i=S.draft.step; const slot=S.draft.slots[i];
   if(!slot.filled || !slot.q.trim()){ toast('请先完成本题设置'); return; }
   if(slot.options.filter(o=>String(o).trim()).length<2){ toast('至少需要 2 个选项'); return; }
+  if(typeof slot.answer!=='number' || slot.answer<0 || slot.answer>=slot.options.length){ toast('请点选你的答案'); return; }
   if(i>=Q_COUNT-1){ S.draft.step=Q_COUNT; saveDraft(); navigate('reward'); return; }
   S.draft.step=i+1; saveDraft(); ensureSlotSeeded(); render();
 }
@@ -1459,7 +1465,11 @@ function chooseBank(i){
   const used=getUsedBankSet(S.draft.step);
   if(used.has(i)){ toast('这道题已选用'); return; }
   applyBankToSlot(S.draft.step,i);
-  closeModal(); toast('已选题，请点选你的答案'); render();
+  closeModal();
+  const slot=S.draft.slots[S.draft.step];
+  if(slot && typeof slot.answer==='number') toast('已选题');
+  else toast('已选题，请点选你的答案');
+  render();
 }
 function closeModal(){ const m=document.querySelector('.modal-mask'); if(m)m.remove(); }
 
@@ -1534,8 +1544,8 @@ function saveEditor(){
 /* ---------- Reward config (chips / presets) ---------- */
 function viewReward(){
   const d=S.draft;
-  const isCustom=d.reward && !REWARD_PRESETS.includes(d.reward);
-  const rewardVal=isCustom?(d.rewardCustom||d.reward):d.reward;
+  const isCustom=!!d.rewardIsCustom || (!!d.reward && !REWARD_PRESETS.includes(d.reward));
+  const rewardVal=isCustom?(d.rewardCustom||(!REWARD_PRESETS.includes(d.reward)?d.reward:'')):d.reward;
   const inv=d.inventory;
   return `
   <div class="view active">
@@ -1596,9 +1606,16 @@ function renderBandsEditor(){
     </div>`).join('');
 }
 function skipName(){S.draft.name='';S.draft.nameSkipped=true;saveDraft();render()}
-function pickReward(p){S.draft.reward=p;S.draft.rewardCustom='';saveDraft();render()}
-function pickRewardCustom(){S.draft.reward=S.draft.rewardCustom||'';S.draft.rewardCustom=S.draft.rewardCustom||'';saveDraft();render();setTimeout(()=>{const el=document.getElementById('reward-input');if(el)el.focus()},50)}
-function onRewardInput(v){S.draft.reward=v;S.draft.rewardCustom=v;saveDraft()}
+function pickReward(p){S.draft.reward=p;S.draft.rewardIsCustom=false;saveDraft();render()}
+function pickRewardCustom(){
+  S.draft.rewardIsCustom=true;
+  if(REWARD_PRESETS.includes(S.draft.reward)) S.draft.reward=S.draft.rewardCustom||'';
+  else S.draft.reward=S.draft.rewardCustom||S.draft.reward||'';
+  S.draft.rewardCustom=S.draft.rewardCustom||'';
+  saveDraft();render();
+  setTimeout(()=>{const el=document.getElementById('reward-input');if(el)el.focus()},50);
+}
+function onRewardInput(v){S.draft.reward=v;S.draft.rewardCustom=v;S.draft.rewardIsCustom=true;saveDraft()}
 function pickThreshold(n){S.draft.threshold=n;saveDraft();render()}
 function pickInventory(v){S.draft.inventory=v;saveDraft();render()}
 function updBand(i,k,v){ if(k==='text')S.draft.bands[i].text=v; else S.draft.bands[i][k]=clamp(+v||0,0,10); saveDraft(); }
@@ -1610,6 +1627,7 @@ function publishQuiz(){
   if(d.slots.some(s=>!s.filled)){toast('还有题目未完成');navigate('create');return;}
   const name=(d.name||'').trim()||'神秘人';
   let reward=(d.reward||'').trim();
+  if(!reward && d.rewardIsCustom) reward=(d.rewardCustom||'').trim();
   if(!reward){toast('请选择或填写奖励');return;}
   if(!d.bands||d.bands.length<4){toast('请至少设置 4 档评语');return;}
   const quiz={
@@ -1714,8 +1732,8 @@ function viewManage(){
       <p class="hint">海报可发朋友圈；手机长按预览图保存。二维码也可单独保存。</p>
       <div class="poster-wrap" id="share-poster-wrap" hidden>
         <div id="share-poster"><p class="hint">海报预览会出现在这里</p></div>
-        <button class="btn btn-primary" onclick="savePosterImage()">保存海报</button>
-        <p class="hint">长按上方海报 → 保存到相册 → 发朋友圈</p>
+        <button class="btn btn-primary" id="save-poster-btn" hidden onclick="savePosterImage()">保存海报</button>
+        <p class="hint" id="save-poster-hint" hidden>长按上方海报 → 保存到相册 → 发朋友圈</p>
       </div>
     </div>
     <div class="card">
@@ -2061,7 +2079,11 @@ function generateSharePoster(){
   if(!quiz){ toast('还没有已发布的试卷'); return; }
   const wrap=document.getElementById('share-poster-wrap');
   const box=document.getElementById('share-poster');
+  const saveBtn=document.getElementById('save-poster-btn');
+  const saveHint=document.getElementById('save-poster-hint');
   if(wrap) wrap.hidden=false;
+  if(saveBtn) saveBtn.hidden=true;
+  if(saveHint) saveHint.hidden=true;
   if(box) box.innerHTML='<p class="hint">正在生成海报…</p>';
   try{
     const {dataUrl,url}=buildSharePoster(quiz);
@@ -2076,15 +2098,20 @@ function generateSharePoster(){
       box.innerHTML='';
       box.appendChild(img);
     }
+    if(saveBtn) saveBtn.hidden=false;
+    if(saveHint) saveHint.hidden=false;
     toast('海报已生成 · 头像用名字首字占位（暂无上传）');
   }catch(e){
     console&&console.warn&&console.warn(e);
+    S._posterDataUrl=null;
     if(box) box.innerHTML='<p class="hint">海报生成失败，请先保存二维码或复制链接</p>';
+    if(saveBtn) saveBtn.hidden=true;
+    if(saveHint) saveHint.hidden=true;
     toast('海报生成失败，试试保存二维码');
   }
 }
 function savePosterImage(){
-  if(!S._posterDataUrl){ toast('先点生成分享海报'); generateSharePoster(); return; }
+  if(!S._posterDataUrl){ toast('请先点「生成分享海报」，生成后再保存'); return; }
   try{
     const a=document.createElement('a');
     a.href=S._posterDataUrl;
@@ -2186,7 +2213,7 @@ function viewPlayIntro(){
   </div>`;
   }
   if(!S.playNick) S.playNick=loadSavedNick();
-  const inv=quiz.inventory==null?'数量有限哦':('剩余展示 '+quiz.inventory+' 份');
+  const invSpan=quiz.inventory==null?'份数不限':('剩余展示 '+quiz.inventory+' 份 · 先到先得（展示）');
   return `
   <div class="view active">
     <header class="app-header">
@@ -2199,7 +2226,7 @@ function viewPlayIntro(){
       <p class="hint" style="margin:10px 0 14px">答对 ≥ ${quiz.threshold} 题才有机会拿走奖励</p>
       <div class="reward-preview" style="text-align:left">
         <div class="emoji">🎁</div>
-        <div class="txt"><b>${escapeHtml(quiz.reward)}</b><span>${escapeHtml(inv)} · 先到先得（展示）</span></div>
+        <div class="txt"><b>${escapeHtml(quiz.reward)}</b><span>${escapeHtml(invSpan)}</span></div>
       </div>
       <label style="text-align:left;margin-top:16px">你的昵称（可选，用于本机排行；本机记住一次）</label>
       <input type="text" maxlength="12" placeholder="怎么称呼你" value="${escapeHtml(S.playNick)}" oninput="S.playNick=this.value;savePlayerNick(this.value)">
@@ -2237,6 +2264,8 @@ function beginPlay(){
   if(S.playNick) savePlayerNick(S.playNick);
   getPlayerFp();
   S._activePlay=true;
+  S._finishing=false;
+  S._finishDone=false;
   S.playIdx=0;S.playAnswers=[];S.result=null;S.route='play';render();
   if(hasFriendLink()) void postHitRemote(quiz.id,'play');
 }
@@ -2275,9 +2304,12 @@ function viewPlay(){
   </div>`;
 }
 function pickPlay(j){
+  if(S._finishing || S._finishDone || S.route==='result') return;
   S.playAnswers[S.playIdx]=j;
-  if(S.playIdx>=Q_COUNT-1){ void finishPlay(); } // finishPlay awaits submit then render+hydrate
-  else { S.playIdx++; render(); }
+  if(S.playIdx>=Q_COUNT-1){
+    S._finishing=true;
+    void finishPlay();
+  } else { S.playIdx++; render(); }
 }
 function bandFor(score,bands){
   const list=bands&&bands.length?bands:DEFAULT_BANDS;
@@ -2293,7 +2325,11 @@ function bandFor(score,bands){
   return best;
 }
 async function finishPlay(){
+  if(S._finishDone) return;
+  S._finishing=true;
   const quiz=S.playQuiz;
+  if(!quiz){ S._finishing=false; return; }
+  S._finishDone=true; // lock before await so rapid re-entry cannot double-count
   let score=0;
   for(let i=0;i<Q_COUNT;i++) if(S.playAnswers[i]===quiz.questions[i].answer) score++;
   const pct=Math.round(score/Q_COUNT*100);
