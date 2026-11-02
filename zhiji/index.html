@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="知己 · 默契测试：出 10 道关于你的题，发给朋友测默契。答完配表情包，懂不懂一眼看穿。免费、手机就能玩。">
+<meta name="keywords" content="知己,默契测试,好友测试,H5,表情包">
+<meta property="og:type" content="website">
+<meta property="og:title" content="知己 · 默契测试">
+<meta property="og:description" content="出 10 道关于你的题，发给朋友测默契。答完配表情包，懂不懂一眼看穿。">
+<meta property="og:url" content="https://2s874hkvwj-droid.github.io/zhiji/">
+<meta property="og:image" content="https://2s874hkvwj-droid.github.io/zhiji/screenshot.png">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="知己 · 默契测试">
+<meta name="twitter:description" content="出 10 道关于你的题，发给朋友测默契。答完配表情包，懂不懂一眼看穿。">
+<meta name="twitter:image" content="https://2s874hkvwj-droid.github.io/zhiji/screenshot.png">
 <title>默契测试 · 你有多了解我</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -476,10 +488,16 @@ function applyTemplate(id){
   toast('已加载模板，请确认每题你的答案');
 }
 
-/* Remote leaderboard / msg / hit API — workers.dev may be blocked in WeChat */
+/* Remote leaderboard / msg / hit API — WeChat blocks *.workers.dev / *.pages.dev; prefer custom hostname */
 const LB_API = {
   enabled: true,
-  base: 'https://zhiji-board.wanghowlonggg-jcwmny.workers.dev',
+  /* Primary: is-a.dev custom hostname → Pages Functions + BOARD KV (after deploy+DNS). Fallbacks: production workers. */
+  bases: [
+    'https://zhiji-api.is-a.dev',
+    'https://zhiji-board.wanghowlonggg-jcwmny.workers.dev',
+    'https://zhiji-board.wanghowlonggg.workers.dev'
+  ],
+  base: 'https://zhiji-api.is-a.dev',
   submitPath: '/zhiji/score',
   boardPath: '/zhiji/board',
   msgPath: '/zhiji/msg',
@@ -489,85 +507,101 @@ const LB_API = {
 };
 /* Site-developer only. Not for quiz creators. */
 const DEV_TOKEN = 'INakag_zwNB9FL1lQw8RwjFd';
+function lbBases(){
+  const list = Array.isArray(LB_API.bases) && LB_API.bases.length ? LB_API.bases.slice() : [];
+  if(LB_API.base && list.indexOf(LB_API.base) < 0) list.unshift(LB_API.base);
+  return list.filter(Boolean);
+}
+async function lbFetch(pathWithQuery, opts){
+  if(!LB_API.enabled) return null;
+  const bases = lbBases();
+  if(!bases.length) return null;
+  let lastErr = null;
+  for(let i=0;i<bases.length;i++){
+    const base = bases[i];
+    try{
+      const res = await fetch(base + pathWithQuery, opts);
+      if(!res.ok){ lastErr = 'http '+res.status; continue; }
+      LB_API.base = base; // sticky prefer last success
+      return res;
+    }catch(e){ lastErr = e; }
+  }
+  return null;
+}
 async function submitScoreRemote(quizId, row){
-  if(!LB_API.enabled || !LB_API.base) return null;
   try{
-    const res=await fetch(LB_API.base + LB_API.submitPath, {
+    const res=await lbFetch(LB_API.submitPath, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({quizId, ...row, fp:getPlayerFp()})
     });
-    if(!res.ok) return null;
+    if(!res) return null;
     return await res.json();
   }catch(e){ return null; }
 }
 async function fetchBoardRemote(quizId){
-  if(!LB_API.enabled || !LB_API.base) return null;
   try{
-    const res=await fetch(LB_API.base + LB_API.boardPath + '?quizId=' + encodeURIComponent(quizId), {cache:'no-store'});
-    if(!res.ok) return null;
+    const res=await lbFetch(LB_API.boardPath + '?quizId=' + encodeURIComponent(quizId), {cache:'no-store'});
+    if(!res) return null;
     const data=await res.json();
     return Array.isArray(data)?data:(data&&data.board)||null;
   }catch(e){ return null; }
 }
 async function postHitRemote(quizId, kind){
-  if(!LB_API.enabled || !LB_API.base || !quizId) return null;
+  if(!quizId) return null;
   try{
-    const res=await fetch(LB_API.base + LB_API.hitPath, {
+    const res=await lbFetch(LB_API.hitPath, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({quizId, kind:kind||'open', fp:getPlayerFp(), at:Date.now()})
     });
-    if(!res.ok) return null;
+    if(!res) return null;
     return await res.json();
   }catch(e){ return null; }
 }
 async function postMsgRemote(quizId, kind, text, nick){
-  if(!LB_API.enabled || !LB_API.base || !quizId) return null;
+  if(!quizId) return null;
   try{
-    const res=await fetch(LB_API.base + LB_API.msgPath, {
+    const res=await lbFetch(LB_API.msgPath, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({quizId, kind, text, nick:nick||'', fp:getPlayerFp()})
     });
-    if(!res.ok) return null;
+    if(!res) return null;
     return await res.json();
   }catch(e){ return null; }
 }
 async function fetchMsgRemote(quizId, kind){
-  if(!LB_API.enabled || !LB_API.base || !quizId) return null;
+  if(!quizId) return null;
   try{
-    const res=await fetch(LB_API.base + LB_API.msgPath + '?quizId=' + encodeURIComponent(quizId) + '&kind=' + encodeURIComponent(kind), {cache:'no-store'});
-    if(!res.ok) return null;
+    const res=await lbFetch(LB_API.msgPath + '?quizId=' + encodeURIComponent(quizId) + '&kind=' + encodeURIComponent(kind), {cache:'no-store'});
+    if(!res) return null;
     const data=await res.json();
     return Array.isArray(data)?data:null;
   }catch(e){ return null; }
 }
 async function fetchSiteStatsRemote(){
-  if(!LB_API.enabled || !LB_API.base) return null;
   try{
-    const res=await fetch(LB_API.base + LB_API.statsPath + '?token=' + encodeURIComponent(DEV_TOKEN), {cache:'no-store'});
-    if(!res.ok) return null;
+    const res=await lbFetch(LB_API.statsPath + '?token=' + encodeURIComponent(DEV_TOKEN), {cache:'no-store'});
+    if(!res) return null;
     return await res.json();
   }catch(e){ return null; }
 }
 async function postFeedbackRemote(text, nick, quizId){
-  if(!LB_API.enabled || !LB_API.base) return null;
   try{
-    const res=await fetch(LB_API.base + LB_API.feedbackPath, {
+    const res=await lbFetch(LB_API.feedbackPath, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({text, nick:nick||'', quizId:quizId||'', fp:getPlayerFp()})
     });
-    if(!res.ok) return null;
+    if(!res) return null;
     return await res.json();
   }catch(e){ return null; }
 }
 async function fetchFeedbackRemote(){
-  if(!LB_API.enabled || !LB_API.base) return null;
   try{
-    const res=await fetch(LB_API.base + LB_API.feedbackPath + '?token=' + encodeURIComponent(DEV_TOKEN), {cache:'no-store'});
-    if(!res.ok) return null;
+    const res=await lbFetch(LB_API.feedbackPath + '?token=' + encodeURIComponent(DEV_TOKEN), {cache:'no-store'});
+    if(!res) return null;
     const data=await res.json();
     if(Array.isArray(data)) return data;
     if(data && Array.isArray(data.feedbacks)) return data.feedbacks;
@@ -2547,7 +2581,7 @@ function viewResult(){
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
     onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,savePosterImage,generateSharePoster,buildSharePoster,switchQrMode,paintManageQr,
     previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick,
-    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,DEV_TOKEN,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,postFeedbackRemote,fetchFeedbackRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,openLeaveFeedback,submitLeaveFeedback,hydrateDevStats,renderDevSite,renderDevFeedbackRows,viewDev,trackFriendOpen
+    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,DEV_TOKEN,lbFetch,lbBases,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,postFeedbackRemote,fetchFeedbackRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,openLeaveFeedback,submitLeaveFeedback,hydrateDevStats,renderDevSite,renderDevFeedbackRows,viewDev,trackFriendOpen
   });
   if(qPayload || sid){
     try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
