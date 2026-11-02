@@ -220,6 +220,8 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .stat-box .n{font-size:24px;font-weight:700;color:var(--primary-dark)}
 .stat-box .l{font-size:12px;color:var(--text-light);margin-top:2px}
 .hint{font-size:12px;color:var(--text-light);line-height:1.55;margin-top:8px}
+.share-reco{margin:6px 0 2px;font-size:12px;font-weight:650;color:var(--primary-dark);letter-spacing:.3px;text-align:center}
+.share-reco em{font-style:normal;background:var(--primary-soft);padding:2px 8px;border-radius:999px}
 .band-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px}
 .band-row .band-range{flex:0 0 78px;font-size:12px;color:var(--primary);font-weight:600;padding-top:12px;text-align:center}
 .band-row textarea{flex:1;min-height:52px}
@@ -1764,7 +1766,7 @@ function viewManage(){
       </div>
       <div class="tip-box">
         <b>微信分享提示</b>
-        点「生成分享海报」发朋友圈最香；也可只存二维码或复制压缩链接（通常 &lt;800 字）。
+        私聊好友优先「复制邀请链接」；发朋友圈再用海报或二维码。
       </div>
     </div>
     <div class="corner-msg">
@@ -1778,9 +1780,10 @@ function viewManage(){
         <div class="qr-caption">保存二维码发到微信，好友扫码直接答题</div>
         <p class="qr-sub" id="share-qr-meta">编码压缩邀请链接，打开即答题</p>
       </div>
-      <button class="btn btn-primary" onclick="generateSharePoster()">生成分享海报</button>
-      <button class="btn btn-secondary" onclick="copyLink()">复制邀请链接</button>
-      <p class="hint">海报可发朋友圈；手机长按预览图保存。也可先复制链接发给好友。</p>
+      <button class="btn btn-primary" onclick="copyLink()">复制邀请链接</button>
+      <p class="share-reco"><em>建议选用这个</em></p>
+      <button class="btn btn-secondary" onclick="generateSharePoster()">生成分享海报</button>
+      <p class="hint">链接发出去最稳；海报适合朋友圈，手机长按预览图保存。</p>
       <div class="poster-wrap" id="share-poster-wrap" hidden>
         <div id="share-poster"><p class="hint">海报预览会出现在这里</p></div>
         <button class="btn btn-primary" id="save-poster-btn" hidden onclick="savePosterImage()">保存海报</button>
