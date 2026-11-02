@@ -8,67 +8,70 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;background:#f6f5f2;color:#222;line-height:1.7;min-height:100vh;display:flex;justify-content:center;padding:48px 20px}
 main{max-width:640px;width:100%}
+.topnav{display:flex;justify-content:flex-end;gap:16px;margin-bottom:28px;font-size:14px}
+.topnav a{color:#666;text-decoration:none;letter-spacing:1px}
+.topnav a:hover{color:#222}
 header{text-align:center;margin-bottom:40px}
 .avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-h1{font-size:32px;letter-spacing:4px}
+h1{font-size:32px;letter-spacing:4px;font-weight:700}
 .en{color:#777;font-size:15px;letter-spacing:1px;margin-top:4px}
-.intro{margin-top:16px;font-size:17px;color:#444}
-.motto{margin-top:14px;font-size:15px;color:#666;letter-spacing:1px}
 h2{font-size:14px;color:#666;font-weight:600;letter-spacing:3px;margin-bottom:16px;text-align:center}
-.card{background:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:transform .2s}
-.card:hover{transform:translateY(-2px)}
-.card h3{font-size:18px;margin-bottom:6px}
-.card h3 span{margin-right:8px}
-.card p{color:#555;font-size:15px}
-.play-card{display:flex;flex-direction:column;gap:12px;align-items:stretch}
-.play-card img{width:72px;height:72px;border-radius:14px;object-fit:cover;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.08);align-self:flex-start}
-.play-card .body{flex:1;min-width:0;width:100%}
-.play-card a{color:#222;text-decoration:none;border-bottom:1px dashed #bbb}
-.play-card a:hover{border-bottom-color:#555}
-.play-card .tag{display:inline-block;font-size:12px;color:#7a5a20;background:#fff4d6;padding:1px 8px;border-radius:999px;margin-bottom:6px}
-.play-card .cta-row{margin-top:10px;display:flex;flex-direction:column;gap:8px;align-items:stretch}
-.play-card .cta-btn{display:block;width:100%;text-align:center;padding:10px 16px;border-radius:999px;background:#4BA3C7;color:#fff;text-decoration:none;border:none;font-size:14px;box-sizing:border-box}
-.play-card .cta-hint{font-size:12px;color:#888;text-align:center}
-footer{text-align:center;color:#aaa;font-size:13px;margin-top:40px}
+.play-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:520px){.play-grid{grid-template-columns:1fr 1fr 1fr}}
+.slot{background:#fff;border-radius:14px;padding:22px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:140px;justify-content:center;transition:transform .2s,box-shadow .2s}
+.slot:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.slot .icon{font-size:28px;margin-bottom:10px;line-height:1}
+.slot h3{font-size:17px;margin-bottom:6px;letter-spacing:1px}
+.slot p{font-size:13px;color:#777;line-height:1.5}
+.slot-live{border:1px solid #d6eef7;background:linear-gradient(135deg,#fbfeff,#eaf7f1)}
+.slot-live .tag{display:inline-block;font-size:11px;color:#7a5a20;background:#fff4d6;padding:1px 8px;border-radius:999px;margin-bottom:8px}
+.slot-more{background:#fafaf8;border:1px solid #e8e6e0;opacity:.92}
+.slot-more:hover{transform:none;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.slot-more .soon{font-size:12px;color:#999;margin-top:4px}
+.slot-reserved{background:transparent;border:1.5px dashed #ccc;box-shadow:none;color:#aaa;cursor:default}
+.slot-reserved:hover{transform:none;box-shadow:none}
+.slot-reserved h3{font-weight:500;color:#aaa}
+footer{text-align:center;color:#aaa;font-size:13px;margin-top:48px}
+footer a{color:#999;text-decoration:none}
+footer a:hover{color:#666}
 </style>
 </head>
 <body>
 <main>
+<nav class="topnav" aria-label="站点导航">
+  <a href="#play">Play</a>
+  <a href="about.html">关于</a>
+</nav>
 <header>
-<img class="avatar" src="avatar.jpg" alt="滅海襲">
-<h1>滅海襲</h1>
-<div class="en">Dragon·W·howlong</div>
-<p class="intro">一名初中生，爱好深度思考。<br><span style="display:inline-block;margin-top:8px;padding:2px 10px;border-radius:999px;background:#eee8f7;color:#5b3d8a;font-size:14px;letter-spacing:1px">ENTJ · 指挥官</span></p>
-<p class="motto">「沉淀自己，专注当下」</p>
+  <img class="avatar" src="avatar.jpg" alt="滅海襲">
+  <h1>滅海襲</h1>
+  <div class="en">Dragon·W·howlong</div>
 </header>
-<section>
-<h2>兴趣</h2>
-<div class="card"><h3><span>⚖️</span>法律</h3><p>好奇规则从何而来，又如何守护公平。喜欢琢磨每条法律背后的道理。</p></div>
-<div class="card"><h3><span>🤔</span>哲学</h3><p>追问“为什么”的学问。从存在到意义，享受思考没有标准答案的问题。</p></div>
-<div class="card"><h3><span>📐</span>积分学</h3><p>把无限细分再累加起来，用数学看清变化与面积，简洁又优美。</p></div>
+<section id="play">
+  <h2>Play</h2>
+  <div class="play-grid">
+    <a class="slot slot-live" href="https://dragonhowlong.github.io/zhiji/">
+      <span class="tag">本站主打 · H5</span>
+      <div class="icon">💬</div>
+      <h3>真心话</h3>
+      <p>出题测默契，发给朋友玩</p>
+    </a>
+    <a class="slot slot-more" href="more.html">
+      <div class="icon">⋯</div>
+      <h3>More</h3>
+      <p class="soon">更多 / 即将开放</p>
+    </a>
+    <div class="slot slot-reserved" aria-label="预留位">
+      <div class="icon">○</div>
+      <h3>预留</h3>
+      <p>第 3 位 · 暂空</p>
+    </div>
+  </div>
 </section>
-<section>
-<h2>玩点什么</h2>
-<div class="card play-card" style="border:1px solid #d6eef7;background:linear-gradient(135deg,#fbfeff,#eaf7f1)">
-<img src="memes/m08.jpg" alt="知己·默契测试" onerror="this.style.display='none'">
-<div class="body">
-<span class="tag">本站主打 · 免费 H5</span>
-<h3><a href="https://dragonhowlong.github.io/zhiji/">知己 · 默契测试</a></h3>
-<p>出 10 道关于你的题，发给朋友测默契。答完配表情包，懂不懂一眼看穿。手机浏览器直接玩，也支持排行榜 / 悄悄话。</p>
-<div class="cta-row">
-<a class="cta-btn" href="https://dragonhowlong.github.io/zhiji/">立即开玩 →</a>
-<span class="cta-hint">链接可转发朋友圈 / 班级群</span>
-</div>
-</div>
-</div>
-</section>
-<section>
-<h2>推荐书目</h2>
-<div class="card"><h3>《圆圈正义》</h3><p>罗翔：用故事讲清法律与公平。</p></div>
-<div class="card"><h3>《穷查理宝典》</h3><p>查理·芒格：关于判断、习惯与长期主义的智慧。</p></div>
-<div class="card"><h3>《改革中的人民》</h3><p>看改革进程里普通人的处境与选择。</p></div>
-</section>
-<footer>© 2026 滅海襲</footer>
+<footer>
+  <a href="about.html">关于创始人</a>
+  <div style="margin-top:10px">© 2026 滅海襲</div>
+</footer>
 </main>
 </body>
 </html>
