@@ -14,18 +14,21 @@ h1{font-size:32px;letter-spacing:4px}
 .en{color:#777;font-size:15px;letter-spacing:1px;margin-top:4px}
 .intro{margin-top:16px;font-size:17px;color:#444}
 .motto{margin-top:14px;font-size:15px;color:#666;letter-spacing:1px}
-h2{font-size:14px;color:#999;letter-spacing:3px;margin-bottom:16px;text-align:center}
+h2{font-size:14px;color:#666;font-weight:600;letter-spacing:3px;margin-bottom:16px;text-align:center}
 .card{background:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:transform .2s}
 .card:hover{transform:translateY(-2px)}
 .card h3{font-size:18px;margin-bottom:6px}
 .card h3 span{margin-right:8px}
 .card p{color:#555;font-size:15px}
-.play-card{display:flex;gap:14px;align-items:center}
-.play-card img{width:72px;height:72px;border-radius:14px;object-fit:cover;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.play-card .body{flex:1;min-width:0}
+.play-card{display:flex;flex-direction:column;gap:12px;align-items:stretch}
+.play-card img{width:72px;height:72px;border-radius:14px;object-fit:cover;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.08);align-self:flex-start}
+.play-card .body{flex:1;min-width:0;width:100%}
 .play-card a{color:#222;text-decoration:none;border-bottom:1px dashed #bbb}
 .play-card a:hover{border-bottom-color:#555}
 .play-card .tag{display:inline-block;font-size:12px;color:#7a5a20;background:#fff4d6;padding:1px 8px;border-radius:999px;margin-bottom:6px}
+.play-card .cta-row{margin-top:10px;display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.play-card .cta-btn{display:block;width:100%;text-align:center;padding:10px 16px;border-radius:999px;background:#4BA3C7;color:#fff;text-decoration:none;border:none;font-size:14px;box-sizing:border-box}
+.play-card .cta-hint{font-size:12px;color:#888;text-align:center}
 footer{text-align:center;color:#aaa;font-size:13px;margin-top:40px}
 </style>
 </head>
@@ -42,7 +45,7 @@ footer{text-align:center;color:#aaa;font-size:13px;margin-top:40px}
 <h2>兴趣</h2>
 <div class="card"><h3><span>⚖️</span>法律</h3><p>好奇规则从何而来，又如何守护公平。喜欢琢磨每条法律背后的道理。</p></div>
 <div class="card"><h3><span>🤔</span>哲学</h3><p>追问“为什么”的学问。从存在到意义，享受思考没有标准答案的问题。</p></div>
-<div class="card"><h3><span>∫</span>积分学</h3><p>把无限细分再累加起来，用数学看清变化与面积，简洁又优美。</p></div>
+<div class="card"><h3><span>📐</span>积分学</h3><p>把无限细分再累加起来，用数学看清变化与面积，简洁又优美。</p></div>
 </section>
 <section>
 <h2>玩点什么</h2>
@@ -52,8 +55,10 @@ footer{text-align:center;color:#aaa;font-size:13px;margin-top:40px}
 <span class="tag">本站主打 · 免费 H5</span>
 <h3><a href="https://dragonhowlong.github.io/zhiji/">知己 · 默契测试</a></h3>
 <p>出 10 道关于你的题，发给朋友测默契。答完配表情包，懂不懂一眼看穿。手机浏览器直接玩，也支持排行榜 / 悄悄话。</p>
-<p style="margin-top:8px"><a href="https://dragonhowlong.github.io/zhiji/" style="display:inline-block;padding:6px 14px;border-radius:999px;background:#4BA3C7;color:#fff;text-decoration:none;border:none;font-size:14px">立即开玩 →</a>
-<span style="margin-left:8px;font-size:12px;color:#888">链接可转发朋友圈 / 班级群</span></p>
+<div class="cta-row">
+<a class="cta-btn" href="https://dragonhowlong.github.io/zhiji/">立即开玩 →</a>
+<span class="cta-hint">链接可转发朋友圈 / 班级群</span>
+</div>
 </div>
 </div>
 </section>
