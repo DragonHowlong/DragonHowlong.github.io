@@ -182,21 +182,32 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .quiz-progress-bar{height:100%;background:linear-gradient(90deg,var(--primary),var(--mint));border-radius:3px;transition:width .3s}
 .quiz-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--text-light);margin:0 16px 10px}
 .quiz-q{font-size:18px;font-weight:650;line-height:1.55;margin-bottom:18px}
-.opt-btn{display:flex;align-items:center;width:100%;text-align:left;padding:13px 14px;margin-bottom:10px;border:1.5px solid var(--border);border-radius:14px;background:var(--opt-bg);font-size:15px;color:var(--text);cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.4}
-.opt-btn:active{transform:scale(.98)}
+.opt-btn{display:flex;align-items:center;width:100%;text-align:left;padding:13px 14px;margin-bottom:10px;border:1.5px solid var(--border);border-radius:14px;background:var(--opt-bg);font-size:15px;color:var(--text);cursor:pointer;transition:border-color .15s,background .15s,color .15s,transform .14s cubic-bezier(.2,.85,.25,1.15);font-family:inherit;line-height:1.4}
+.opt-btn:active{transform:scale(.96)}
 .opt-btn.selected{border-color:var(--primary);background:var(--opt-selected-bg);color:var(--primary-dark)}
 .opt-btn.correct-mark{border-color:var(--green);background:var(--green-soft)}
+.opt-btn.wrong-mark{border-color:var(--danger);background:var(--danger-soft)}
 .opt-letter{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;border-radius:50%;background:var(--bg2);color:var(--primary);font-weight:700;font-size:13px;margin-right:10px;flex-shrink:0}
 .opt-btn.selected .opt-letter{background:var(--primary);color:#fff}
 .opt-btn.correct-mark .opt-letter{background:var(--green);color:#fff}
+.opt-btn.wrong-mark .opt-letter{background:var(--danger);color:#fff}
 .opt-edit{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .opt-edit input[type=radio]{accent-color:var(--primary);width:18px;height:18px;flex-shrink:0}
 .opt-edit input[type=text]{flex:1}
 .opt-edit .rm{flex-shrink:0;width:32px;height:32px;border-radius:10px;border:1px solid var(--danger-border);background:var(--danger-soft);color:var(--danger);font-size:16px;cursor:pointer}
-.result-card{text-align:center;padding:26px 18px}
-.result-card .score-num{font-size:52px;font-weight:750;color:var(--primary);line-height:1}
+.result-card{text-align:center;padding:28px 18px 22px;-webkit-touch-callout:default;user-select:none;background:linear-gradient(180deg,var(--card) 0%,var(--soft-grad-b) 140%);border:1px solid var(--border)}
+.result-card .score-num{font-size:52px;font-weight:750;color:var(--primary);line-height:1;letter-spacing:.5px}
 .result-card .score-label{font-size:14px;color:var(--text-light);margin:6px 0 16px}
 .result-card .comment{font-size:15px;line-height:1.65;margin-bottom:14px;padding:14px;background:linear-gradient(135deg,var(--soft-grad-a),var(--soft-grad-b));border-radius:14px}
+.result-actions{display:flex;flex-direction:column;gap:0;margin-top:8px;text-align:center}
+.result-actions .btn{width:100%;margin-top:8px}
+.more-fold{margin-top:10px;border:1.5px solid var(--border);border-radius:14px;background:var(--btn-sec-bg);overflow:hidden}
+.more-fold>summary{list-style:none;cursor:pointer;padding:12px 16px;font-size:15px;font-weight:600;color:var(--primary-dark);text-align:center;-webkit-user-select:none;user-select:none}
+.more-fold>summary::-webkit-details-marker{display:none}
+.more-fold>summary::after{content:" ▾";font-size:12px;opacity:.7}
+.more-fold[open]>summary::after{content:" ▴"}
+.more-fold .fold-body{padding:0 12px 12px;border-top:1px solid var(--border)}
+.more-fold .fold-body .btn{margin-top:8px}
 .result-card .reward{font-size:15px;color:var(--primary-dark);font-weight:650;padding:14px 16px;border:1.5px dashed var(--primary);border-radius:14px;margin-bottom:8px;background:var(--reward-bg)}
 .result-card .no-reward{font-size:14px;color:var(--text-light);padding:12px;background:var(--no-reward-bg);border-radius:12px;margin-bottom:8px}
 .reward-preview{display:flex;align-items:center;gap:12px;padding:12px;background:linear-gradient(135deg,var(--soft-grad-a),var(--soft-grad-b));border-radius:14px;margin-top:8px}
@@ -227,7 +238,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .footer-note{text-align:center;padding:8px 20px;font-size:12px;color:var(--text-light);line-height:1.5}
 .hero-emoji{font-size:42px;margin-bottom:8px}
 .meme-hero{display:block;width:min(180px,46vw);height:auto;margin:0 auto 12px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;animation:memeFloat 3.2s ease-in-out infinite}
-.meme-result{display:block;width:min(160px,42vw);height:auto;margin:0 auto 14px;border-radius:16px;box-shadow:0 4px 14px rgba(var(--primary-rgb),.16);object-fit:cover}
+.meme-result{display:block;width:min(168px,44vw);height:auto;margin:0 auto 14px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;-webkit-touch-callout:default;user-select:none}
 @keyframes memeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .intro-title{font-size:20px;font-weight:700;line-height:1.4;margin-bottom:8px;color:var(--text)}
 .slot-tag{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);font-weight:600}
@@ -273,9 +284,9 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .poster-wrap img{width:min(86vw,320px);height:auto;border-radius:16px;background:#d6e4ff;box-shadow:0 4px 16px rgba(var(--primary-rgb),.18);border:1px solid var(--border);-webkit-touch-callout:default}
 .poster-wrap .hint{margin-top:8px}
 
-.bgm-toggle{position:fixed;top:calc(12px + env(safe-area-inset-top));right:max(12px, env(safe-area-inset-right));z-index:300;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:var(--bgm-bg);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;cursor:pointer;color:var(--primary-dark);padding:0;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(6px)}
-.bgm-toggle:active{transform:scale(.94)}
-.bgm-toggle[aria-pressed="true"]{background:var(--primary-soft);border-color:var(--primary)}
+.bgm-toggle{position:fixed;top:calc(14px + env(safe-area-inset-top));right:max(10px, env(safe-area-inset-right));z-index:300;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bgm-bg);box-shadow:0 1px 6px rgba(var(--primary-rgb),.10);display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;cursor:pointer;color:var(--text-light);opacity:.72;padding:0;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(6px)}
+.bgm-toggle:active{transform:scale(.92);opacity:.9}
+.bgm-toggle[aria-pressed="true"]{background:var(--primary-soft);border-color:var(--primary);color:var(--primary-dark);opacity:.88}
 
 .theme-picker{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
 .theme-chip{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:14px;border:1.5px solid var(--border);background:var(--chip-bg);cursor:pointer;font-family:inherit;color:var(--text);font-size:12px;line-height:1.3}
@@ -374,7 +385,7 @@ const TEMPLATES = [
     id:'bestie',
     emoji:'👭',
     name:'闺蜜测试模板',
-    desc:'秋冬版闺蜜默契 · 10 题开箱即测谁懂你',
+    desc:'闺蜜默契挑战 · 10 题开箱即测谁懂你',
     reward:'奶茶券',
     titleHint:'闺蜜默契挑战',
     nameHint:'闺蜜本人',
@@ -776,13 +787,14 @@ function viewDev(){
 }
 
 const MEME_POOL = {
-  entry: ['memes/m01.jpg','memes/m05.jpg','memes/m08.jpg','memes/m06.jpg','memes/m07.jpg','memes/m03.jpg'],
-  locked: ['memes/m04.jpg','memes/m09.jpg'],
+  /* cat-family / soft stickers only — skip uncanny smile faces */
+  entry: ['memes/m05.jpg','memes/m10.jpg','memes/m02.jpg','memes/m03.jpg','memes/m07.jpg','memes/m08.jpg'],
+  locked: ['memes/m03.jpg','memes/m02.jpg'],
   byScore: {
-    low: ['memes/m09.jpg','memes/m11.jpg','memes/m04.jpg'],   // 0-3
-    mid: ['memes/m02.jpg','memes/m03.jpg','memes/m01.jpg'],   // 4-6
-    high: ['memes/m05.jpg','memes/m07.jpg','memes/m06.jpg'],  // 7-8
-    top: ['memes/m08.jpg','memes/m10.jpg','memes/m05.jpg']    // 9-10
+    low: ['memes/m03.jpg','memes/m02.jpg','memes/m07.jpg'],   // 0-3 confused/judgy cats
+    mid: ['memes/m02.jpg','memes/m07.jpg','memes/m05.jpg'],   // 4-6
+    high: ['memes/m05.jpg','memes/m10.jpg','memes/m08.jpg'],  // 7-8 soft / dreamy
+    top: ['memes/m10.jpg','memes/m08.jpg','memes/m05.jpg']    // 9-10
   }
 };
 function memeImg(src, cls){
@@ -1343,7 +1355,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">秋冬换季 · 双十一默契也在购物车里</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此</span></p>
     </header>
     <div class="card" style="text-align:center;padding:28px 18px">
       ${memeImg(pickEntryMeme(),'meme-hero')}
@@ -1762,9 +1774,8 @@ function viewManage(){
         <p class="qr-sub" id="share-qr-meta">编码压缩邀请链接，打开即答题</p>
       </div>
       <button class="btn btn-primary" onclick="generateSharePoster()">生成分享海报</button>
-      <button class="btn btn-secondary" onclick="saveQrImage()">保存二维码</button>
-      <button class="btn btn-secondary" onclick="copyLink()">复制邀请链接（压缩）</button>
-      <p class="hint">海报可发朋友圈；手机长按预览图保存。二维码也可单独保存。</p>
+      <button class="btn btn-secondary" onclick="copyLink()">复制邀请链接</button>
+      <p class="hint">海报可发朋友圈；手机长按预览图保存。也可先复制链接发给好友。</p>
       <div class="poster-wrap" id="share-poster-wrap" hidden>
         <div id="share-poster"><p class="hint">海报预览会出现在这里</p></div>
         <button class="btn btn-primary" id="save-poster-btn" hidden onclick="savePosterImage()">保存海报</button>
@@ -1789,14 +1800,20 @@ function viewManage(){
       ${st.board.slice(0,20).map(r=>`<div class="lb-row"><span>${escapeHtml(r.nick||'匿名')}</span><span class="lb-score">${r.score}/${Q_COUNT}</span></div>`).join('')}
     </div></div>`:''}
     <div class="card">
-      <button class="btn btn-secondary" onclick="copyShortLink()">复制短链 ?s=</button>
-      <button class="btn btn-secondary" onclick="switchQrMode()">切换二维码（压缩/短链）</button>
-      <button class="btn btn-secondary" onclick="exportQuizJson()">导出短链 JSON</button>
-      <button class="btn btn-secondary" onclick="copyHashLink()">生成纯答题页（备用）</button>
-      <button class="btn btn-secondary" onclick="showQuestions()">查看题目</button>
       <button class="btn btn-mint" onclick="previewAsFriend()">试玩答题</button>
-      <button class="btn btn-ghost" style="width:100%" onclick="clearManageAndHome()">返回出题（新建）</button>
-      <p class="hint">默认二维码=压缩 ?q=z.…（立刻可用）。短链 ?s= 二维码更易扫，需站点含 s/id.json。</p>
+      <details class="more-fold">
+        <summary>更多</summary>
+        <div class="fold-body">
+          <button class="btn btn-secondary" onclick="saveQrImage()">保存二维码</button>
+          <button class="btn btn-secondary" onclick="copyShortLink()">复制短链 ?s=</button>
+          <button class="btn btn-secondary" onclick="switchQrMode()">切换二维码（压缩/短链）</button>
+          <button class="btn btn-secondary" onclick="exportQuizJson()">导出短链 JSON</button>
+          <button class="btn btn-secondary" onclick="copyHashLink()">生成纯答题页（备用）</button>
+          <button class="btn btn-secondary" onclick="showQuestions()">查看题目</button>
+          <p class="hint">默认二维码=压缩 ?q=z.…（立刻可用）。短链 ?s= 更易扫，需站点含 s/id.json。</p>
+        </div>
+      </details>
+      <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="clearManageAndHome()">返回出题（新建）</button>
     </div>
     <div id="q-view"></div>
   </div>`;
@@ -2339,8 +2356,29 @@ function viewPlay(){
   </div>`;
 }
 function pickPlay(j){
-  if(S._finishing || S._finishDone || S.route==='result') return;
+  if(S._finishing || S._finishDone || S.route==='result' || S._picking) return;
   S.playAnswers[S.playIdx]=j;
+  const quiz=S.playQuiz;
+  const q=quiz && quiz.questions && quiz.questions[S.playIdx];
+  const ans=(q && (q.answer|0))|0;
+  const btns=document.querySelectorAll('.opt-btn');
+  if(btns && btns.length){
+    S._picking=true;
+    btns.forEach((el,i)=>{
+      el.disabled=true;
+      el.classList.remove('selected','correct-mark','wrong-mark');
+      if(i===ans) el.classList.add('correct-mark','selected');
+      else if(i===j) el.classList.add('wrong-mark','selected');
+    });
+    setTimeout(()=>{
+      S._picking=false;
+      if(S.playIdx>=Q_COUNT-1){
+        S._finishing=true;
+        void finishPlay();
+      } else { S.playIdx++; render(); }
+    }, 260);
+    return;
+  }
   if(S.playIdx>=Q_COUNT-1){
     S._finishing=true;
     void finishPlay();
@@ -2413,23 +2451,21 @@ function viewResult(){
       ${r.won
         ? `<div class="reward">🎁 恭喜获得：${escapeHtml(quiz.reward)}<br><span style="font-weight:500;font-size:12px;color:var(--text-light)">请联系出题人兑换（先到先得）</span></div>`
         : `<div class="no-reward">未获得奖励<br><span style="font-size:12px">需答对 ≥ ${quiz.threshold} 题（你答对 ${r.score} 题）</span></div>`}
-      <div class="corner-msg" style="margin:14px 0 8px">
-        <button class="btn btn-primary" onclick="openLeaveMsg('whisper')">悄悄话</button>
-        <button class="btn btn-primary" onclick="openLeaveMsg('anon')">匿名信</button>
+      <div class="result-actions">
+        <button class="btn btn-secondary" onclick="openLeaveMsg('whisper')">写悄悄话</button>
+        <button class="btn btn-secondary" onclick="openLeaveMsg('anon')">写匿名信</button>
+        ${locked
+          ? `<p class="hint" style="margin:10px 0 2px">这套题本机已作答，不能再答一次。</p>`
+          : `<button class="btn btn-secondary" onclick="beginPlay()">再试一次</button>
+        <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>`}
+        <p style="margin:16px 0 0;font-size:14px;color:var(--text-light);line-height:1.55">测完了？出一套属于你的题发给朋友。</p>
+        <button class="btn btn-mint" onclick="goCreateOwn()">我也要出题</button>
+        <button class="btn btn-secondary" onclick="openLeaveFeedback()">给开发者留言</button>
       </div>
-      ${locked
-        ? `<p class="hint" style="margin-bottom:10px">这套题本机已作答，不能再答一次。</p>`
-        : `<button class="btn btn-secondary" onclick="beginPlay()">再试一次</button>
-      <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>`}
-      <p style="margin:16px 0 8px;font-size:14px;color:var(--text-light);line-height:1.55">测完了？出一套属于你的题发给朋友。</p>
-      <button class="btn btn-mint" onclick="goCreateOwn()">我也要出题</button>
     </div>
     <div class="card">
       <h2>排行榜</h2>
       <div class="lb-remote-hook" id="lb-remote-hook"><p class="hint">正在加载排行榜…</p></div>
-    </div>
-    <div class="corner-msg" style="margin:4px 0 18px">
-      <button class="btn btn-ghost" onclick="openLeaveFeedback()">给开发者留言</button>
     </div>
   </div>`;
 }
