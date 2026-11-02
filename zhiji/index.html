@@ -493,11 +493,12 @@ const LB_API = {
   enabled: true,
   /* Primary: is-a.dev custom hostname → Pages Functions + BOARD KV (after deploy+DNS). Fallbacks: production workers. */
   bases: [
+    'https://zhiji-api.pages.dev',
     'https://zhiji-api.is-a.dev',
     'https://zhiji-board.wanghowlonggg-jcwmny.workers.dev',
     'https://zhiji-board.wanghowlonggg.workers.dev'
   ],
-  base: 'https://zhiji-api.is-a.dev',
+  base: 'https://zhiji-api.pages.dev',
   submitPath: '/zhiji/score',
   boardPath: '/zhiji/board',
   msgPath: '/zhiji/msg',
