@@ -1,0 +1,17 @@
+Quirky Little March
+Artist: Ondrosik
+Album: Enchanted Valley
+License: CC0 1.0 Universal (Public Domain Dedication)
+Source page: https://nullrights.com/track/k8ptgl3pml
+Original: https://freemusicarchive.org/music/Ondrosik/enchanted-valley/quirky-little-march/
+CC0 deed: https://creativecommons.org/publicdomain/zero/1.0/
+
+No attribution required; credit appreciated:
+"Quirky Little March" by Ondrosik — Free Music Archive / nullrights, CC0 1.0
+
+Files in this directory used as default BGM:
+- quirky-little-march.mp3 (downloaded from nullrights)
+- quirky-little-march.m4a (AAC re-encode via ffmpeg for Safari)
+
+Legacy Halloween BGM kept for historical links only (not default):
+- undead-funeral-march.mp3 / .m4a
