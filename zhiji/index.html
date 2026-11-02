@@ -307,10 +307,15 @@ html[data-theme="mono"] .btn-primary,html[data-theme="mono"] .btn-mint{backgroun
 html[data-theme="mono"] header.app-header{background:#111}
 .lb-remote-hook{min-height:24px}
 
+.hub-back{position:fixed;top:max(10px,env(safe-area-inset-top));left:12px;z-index:60;display:inline-flex;align-items:center;gap:4px;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:650;letter-spacing:.3px;text-decoration:none;color:#fff;background:rgba(28,40,51,.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.hub-back:active{opacity:.85;transform:scale(.97)}
+
+
 
 </style>
 </head>
 <body>
+<a class="hub-back" href="https://dragonhowlong.github.io/" aria-label="返回滅海襲总站">← 回总站</a>
 <div id="app"></div>
 <audio id="bgm" loop preload="auto" autoplay playsinline webkit-playsinline>
   <source src="audio/quirky-little-march.m4a" type="audio/mp4">
