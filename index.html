@@ -28,11 +28,18 @@ h2{font-size:16px;color:#555;font-weight:600;letter-spacing:2px;margin:0 0 16px;
 .slot .cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:999px;font-size:14px;font-weight:600;letter-spacing:1px;width:100%;max-width:220px}
 .slot-live{border-color:#b9dce8;background:linear-gradient(145deg,#e8f6fb 0%,#d9f0e8 55%,#eef8f4 100%)}
 .slot-live .cta{background:#4BA3C7;color:#fff}
-.slot-more .cta{background:#eceae4;color:#444}
+.slot-more{cursor:default}
+.slot-more:hover{transform:none;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.slot-more .cta{background:#eceae4;color:#aaa;cursor:not-allowed;pointer-events:none}
+.play-grid{align-items:stretch}.play-grid .slot{height:100%}
 .about-entry{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e4e0d8;border-radius:16px;padding:22px 20px;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:transform .2s,box-shadow .2s}
 .about-entry:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
 .about-entry p{color:#666;font-size:14px;margin-top:6px}
 .about-entry .go{display:inline-flex;margin-top:14px;min-height:44px;align-items:center;color:#2a6f8f;font-weight:600;letter-spacing:1px}
+.copy-slot:empty{display:none}
+.tagline{color:#888;font-size:14px;margin-top:8px;text-align:center}
+.play-lead{text-align:center;color:#777;font-size:14px;margin:-8px 0 14px}
+@media (max-width:430px){body{padding:24px 16px 40px}.play-grid{gap:10px}.slot{padding:18px 12px;min-height:176px}.slot h3{font-size:18px}}
 footer{text-align:center;color:#aaa;font-size:13px;margin-top:28px}
 footer a{color:#999;text-decoration:none}
 footer a:hover{color:#666}
@@ -48,6 +55,7 @@ footer a:hover{color:#666}
   <img class="avatar" src="avatar.jpg" alt="滅海襲">
   <h1>滅海襲</h1>
   <div class="en">Dragon·W·howlong</div>
+  <p class="tagline">做了些好玩的小东西，点开就能玩。</p>
 </header>
 <section class="section" id="play">
   <h2>要不玩些什么？</h2>
@@ -55,15 +63,15 @@ footer a:hover{color:#666}
     <a class="slot slot-live" href="https://dragonhowlong.github.io/zhiji/">
       <img class="thumb" src="memes/m08.jpg" alt="测试题" onerror="this.style.display='none'">
       <h3>测试题</h3>
-      <div class="sub">默契小游戏</div>
+      <div class="sub">和朋友一起测默契</div>
       <span class="cta">立即开玩</span>
     </a>
-    <a class="slot slot-more" href="more.html">
+    <div class="slot slot-more" aria-disabled="true">
       <div class="icon-box" aria-hidden="true">🔒</div>
       <h3>更多</h3>
-      <div class="sub">准备中</div>
-      <span class="cta">敬请期待</span>
-    </a>
+      <div class="sub">新玩意儿在做了</div>
+      <span class="cta" aria-disabled="true">即将上线</span>
+    </div>
   </div>
 </section>
 <section class="section" id="about">
