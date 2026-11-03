@@ -4032,16 +4032,26 @@ async function lbFetch(pathWithQuery, opts){
   const bases = lbBases();
   if(!bases.length) return null;
   let lastErr = null;
+  let lastRes = null;
   for(let i=0;i<bases.length;i++){
     const base = bases[i];
     try{
       const res = await fetch(base + pathWithQuery, opts);
-      if(!res.ok){ lastErr = 'http '+res.status; continue; }
+      if(!res.ok){
+        lastErr = 'http '+res.status;
+        lastRes = res;
+        // Auth / rate-limit answers are meaningful; do not hide behind fallback bases
+        if(res.status===401 || res.status===403 || res.status===429){
+          LB_API.base = base;
+          return res;
+        }
+        continue;
+      }
       LB_API.base = base; // sticky prefer last success
       return res;
     }catch(e){ lastErr = e; }
   }
-  return null;
+  return lastRes || null;
 }
 async function submitScoreRemote(quizId, row){
   try{
@@ -4086,18 +4096,57 @@ async function postMsgRemote(quizId, kind, text, nick){
     return await res.json();
   }catch(e){ return null; }
 }
-async function fetchMsgRemote(quizId, kind){
+async function fetchMsgRemote(quizId, kind, ownerToken){
   if(!quizId) return null;
   try{
-    const res=await lbFetch(LB_API.msgPath + '?quizId=' + encodeURIComponent(quizId) + '&kind=' + encodeURIComponent(kind), {cache:'no-store'});
+    const headers={'Cache-Control':'no-store'};
+    if(ownerToken) headers['X-Owner-Token']=ownerToken;
+    const res=await lbFetch(LB_API.msgPath + '?quizId=' + encodeURIComponent(quizId) + '&kind=' + encodeURIComponent(kind), {cache:'no-store', headers});
     if(!res) return null;
+    if(res.status===403) return {__forbidden:true};
     const data=await res.json();
     return Array.isArray(data)?data:null;
   }catch(e){ return null; }
 }
+function adminAuthHeaders(){
+  const k=getDevKey();
+  const h={'Cache-Control':'no-store'};
+  if(k){ h['Authorization']='Bearer '+k; h['X-Admin-Token']=k; }
+  return h;
+}
+function genOwnerToken(){
+  try{
+    const a=new Uint8Array(24);
+    crypto.getRandomValues(a);
+    return Array.from(a,b=>b.toString(16).padStart(2,'0')).join('');
+  }catch(e){
+    return uid()+uid()+uid();
+  }
+}
+function ensureOwnerToken(quiz){
+  if(!quiz) return '';
+  if(quiz.ownerToken && String(quiz.ownerToken).length>=16) return quiz.ownerToken;
+  quiz.ownerToken=genOwnerToken();
+  try{ savePublished(quiz); }catch(e){}
+  return quiz.ownerToken;
+}
+async function registerOwnerRemote(quizId, ownerToken){
+  if(!quizId || !ownerToken) return null;
+  try{
+    const res=await lbFetch('/zhiji/owner', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({quizId, ownerToken})
+    });
+    if(!res) return null;
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) return Object.assign({ok:false, status:res.status}, data||{});
+    return data;
+  }catch(e){ return null; }
+}
 async function fetchSiteStatsRemote(){
   try{
-    const res=await lbFetch(LB_API.statsPath + '?token=' + encodeURIComponent(getDevKey()), {cache:'no-store'});
+    const res=await lbFetch(LB_API.statsPath, {cache:'no-store', headers:adminAuthHeaders()});
     if(!res) return null;
     return await res.json();
   }catch(e){ return null; }
@@ -4115,7 +4164,7 @@ async function postFeedbackRemote(text, nick, quizId){
 }
 async function fetchFeedbackRemote(){
   try{
-    const res=await lbFetch(LB_API.feedbackPath + '?token=' + encodeURIComponent(getDevKey()), {cache:'no-store'});
+    const res=await lbFetch(LB_API.feedbackPath, {cache:'no-store', headers:adminAuthHeaders()});
     if(!res) return null;
     const data=await res.json();
     if(Array.isArray(data)) return data;
@@ -4159,7 +4208,17 @@ async function openMsgInbox(kind){
   document.body.appendChild(wrap);
   const body=document.getElementById('msg-inbox-body');
   if(!LB_API.enabled){ body.innerHTML='<p class="hint">留言未启用</p>'; return; }
-  const list=await fetchMsgRemote(quiz.id, kind);
+  const token=ensureOwnerToken(quiz);
+  const claim=await registerOwnerRemote(quiz.id, token);
+  if(claim && claim.error==='owner already set'){
+    body.innerHTML='<p class="hint">这套题的读取凭证已在其他设备登记。本机无法读取留言。旧卷若从未登记，需在原出题设备打开「我的已发布试卷」认领；无法恢复时只能重新发布。</p>';
+    return;
+  }
+  const list=await fetchMsgRemote(quiz.id, kind, token);
+  if(list && list.__forbidden){
+    body.innerHTML='<p class="hint">无权读取（需要出题人本机凭证）。分享链接不会带凭证，朋友看不到留言。</p>';
+    return;
+  }
   if(list===null){
     body.innerHTML='<p class="hint">加载失败，可能是网络拦截（如微信拦 *.workers.dev）。请用系统浏览器打开再试。</p>';
     return;
@@ -4415,6 +4474,7 @@ function expandQuestion(x){
   return {q:x.q,options:x.o||x.options||[],answer:x.a|0};
 }
 function encodeQuiz(quiz){
+  // ownerToken stays localStorage-only; never pack into share URL
   const compact={
     i:quiz.id,
     n:quiz.name||'',
@@ -5206,10 +5266,12 @@ function publishQuiz(){
     theme:normalizeTheme(d.theme),
     inventory:d.inventory==null||d.inventory===''?null:Math.max(0,+d.inventory||0),
     bands:d.bands.map(b=>({min:+b.min||0,max:+b.max||0,text:String(b.text||'')})),
-    questions:d.slots.map(s=>{const qq={q:s.q,options:[...s.options],answer:s.answer|0}; if(typeof s.bankIdx==='number') qq.bankIdx=s.bankIdx; else {const bi=findBankIdx(s); if(bi>=0) qq.bankIdx=bi;} return qq;})
+    questions:d.slots.map(s=>{const qq={q:s.q,options:[...s.options],answer:s.answer|0}; if(typeof s.bankIdx==='number') qq.bankIdx=s.bankIdx; else {const bi=findBankIdx(s); if(bi>=0) qq.bankIdx=bi;} return qq;}),
+    ownerToken:genOwnerToken()
   };
   savePublished(quiz);
   void postHitRemote(quiz.id,'publish');
+  void registerOwnerRemote(quiz.id, quiz.ownerToken);
   const st=getStats(quiz.id); setStats(quiz.id,st);
   // Clear draft after publish to avoid stale resume / crash-recovery confusion
   S.draft=defaultDraft();
@@ -6186,7 +6248,7 @@ function viewResult(){
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
     onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,savePosterImage,generateSharePoster,buildSharePoster,switchQrMode,paintManageQr,
     previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick,
-    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,saveDevKey,lbFetch,lbBases,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,postFeedbackRemote,fetchFeedbackRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,openLeaveFeedback,submitLeaveFeedback,hydrateDevStats,renderDevSite,renderDevFeedbackRows,viewDev,trackFriendOpen
+    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,saveDevKey,genOwnerToken,ensureOwnerToken,registerOwnerRemote,adminAuthHeaders,lbFetch,lbBases,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,postFeedbackRemote,fetchFeedbackRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,openLeaveFeedback,submitLeaveFeedback,hydrateDevStats,renderDevSite,renderDevFeedbackRows,viewDev,trackFriendOpen
   });
   if(qPayload || sid){
     try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
