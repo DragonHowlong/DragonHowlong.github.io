@@ -314,6 +314,22 @@ html[data-theme="mono"] header.app-header{background:#111}
 
 
 
+.p4-hero{text-align:center;padding:26px 18px 20px}
+.p4-title{font-size:28px;font-weight:800;line-height:1.3;margin:4px 0 14px;color:var(--text)}
+.p4-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:18px}
+.p4-pills span{padding:6px 12px;border-radius:999px;background:rgba(var(--primary-rgb),.12);color:var(--primary-dark,var(--primary));font-size:13px;font-weight:600}
+.p4-main{min-height:52px;font-size:17px}
+.p4-sample{position:relative;margin-top:16px;padding:14px 14px 12px;border-radius:16px;border:1px dashed rgba(var(--primary-rgb),.45);text-align:left;background:rgba(var(--primary-rgb),.05)}
+.p4-sample .tag{position:absolute;top:-10px;right:12px;background:var(--primary);color:#fff;font-size:11px;padding:2px 8px;border-radius:999px}
+.p4-sample .who{font-weight:700;font-size:15px}.p4-sample .pct{font-size:30px;font-weight:800;color:var(--primary);margin:4px 0}
+.p4-sample .sub{font-size:13px;color:var(--text-light)}
+.result-card .score-num.p3{font-size:64px;text-align:center}
+.p3-main{min-height:52px;font-size:17px;margin-top:4px}
+.btn-outline{background:transparent;border:1.5px solid var(--primary);color:var(--primary)}
+.shared-banner{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:rgba(var(--primary-rgb),.1);font-size:14px;font-weight:600;color:var(--text)}
+.sc-mask{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px}
+.sc-box{background:#fff;border-radius:18px;padding:12px;max-width:360px;width:100%;max-height:92vh;overflow:auto}
+.sc-box img{width:100%;border-radius:12px;display:block}
 </style>
 </head>
 <body>
@@ -4002,7 +4018,10 @@ const LB_API = {
   feedbackPath: '/zhiji/feedback'
 };
 /* Site-developer only. Not for quiz creators. */
-const DEV_TOKEN = 'INakag_zwNB9FL1lQw8RwjFd';
+/* Dev key is never shipped in JS: entered manually on #dev, kept only in this browser's localStorage. */
+const DEV_KEY_STORE = 'zhiji_dev_key';
+function getDevKey(){ try{ return localStorage.getItem(DEV_KEY_STORE)||''; }catch(e){ return ''; } }
+function saveDevKey(v){ try{ v=String(v||'').trim(); if(v) localStorage.setItem(DEV_KEY_STORE,v); else localStorage.removeItem(DEV_KEY_STORE); }catch(e){} render(); }
 function lbBases(){
   const list = Array.isArray(LB_API.bases) && LB_API.bases.length ? LB_API.bases.slice() : [];
   if(LB_API.base && list.indexOf(LB_API.base) < 0) list.unshift(LB_API.base);
@@ -4078,7 +4097,7 @@ async function fetchMsgRemote(quizId, kind){
 }
 async function fetchSiteStatsRemote(){
   try{
-    const res=await lbFetch(LB_API.statsPath + '?token=' + encodeURIComponent(DEV_TOKEN), {cache:'no-store'});
+    const res=await lbFetch(LB_API.statsPath + '?token=' + encodeURIComponent(getDevKey()), {cache:'no-store'});
     if(!res) return null;
     return await res.json();
   }catch(e){ return null; }
@@ -4096,7 +4115,7 @@ async function postFeedbackRemote(text, nick, quizId){
 }
 async function fetchFeedbackRemote(){
   try{
-    const res=await lbFetch(LB_API.feedbackPath + '?token=' + encodeURIComponent(DEV_TOKEN), {cache:'no-store'});
+    const res=await lbFetch(LB_API.feedbackPath + '?token=' + encodeURIComponent(getDevKey()), {cache:'no-store'});
     if(!res) return null;
     const data=await res.json();
     if(Array.isArray(data)) return data;
@@ -4107,7 +4126,9 @@ async function fetchFeedbackRemote(){
 function isDevMode(){
   try{
     const p=new URLSearchParams(location.search);
-    return p.get('dev')===DEV_TOKEN;
+    // Strip any legacy ?dev=… from the address bar
+    if(p.has('dev')){ try{ history.replaceState(null,'', location.pathname + '#dev'); }catch(e){} return true; }
+    return (location.hash||'').replace(/^#/,'').split('?')[0].toLowerCase()==='dev';
   }catch(e){ return false; }
 }
 function fmtMsgTime(at){
@@ -4242,9 +4263,7 @@ async function hydrateDevStats(){
   if(!box) return;
   box.innerHTML='<p class="hint">正在加载全站数据…</p>';
   // keep secret query on refresh button path
-  try{
-    if(isDevMode()) history.replaceState(null,'', location.pathname + '?dev=' + encodeURIComponent(DEV_TOKEN) + '#dev');
-  }catch(e){}
+  if(!getDevKey()){ box.innerHTML='<p class="hint">请先输入开发者密钥</p>'; return; }
   const data=await fetchSiteStatsRemote();
   if(data&&data.site){
     const fbs=Array.isArray(data.feedbacks)?data.feedbacks:null;
@@ -4263,6 +4282,11 @@ async function hydrateDevStats(){
 function viewDev(){
   return `<div class="view active">
     <header class="app-header"><h1>开发者数据</h1><p>全站汇总 · 不对出题人开放</p></header>
+    <div class="card">
+      <label>开发者密钥（只存本机 localStorage）</label>
+      <input type="password" id="dev-key" autocomplete="off" placeholder="${getDevKey()?'已保存，可重新输入替换':'输入密钥'}">
+      <div class="btn-row"><button class="btn btn-primary" onclick="saveDevKey(document.getElementById('dev-key').value)">保存</button><button class="btn btn-secondary" onclick="saveDevKey('')">清除</button></div>
+    </div>
     <div class="card"><div id="dev-stats-hook"><p class="hint">正在加载…</p></div>
       <button class="btn btn-secondary" onclick="hydrateDevStats()">刷新</button>
       <button class="btn btn-ghost" style="width:100%" onclick="history.replaceState(null,'',location.pathname+'#home');S.route='home';render()">离开</button>
@@ -4718,7 +4742,7 @@ function parseRoute(){
     return 'play-intro';
   }
 
-  if(params.get('dev')===DEV_TOKEN) return 'dev';
+  if(params.has('dev') || h==='dev') return 'dev';
   if(params.get('manage')==='1') return 'manage';
   if(['home','create','reward','manage'].includes(h)) return h;
   if(h==='result' && S.result && S.playQuiz) return 'result';
@@ -4841,11 +4865,19 @@ function viewHome(){
       <h1>默契测试</h1>
       <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此 · 冷空气路上·默契先捂热</span></p>
     </header>
-    <div class="card" style="text-align:center;padding:28px 18px">
-      ${memeImg(pickEntryMeme(),'meme-hero')}
-      <div class="intro-title">创建你的默契测试卷</div>
-      <button class="btn btn-primary" onclick="startCreate(false)">开始出题</button>
+    <div class="card p4-hero">
+      <h2 class="p4-title">他到底有多懂你？</h2>
+      <div class="p4-pills"><span>10 题</span><span>1 分钟</span><span>不用注册</span><span>免费</span></div>
+      <button class="btn btn-primary p4-main" onclick="scrollToTemplates()">开始出题</button>
+      <div class="p4-sample"><span class="tag">示例</span>
+        <div class="who">小林 × 阿杰</div>
+        <div class="pct">默契 85%</div>
+        <div class="sub">答对 8/10 · 最懂你的题：你最怕什么？</div>
+      </div>
       ${hasPub?`<button class="btn btn-mint" onclick="goManage()">我的已发布试卷</button>`:''}
+    </div>
+    <div class="card" id="tpl-anchor">
+      <button class="btn btn-primary" onclick="startCreate(false)">从题库随机出题</button>
     </div>
     <div class="card">
       <h2>现成模板 · 点一下加载</h2>
@@ -4859,6 +4891,10 @@ function viewHome(){
   </div>`;
 }
 
+function scrollToTemplates(){
+  const el=document.getElementById('tpl-anchor');
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
 function startCreate(_resume){
   // Always start a fresh draft from home / 开始出题 — no resume UI
   if(hasFriendLink()){ toast('当前为答题链接'); return; }
@@ -5382,7 +5418,6 @@ function pickQrUrl(quiz){
   // mode: 'q' compressed (default, works immediately) | 's' short file
   if(S.qrMode==='s') return shortu;
   // if compressed still huge, auto-prefer short for scannability
-  if(compressed.length>1100) return shortu;
   return compressed;
 }
 function switchQrMode(){
@@ -5726,7 +5761,7 @@ function viewPlayIntro(){
   }
   // Per-quiz lock (same quiz id only); other quizzes still playable
   const lockFriend=hasFriendLink();
-  const played=lockFriend?getPlayedRecord(quiz.id):null;
+  const played=null; // P2: re-challenge allowed (lock removed)
   if(played){
     const finished=!!played.done;
     return `
@@ -5759,6 +5794,7 @@ function viewPlayIntro(){
     </header>
     <div class="card" style="text-align:center;padding:26px 16px">
       ${memeImg(pickEntryMeme(),'meme-hero')}
+      ${sharedResultBanner(quiz)}
       <div class="intro-title">关于我的 10 道题<br>你能答对多少？</div>
       <p class="hint" style="margin:10px 0 14px">答对 ≥ ${quiz.threshold} 题才有机会拿走奖励</p>
       <div class="reward-preview" style="text-align:left">
@@ -5768,7 +5804,7 @@ function viewPlayIntro(){
       <label style="text-align:left;margin-top:16px">你的昵称（可选，用于本机排行；本机记住一次）</label>
       <input type="text" maxlength="12" placeholder="怎么称呼你" value="${escapeHtml(S.playNick)}" oninput="S.playNick=this.value;savePlayerNick(this.value)">
       <button class="btn btn-primary" style="margin-top:16px" onclick="beginPlay()">开始挑战</button>
-      <p class="hint" style="margin-top:12px">每套题本机限答 1 次（按试卷 id）。纯前端无法跨手机识别身份。</p>
+      <p class="hint" style="margin-top:12px">可以反复挑战，排行榜只记第一次成绩。</p>
     </div>
   </div>`;
 }
@@ -5777,9 +5813,8 @@ function beginPlay(){
   if(!quiz){ toast('试卷无效'); return; }
   // Lock only for real friend share links, per quiz id
   if(hasFriendLink()){
-    const played=getPlayedRecord(quiz.id);
+    const played=null; // P2: no lock
     if(played){
-      toast('你已经答过这套题了');
       if(played.done){
         S.result=restoreResultFromPlayed(played, quiz);
         S.route='result';
@@ -5791,12 +5826,6 @@ function beginPlay(){
       render();
       return;
     }
-    // Soft mark on start so mid-quit still locks this quiz id on device
-    try{
-      localStorage.setItem(playedKey(quiz.id), JSON.stringify({
-        done:false, started:true, at:Date.now(), nick:S.playNick||'', fp:getPlayerFp()
-      }));
-    }catch(e){}
   }
   if(S.playNick) savePlayerNick(S.playNick);
   getPlayerFp();
@@ -5810,7 +5839,7 @@ function viewPlay(){
   const quiz=S.playQuiz; if(!quiz)return viewPlayIntro();
   // Re-entry guard while answering
   if(hasFriendLink() && !S._activePlay){
-    const played=getPlayedRecord(quiz.id);
+    const played=null; // P2: no lock
     if(played && played.done){
       S.result=restoreResultFromPlayed(played, quiz);
       S.route='result';
@@ -5895,7 +5924,10 @@ async function finishPlay(){
   const won=score>=(quiz.threshold|0);
   S.result={score,pct,band,won};
   if(S.playNick) savePlayerNick(S.playNick);
+  const firstTime=!(hasFriendLink() && hasFinishedPlayed(quiz.id));
+  S.result.firstTime=firstTime;
   const st=getStats(quiz.id);
+  if(firstTime){
   st.plays=(st.plays|0)+1;
   if(won) st.wins=(st.wins|0)+1;
   st.board=st.board||[];
@@ -5903,7 +5935,8 @@ async function finishPlay(){
   st.board.sort((a,b)=>b.score-a.score||b.at-a.at);
   st.board=st.board.slice(0,50);
   setStats(quiz.id,st);
-  const remote=await submitScoreRemote(quiz.id, {nick:S.playNick||'匿名', score, pct, won, at:Date.now()});
+  }
+  const remote=firstTime?await submitScoreRemote(quiz.id, {nick:S.playNick||'匿名', score, pct, won, at:Date.now()}):null;
   if(remote && Array.isArray(remote.board)){
     S.lastRemoteBoard={quizId:quiz.id, board:remote.board};
   } else {
@@ -5911,12 +5944,65 @@ async function finishPlay(){
     if(!(S.lastRemoteBoard && S.lastRemoteBoard.quizId===quiz.id)) S.lastRemoteBoard=null;
   }
   // Mark this quiz id as played (friend share only; preview may retry)
-  if(hasFriendLink()) markQuizPlayed(quiz.id, S.result);
+  if(hasFriendLink() && firstTime) markQuizPlayed(quiz.id, S.result);
   S._activePlay=false;
   S.route='result';
   const search=location.search||'';
   history.replaceState(null,'', location.pathname+search+'#result');
   render();
+}
+function sharedFromUrl(){
+  try{
+    const r=new URLSearchParams(location.search).get('r'); if(!r) return null;
+    const i=r.indexOf('.'); const pct=parseInt(i<0?r:r.slice(0,i),10);
+    if(!(pct>=0&&pct<=100)) return null;
+    return {pct, nick:(i<0?'':r.slice(i+1)).slice(0,12)||'朋友'};
+  }catch(e){ return null; }
+}
+function sharedResultBanner(quiz){
+  const sr=sharedFromUrl(); if(!sr) return '';
+  return `<div class="shared-banner">${escapeHtml(shareLine(sr.nick, sr.pct))}</div>`;
+}
+function shareLine(name,pct){ return '我和 '+name+' 默契 '+pct+'%，你能比我高吗？'; }
+function shareBand(pct){ return pct>=90?'这都能对上，有点吓人':(pct>=60?'还行，算熟':'看来得多聊聊了'); }
+function resultShareUrl(quiz,r){
+  return shareUrl(quiz)+'&r='+encodeURIComponent((r.pct|0)+'.'+String(S.playNick||'').trim().slice(0,12));
+}
+function quizOwnerName(quiz){ return (quiz&&quiz.name)||String((quiz&&quiz.title)||'TA').replace(/的默契测试卷$/,'')||'TA'; }
+function buildShareCanvas(quiz,r,url){
+  const W=1080,H=1350,c=document.createElement('canvas'); c.width=W;c.height=H;
+  const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#4BA3C7'); g.addColorStop(1,'#2E7FA6');
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.fillStyle='#fff'; x.textAlign='center';
+  x.font='600 48px sans-serif'; x.fillText(shareLine(quizOwnerName(quiz), r.pct|0).replace(/，/,'，\n').split('\n')[0],W/2,170);
+  x.fillText('你能比我高吗？',W/2,240);
+  x.font='800 300px sans-serif'; x.fillText((r.pct|0)+'%',W/2,640);
+  x.font='500 52px sans-serif'; x.fillText(shareBand(r.pct|0),W/2,760);
+  try{
+    if(typeof qrcode==='function'){
+      const q=qrcode(0,'L'); q.addData(url,'Byte'); q.make();
+      const n=q.getModuleCount(), size=300, cell=size/(n+4), ox=(W-size)/2, oy=850;
+      x.fillStyle='#fff'; x.fillRect(ox,oy,size,size); x.fillStyle='#000';
+      for(let i=0;i<n;i++)for(let j=0;j<n;j++) if(q.isDark(i,j)) x.fillRect(ox+(j+2)*cell,oy+(i+2)*cell,Math.ceil(cell),Math.ceil(cell));
+    }
+  }catch(e){}
+  x.fillStyle='#fff'; x.font='500 40px sans-serif'; x.fillText('默契测试 · dragonhowlong.github.io/zhiji',W/2,1270);
+  return c;
+}
+function openShareCard(){
+  const quiz=S.playQuiz,r=S.result; if(!quiz||!r) return;
+  const url=resultShareUrl(quiz,r);
+  const png=buildShareCanvas(quiz,r,url).toDataURL('image/png');
+  const m=document.createElement('div'); m.className='sc-mask'; m.id='share-card';
+  m.innerHTML=`<div class="sc-box"><img alt="分享卡" src="${png}"><p class="hint" style="text-align:center;margin:8px 0">长按图片保存</p>
+    <button class="btn btn-primary" id="sc-copy">复制结果链接</button><button class="btn btn-secondary" id="sc-close">关闭</button></div>`;
+  document.body.appendChild(m);
+  m.querySelector('#sc-close').onclick=()=>m.remove();
+  m.onclick=e=>{ if(e.target===m) m.remove(); };
+  m.querySelector('#sc-copy').onclick=async()=>{
+    try{ await navigator.clipboard.writeText(url); toast('结果链接已复制'); }catch(e){ prompt('复制结果链接：',url); }
+  };
 }
 function viewResult(){
   const quiz=S.playQuiz; const r=S.result;
@@ -5930,8 +6016,11 @@ function viewResult(){
     </header>
     <div class="card result-card">
       ${memeImg(pickResultMeme(r.score, quiz.id),'meme-result')}
-      <div class="score-num">${r.pct}<span style="font-size:22px">%</span></div>
+      <div class="score-num p3">${r.pct}<span style="font-size:24px">%</span></div>
       <div class="score-label">答对 ${r.score} / ${Q_COUNT} 题</div>
+      <button class="btn btn-primary p3-main" onclick="goCreateOwn()">换我出题，看你多懂我</button>
+      <div class="btn-row" style="margin-top:8px"><button class="btn btn-outline" onclick="beginPlay()">再答一次</button><button class="btn btn-outline" onclick="openShareCard()">分享结果</button></div>
+      ${r.firstTime===false?'<p class="hint" style="margin-top:6px">排行榜只记第一次成绩</p>':''}
       <div class="comment">${escapeHtml(r.band&&r.band.text||'')}</div>
       ${r.won
         ? `<div class="reward">🎁 恭喜获得：${escapeHtml(quiz.reward)}<br><span style="font-weight:500;font-size:12px;color:var(--text-light)">请联系出题人兑换（先到先得）</span></div>`
@@ -5939,12 +6028,7 @@ function viewResult(){
       <div class="result-actions">
         <button class="btn btn-secondary" onclick="openLeaveMsg('whisper')">写悄悄话</button>
         <button class="btn btn-secondary" onclick="openLeaveMsg('anon')">写匿名信</button>
-        ${locked
-          ? `<p class="hint" style="margin:10px 0 2px">这套题本机已作答，不能再答一次。</p>`
-          : `<button class="btn btn-secondary" onclick="beginPlay()">再试一次</button>
-        <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>`}
-        <p style="margin:16px 0 0;font-size:14px;color:var(--text-light);line-height:1.55">测完了？出一套属于你的题发给朋友。</p>
-        <button class="btn btn-mint" onclick="goCreateOwn()">我也要出题</button>
+        <button class="btn btn-secondary" onclick="S.route='play-intro';render()">返回介绍</button>
         <button class="btn btn-secondary" onclick="openLeaveFeedback()">给开发者留言</button>
       </div>
     </div>
@@ -6093,7 +6177,6 @@ function viewResult(){
 })();
 
   if(isDevMode()){
-    try{ history.replaceState(null,'', location.pathname + '?dev=' + encodeURIComponent(DEV_TOKEN) + '#dev'); }catch(e){}
     S.route='dev';
   }
   window.addEventListener('hashchange', onHash);
@@ -6103,7 +6186,7 @@ function viewResult(){
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
     onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,savePosterImage,generateSharePoster,buildSharePoster,switchQrMode,paintManageQr,
     previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick,
-    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,DEV_TOKEN,lbFetch,lbBases,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,postFeedbackRemote,fetchFeedbackRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,openLeaveFeedback,submitLeaveFeedback,hydrateDevStats,renderDevSite,renderDevFeedbackRows,viewDev,trackFriendOpen
+    applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,saveDevKey,lbFetch,lbBases,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,postFeedbackRemote,fetchFeedbackRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,openLeaveFeedback,submitLeaveFeedback,hydrateDevStats,renderDevSite,renderDevFeedbackRows,viewDev,trackFriendOpen
   });
   if(qPayload || sid){
     try{ history.replaceState(null,'', location.pathname + location.search + '#play'); }catch(e){}
