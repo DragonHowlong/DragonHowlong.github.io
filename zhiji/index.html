@@ -4002,13 +4002,9 @@ function applyTemplate(id){
 /* Remote leaderboard / msg / hit API — WeChat blocks *.workers.dev / *.pages.dev; prefer custom hostname */
 const LB_API = {
   enabled: true,
-  /* Primary: is-a.dev custom hostname → Pages Functions + BOARD KV (after deploy+DNS). Fallbacks: production workers. */
+  /* Only the hardened Worker (legacy Pages / alternate workers.dev hosts removed). */
   bases: [
-    /* Prefer secured Worker (ADMIN_TOKEN + ownerToken). zhiji-api / jcwmny still legacy until separately hardened. */
-    'https://zhiji-board.wanghowlonggg.workers.dev',
-    'https://zhiji-api.pages.dev',
-    'https://zhiji-api.is-a.dev'
-    /* jcwmny subdomain is a stale insecure copy; intentionally omitted */
+    'https://zhiji-board.wanghowlonggg.workers.dev'
   ],
   base: 'https://zhiji-board.wanghowlonggg.workers.dev',
   submitPath: '/zhiji/score',
