@@ -40,3 +40,10 @@
 https://dragonhowlong.github.io/zhiji/?s=demoshortshare1
 ```
 （约 66 字；示例卷 JSON 已在仓库 `zhiji/s/demoshortshare1.json`。）
+
+## Worker 短码对接（2026-11-04）
+
+- 路径/字段与现前端已对齐：`POST/GET /zhiji/quiz`，body=`buildExportQuiz`，GET 根级试卷 JSON。
+- 完整方案与待部署脚本：本机 `/workspace/zhiji-plan/quiz-shortlink.md` + `quiz-worker.diff`（**待用户批准后才部署**）。
+- 本分支微调：打开 `?s=` 时 **优先** `GET /zhiji/quiz`；出卷若 POST 成功则提示短链已就绪，不再强制下载 json。
+- **仍不要单独 merge 本 PR**；等 Worker 上线 smoke 后再与短文案一并合。

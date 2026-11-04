@@ -4776,18 +4776,18 @@ async function upsertQuizRemote(quiz){
 async function loadShortQuiz(id){
   const safe=String(id||'').replace(/[^a-zA-Z0-9_-]/g,'');
   if(!safe) return null;
-  // 1) Static Pages file ./s/id.json (works when committed/deployed)
+  // 1) Worker/KV short-store (true short link once deployed)
+  try{
+    const remote=await fetchQuizRemote(safe);
+    if(remote) return remote;
+  }catch(e){}
+  // 2) Static Pages file ./s/id.json (cold backup / demos committed to repo)
   try{
     const res=await fetch('./s/'+safe+'.json',{cache:'no-store'});
     if(res.ok){
       const q=normalizeFetchedQuiz(await res.json());
       if(q) return q;
     }
-  }catch(e){}
-  // 2) Remote short-store (Worker/KV) — preferred once deployed
-  try{
-    const remote=await fetchQuizRemote(safe);
-    if(remote) return remote;
   }catch(e){}
   return null;
 }
@@ -5283,7 +5283,7 @@ function updBand(i,k,v){ if(k==='text')S.draft.bands[i].text=v; else S.draft.ban
 function addBand(){S.draft.bands.push({min:0,max:0,text:''});saveDraft();render()}
 function rmBand(i){if(S.draft.bands.length<=4){toast('至少保留 4 档');return;}S.draft.bands.splice(i,1);saveDraft();render()}
 
-function publishQuiz(){
+async function publishQuiz(){
   const d=S.draft;
   if(d.slots.some(s=>!s.filled)){toast('还有题目未完成');navigate('create');return;}
   const name=(d.name||'').trim()||'神秘人';
@@ -5306,10 +5306,16 @@ function publishQuiz(){
   savePublished(quiz);
   void postHitRemote(quiz.id,'publish');
   void registerOwnerRemote(quiz.id, quiz.ownerToken);
-  void upsertQuizRemote(quiz);
   const st=getStats(quiz.id); setStats(quiz.id,st);
-  // No Worker short-store yet: auto-download s/<id>.json so it can be committed for Pages
-  try{ downloadQuizJson(quiz); }catch(e){}
+  // Best-effort KV short-store; if Worker not ready, fall back to downloading s/<id>.json
+  let remoteOk=false;
+  try{
+    const up=await upsertQuizRemote(quiz);
+    remoteOk=!!(up && up.ok);
+  }catch(e){ remoteOk=false; }
+  if(!remoteOk){
+    try{ downloadQuizJson(quiz); }catch(e){}
+  }
   // Clear draft after publish to avoid stale resume / crash-recovery confusion
   S.draft=defaultDraft();
   S.draft.theme=normalizeTheme(quiz.theme);
@@ -5317,7 +5323,8 @@ function publishQuiz(){
   // Creator manage page: NO ?q= so share URL is distinct; friends use ?q=
   history.replaceState(null,'', location.pathname + '?manage=1#manage');
   S.route='manage';
-  toast('已生成！已下载 s/'+quiz.id+'.json；短链需随站点发布后生效，发布前可用更多→压缩长链');
+  if(remoteOk) toast('已生成！短链已写入云端，可直接复制邀请');
+  else toast('已生成！已下载 s/'+quiz.id+'.json；短链需随站点发布后生效，发布前可用更多→压缩长链');
   render();
 }
 
@@ -5444,7 +5451,7 @@ function viewManage(){
           <button class="btn btn-secondary" onclick="exportQuizJson()">导出短链 JSON</button>
           <button class="btn btn-secondary" onclick="copyHashLink()">生成纯答题页（备用）</button>
           <button class="btn btn-secondary" onclick="showQuestions()">查看题目</button>
-          <p class="hint">复制与默认二维码均走 ?s= 短链。短链需随站点发布后生效（把出卷下载的 s/id.json 放进仓库）；发布前可用更多→压缩长链。真正人人立刻短链仍需 Worker 短码（未部署）。</p>
+          <p class="hint">复制与默认二维码均走 ?s= 短链。短链需随站点发布后生效（把出卷下载的 s/id.json 放进仓库）；发布前可用更多→压缩长链。真正人人立刻短链需 Worker 短码库（方案见仓库外 zhiji-plan；部署后自动生效）。</p>
         </div>
       </details>
       <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="clearManageAndHome()">返回出题（新建）</button>
