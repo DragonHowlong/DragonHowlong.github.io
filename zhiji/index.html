@@ -4581,7 +4581,8 @@ const S = {
   lastRemoteBoard:null, // {quizId, board} from last successful POST /zhiji/score
   bankFilter:'',
   bankCat:'全部',
-  answeredHint:false
+  answeredHint:false,
+  qrMode:'s' // default QR = short ?s= (needs s/id.json or Worker); switch to 'q' for instantly-playable compressed
 };
 
 function loadDraft(){
@@ -5307,6 +5308,8 @@ function publishQuiz(){
   void registerOwnerRemote(quiz.id, quiz.ownerToken);
   void upsertQuizRemote(quiz);
   const st=getStats(quiz.id); setStats(quiz.id,st);
+  // No Worker short-store yet: auto-download s/<id>.json so it can be committed for Pages
+  try{ downloadQuizJson(quiz); }catch(e){}
   // Clear draft after publish to avoid stale resume / crash-recovery confusion
   S.draft=defaultDraft();
   S.draft.theme=normalizeTheme(quiz.theme);
@@ -5314,7 +5317,7 @@ function publishQuiz(){
   // Creator manage page: NO ?q= so share URL is distinct; friends use ?q=
   history.replaceState(null,'', location.pathname + '?manage=1#manage');
   S.route='manage';
-  toast('已生成！保存二维码发到微信，好友扫码直接答题');
+  toast('已生成！已下载 s/'+quiz.id+'.json；短链需随站点发布后生效，发布前可用更多→压缩长链');
   render();
 }
 
@@ -5388,7 +5391,7 @@ function viewManage(){
       </div>
       <div class="tip-box">
         <b>微信分享提示</b>
-        私聊优先「复制邀请」：短文案 + 短链（?s=），一两行就能发；朋友圈再用海报或二维码。二维码仍用压缩长链，扫码立刻答题。
+        私聊优先「复制邀请」：短文案 + 短链（?s=），一两行就能发。短链需随站点发布后生效；发布前可用更多→压缩长链。朋友圈用海报/二维码（默认也是短链）。
       </div>
     </div>
     <div class="corner-msg">
@@ -5399,8 +5402,8 @@ function viewManage(){
       <h2>邀请二维码</h2>
       <div class="qr-wrap">
         <div id="share-qr"><p class="hint">正在生成二维码…</p></div>
-        <div class="qr-caption">保存二维码发到微信，好友扫码直接答题</div>
-        <p class="qr-sub" id="share-qr-meta">编码压缩邀请链接，打开即答题</p>
+        <div class="qr-caption">默认短链二维码（?s=）；短链需随站点发布后生效</div>
+        <p class="qr-sub" id="share-qr-meta">短链 ?s= · 发布前可切压缩长链</p>
       </div>
       <button class="btn btn-primary" onclick="copyLink()">复制邀请（短文案+短链）</button>
       <p class="share-reco"><em>建议选用这个 · 理想 &lt;100 字</em></p>
@@ -5437,11 +5440,11 @@ function viewManage(){
           <button class="btn btn-secondary" onclick="saveQrImage()">保存二维码</button>
           <button class="btn btn-secondary" onclick="copyCompressedLink()">复制压缩长链 ?q=（立刻可用）</button>
           <button class="btn btn-secondary" onclick="copyShortLink()">仅复制短链 URL</button>
-          <button class="btn btn-secondary" onclick="switchQrMode()">切换二维码（压缩/短链）</button>
+          <button class="btn btn-secondary" onclick="switchQrMode()">切换二维码（短链/压缩）</button>
           <button class="btn btn-secondary" onclick="exportQuizJson()">导出短链 JSON</button>
           <button class="btn btn-secondary" onclick="copyHashLink()">生成纯答题页（备用）</button>
           <button class="btn btn-secondary" onclick="showQuestions()">查看题目</button>
-          <p class="hint">主按钮=短文案+?s= 短链。短链需 ./s/id.json 已上线，或 Worker 短码库（尚未部署）。立刻可答请用压缩长链或扫默认二维码。</p>
+          <p class="hint">复制与默认二维码均走 ?s= 短链。短链需随站点发布后生效（把出卷下载的 s/id.json 放进仓库）；发布前可用更多→压缩长链。真正人人立刻短链仍需 Worker 短码（未部署）。</p>
         </div>
       </details>
       <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="clearManageAndHome()">返回出题（新建）</button>
@@ -5525,15 +5528,14 @@ function pickQrUrl(quiz){
   if(!quiz) return '';
   const compressed=shareUrl(quiz);
   const shortu=shareUrlShortFile(quiz);
-  // mode: 'q' compressed (default, works immediately) | 's' short file
-  if(S.qrMode==='s') return shortu;
-  // if compressed still huge, auto-prefer short for scannability
-  return compressed;
+  // default 's' short ?s= (needs s/id.json or Worker); 'q' = compressed instantly-playable
+  if(S.qrMode==='q') return compressed;
+  return shortu;
 }
 function switchQrMode(){
   S.qrMode=(S.qrMode==='s')?'q':'s';
   paintManageQr();
-  toast(S.qrMode==='s'?'已切换为短链二维码（需 s/ 文件已上线）':'已切换为压缩链接二维码（立刻可用）');
+  toast(S.qrMode==='s'?'已切换为短链二维码（短链需随站点发布后生效）':'已切换为压缩长链二维码（立刻可用）');
 }
 function paintManageQr(){
   const el=document.getElementById('share-qr');
@@ -5825,7 +5827,7 @@ async function copyLink(){
   const quiz=S.published; if(!quiz) return;
   // Primary: short hook + ?s= short URL (quiz body NOT in clipboard)
   const text=buildInviteClipboard(quiz);
-  try{ await navigator.clipboard.writeText(text); toast('已复制短邀请（'+text.length+'字）。短链需 s/'+quiz.id+'.json 或 Worker 短码；否则用「压缩长链」'); }
+  try{ await navigator.clipboard.writeText(text); toast('已复制短邀请（'+text.length+'字）。短链需随站点发布后生效；发布前可用更多→压缩长链'); }
   catch(e){ prompt('复制下面的短邀请发给好友：', text); }
 }
 async function copyCompressedLink(){
@@ -5841,8 +5843,8 @@ async function copyShortLink(){
   try{ await navigator.clipboard.writeText(url); toast('短链已复制；需 s/'+quiz.id+'.json 上线或 Worker 短码库'); }
   catch(e){ prompt('短链（需静态 s/ 或 Worker 短码）：', url); }
 }
-function exportQuizJson(){
-  const quiz=S.published; if(!quiz) return;
+function downloadQuizJson(quiz){
+  if(!quiz || !quiz.id) return;
   const data=buildExportQuiz(quiz);
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
@@ -5850,7 +5852,11 @@ function exportQuizJson(){
   a.download=quiz.id+'.json';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-  toast('已导出 '+quiz.id+'.json，放到站点 s/ 目录后短链可用');
+}
+function exportQuizJson(){
+  const quiz=S.published; if(!quiz) return;
+  downloadQuizJson(quiz);
+  toast('已导出 '+quiz.id+'.json：放到仓库 zhiji/s/ 并随站点发布后，短链 ?s= 才生效');
 }
 async function copyHashLink(){
   const url=shareUrlHashFallback(S.published);
@@ -6304,7 +6310,7 @@ function viewResult(){
     S,clamp,navigate,startCreate,goManage,setSlotAnswer,prevStep,nextStep,
     randomBankSlot,openBankPicker,refreshBankModal,chooseBank,closeModal,
     customSlot,editCurrentSlot,addOpt,removeOpt,saveEditor,pickReward,pickRewardCustom,
-    onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyCompressedLink,copyShortLink,exportQuizJson,copyHashLink,saveQrImage,savePosterImage,generateSharePoster,buildSharePoster,switchQrMode,paintManageQr,buildInviteClipboard,buildResultClipboard,upsertQuizRemote,fetchQuizRemote,
+    onRewardInput,updBand,addBand,rmBand,publishQuiz,showQuestions,copyLink,copyCompressedLink,copyShortLink,exportQuizJson,downloadQuizJson,copyHashLink,saveQrImage,savePosterImage,generateSharePoster,buildSharePoster,switchQrMode,paintManageQr,buildInviteClipboard,buildResultClipboard,upsertQuizRemote,fetchQuizRemote,
     previewAsFriend,beginPlay,pickPlay,skipName,pickThreshold,pickInventory,clearManageAndHome,goCreateOwn,showLastPlayedResult,savePlayerNick,
     applyTheme,setDraftTheme,applyTemplate,normalizeTheme,TEMPLATES,THEME_META,LB_API,saveDevKey,genOwnerToken,ensureOwnerToken,registerOwnerRemote,adminAuthHeaders,lbFetch,lbBases,submitScoreRemote,fetchBoardRemote,hydrateRemoteBoard,postHitRemote,postMsgRemote,fetchMsgRemote,fetchSiteStatsRemote,postFeedbackRemote,fetchFeedbackRemote,openMsgInbox,openLeaveMsg,submitLeaveMsg,openLeaveFeedback,submitLeaveFeedback,hydrateDevStats,renderDevSite,renderDevFeedbackRows,viewDev,trackFriendOpen
   });
