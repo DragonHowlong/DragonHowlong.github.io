@@ -4151,7 +4151,7 @@ async function postMsgRemote(quizId, kind, text, nick){
 async function fetchMsgRemote(quizId, kind, ownerToken){
   if(!quizId) return null;
   try{
-    const headers={'Cache-Control':'no-store'};
+    const headers={};
     if(ownerToken) headers['X-Owner-Token']=ownerToken;
     const res=await lbFetch(LB_API.msgPath + '?quizId=' + encodeURIComponent(quizId) + '&kind=' + encodeURIComponent(kind), {cache:'no-store', headers});
     if(!res) return null;
@@ -4162,7 +4162,7 @@ async function fetchMsgRemote(quizId, kind, ownerToken){
 }
 function adminAuthHeaders(){
   const k=getDevKey();
-  const h={'Cache-Control':'no-store'};
+  const h={};
   if(k){ h['Authorization']='Bearer '+k; h['X-Admin-Token']=k; }
   return h;
 }
@@ -4272,7 +4272,7 @@ async function openMsgInbox(kind){
     return;
   }
   if(list===null){
-    body.innerHTML='<p class="hint">加载失败，可能是网络拦截（如微信拦 *.workers.dev）。请用系统浏览器打开再试。</p>';
+    body.innerHTML='<p class="hint">加载失败。请确认本机是出题设备且网络可访问排行榜后台；若刚发布请稍后重试。系统浏览器仍失败时，多半是跨域或凭证问题，不一定是微信拦截。</p>';
     return;
   }
   body.innerHTML=renderMsgRows(list, kind);
@@ -4980,7 +4980,7 @@ function viewHome(){
     <div class="card p4-hero">
       <h2 class="p4-title">他到底有多懂你？</h2>
       <div class="p4-pills"><span>10 题</span><span>1 分钟</span><span>不用注册</span><span>免费</span></div>
-      <button class="btn btn-primary p4-main" onclick="scrollToTemplates()">开始出题</button>
+      <button class="btn btn-primary p4-main" onclick="startCreate(false)">开始出题</button>
       <div class="p4-sample"><span class="tag">示例</span>
         <div class="who">小林 × 阿杰</div>
         <div class="pct">默契 85%</div>
