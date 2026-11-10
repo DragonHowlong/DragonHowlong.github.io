@@ -237,7 +237,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .bank-item .bq{font-size:14px;font-weight:550;margin-bottom:4px}
 .bank-item .bo{font-size:12px;color:var(--text-light);line-height:1.5}
 .bank-item .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);margin-bottom:4px;font-weight:600}
-.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(44,62,80,.9);color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;z-index:200;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s}
+.toast{position:fixed;top:calc(56px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:rgba(44,62,80,.9);color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;z-index:320;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s}
 .toast.show{opacity:1}
 .footer-note{text-align:center;padding:8px 20px;font-size:12px;color:var(--text-light);line-height:1.5}
 .hero-emoji{font-size:42px;margin-bottom:8px}
@@ -4839,10 +4839,16 @@ function escapeHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace
 function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
 
 let toastTimer=null;
+function hideToast(){
+  const el=document.getElementById('toast');
+  if(el) el.classList.remove('show');
+  clearTimeout(toastTimer);
+}
 function toast(msg){
   const el=document.getElementById('toast');
+  if(!el) return;
   el.textContent=msg;el.classList.add('show');
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+  clearTimeout(toastTimer);toastTimer=setTimeout(hideToast,2200);
 }
 
 
@@ -5245,6 +5251,7 @@ function parseRoute(){
 }
 
 function navigate(route, replace){
+  hideToast();
   // Friend play with q: never navigate to create/home/reward
   if(hasFriendLink() && ['home','create','reward'].includes(route)){
     route='play-intro';
@@ -5272,6 +5279,7 @@ function navigate(route, replace){
 }
 
 function onHash(){
+  hideToast();
   const r=parseRoute();
   S.route=r;
   if(r==='create'||r==='reward'){ if(!S.draft) loadDraft(); ensureSlotSeeded(); }
@@ -6235,6 +6243,7 @@ async function copyHashLink(){
   catch(e){ prompt('备用纯答题页链接：', url); }
 }
 function previewAsFriend(){
+  hideToast();
   // Simulate friend: use hash fallback without polluting manage
   S.playQuiz=S.published;
   S.playIdx=0;S.playAnswers=[];S.result=null;S.playNick='';
