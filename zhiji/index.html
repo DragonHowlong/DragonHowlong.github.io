@@ -22,42 +22,42 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root,html[data-theme="cute"]{
-  --bg:#EAF6F3;
-  --bg2:#E8F4FC;
+  --bg:#F3F1E8;
+  --bg2:#F8EDE3;
   --card:#ffffff;
   --primary:#4BA3C7;
   --primary-dark:#3A8FB0;
-  --primary-soft:#D6EEF7;
+  --primary-soft:#E4F2F8;
   --green:#5CB88A;
   --green-soft:#E6F6EE;
   --mint:#7BC9A6;
   --text:#2C3E50;
   --text-light:#7A8A9A;
-  --border:#D0E8E2;
+  --border:#E6DCCD;
   --danger:#E8747A;
   --danger-soft:#FFF0F0;
   --warn:#E8A838;
   --radius:16px;
-  --shadow:0 4px 16px rgba(75,163,199,.12);
+  --shadow:0 4px 16px rgba(180,120,70,.10);
   --header-1:#4BA3C7;
-  --header-2:#6BB3E0;
+  --header-2:#E0A36B;
   --header-3:#7BC9A6;
-  --input-bg:#FAFDFC;
+  --input-bg:#FFFCF7;
   --chip-bg:#ffffff;
   --opt-bg:#ffffff;
-  --opt-selected-bg:#F0F9FC;
-  --progress-track:#C5DDE8;
-  --quiz-track:rgba(208,232,226,.9);
-  --soft-grad-a:#F0F9FC;
-  --soft-grad-b:#EAF7F1;
-  --reward-bg:#FBFEFF;
+  --opt-selected-bg:#F7F3EC;
+  --progress-track:#E4D5C4;
+  --quiz-track:rgba(230,220,205,.9);
+  --soft-grad-a:#FDF6EC;
+  --soft-grad-b:#F3F6EA;
+  --reward-bg:#FFFCF7;
   --no-reward-bg:#F7F8FA;
   --tip-bg:#FFF8E8;
   --tip-border:#F0D9A0;
   --tip-text:#7A5A20;
   --modal-bg:#ffffff;
-  --bank-item-bg:#FAFDFC;
-  --slot-empty-bg:#F3F5F7;
+  --bank-item-bg:#FFFCF7;
+  --slot-empty-bg:#F3F0EA;
   --btn-sec-bg:#ffffff;
   --danger-border:#F5D0D0;
   --bgm-bg:rgba(255,255,255,.92);
@@ -4023,7 +4023,7 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "双十一还剩两天，我的购物车？",
+    "q": "双十一还剩一天，我的购物车？",
     "options": [
       "比人设还丰富",
       "已清空又加回来",
@@ -4134,7 +4134,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "双十一最后 48 小时我更像？",
+    "q": "双十一最后 24 小时我更像？",
     "options": [
       "最后扫一遍购物车再下单",
       "冷静旁观等第二天真香",
@@ -4188,6 +4188,74 @@ const BANK = [
     "answer": 1,
     "cat": "闺蜜"
   }
+,
+  {
+    "q": "寒潮刚走、全国开始大回暖时我？",
+    "options": [
+      "立刻想把厚外套收起来",
+      "先观望温差再决定",
+      "已经开始短袖预演",
+      "回一句冷热都是情绪"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "听说「全国升温大赛」开始后我更像？",
+    "options": [
+      "先查本地能升到几度",
+      "淡定围观像看比赛",
+      "赶紧出门补一趟阳光",
+      "担心周末冷空气又杀回来"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "昼夜温差拉到十几度时我的穿衣策略？",
+    "options": [
+      "洋葱式一层层可脱",
+      "出门赌一把少穿点",
+      "始终多穿一件听劝",
+      "包里常备一件备用的"
+    ],
+    "answer": 0,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "双十一还剩一天，今晚我通常？",
+    "options": [
+      "最后清点购物车再睡",
+      "设置闹钟抢凌晨场",
+      "已经下单开始等物流",
+      "决定明天再看，不熬夜"
+    ],
+    "answer": 0,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "回暖了却还囤着暖宝宝时我？",
+    "options": [
+      "先不收，温差还在晃",
+      "立刻清库存庆祝回暖",
+      "留给可能到来的下一股冷空气",
+      "塞进双十一退货箱里观望"
+    ],
+    "answer": 0,
+    "cat": "精神状态"
+  },
+  {
+    "q": "明天双十一和回暖撞车，我更优先？",
+    "options": [
+      "先把购物车结算掉",
+      "先出门晒太阳",
+      "两边都惦记但先躺平",
+      "用回暖当借口再逛一圈"
+    ],
+    "answer": 2,
+    "cat": "闺蜜"
+  }
+
 
 ];
 /* ---------- Minimal LZ-String (compress share payloads) ---------- */
@@ -5289,7 +5357,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此 · 寒潮至冷·双十一还剩两天，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此 · 寒潮刚过·大回暖·明天双十一，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -5313,7 +5381,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 寒潮至冷这几天，答完再喝口热的</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 回暖这几天温差也大，答完再喝口热的</p>
   </div>`;
 }
 
