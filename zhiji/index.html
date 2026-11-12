@@ -227,8 +227,8 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .band-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px}
 .band-row .band-range{flex:0 0 78px;font-size:12px;color:var(--primary);font-weight:600;padding-top:12px;text-align:center}
 .band-row textarea{flex:1;min-height:52px}
-.modal-mask{position:fixed;inset:0;background:rgba(30,50,60,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center}
-.modal{background:var(--modal-bg);border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));width:100%;max-height:88vh;overflow-y:auto;color:var(--text)}
+.modal-mask{position:fixed;inset:0;background:rgba(20,28,36,.55);z-index:400;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--modal-bg);border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));width:100%;max-width:430px;max-height:88vh;overflow-y:auto;color:var(--text);box-sizing:border-box}
 .modal h3{font-size:17px;margin-bottom:12px;text-align:center}
 .bank-list{max-height:46vh;overflow-y:auto}
 .bank-item{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;background:var(--bank-item-bg)}
@@ -240,6 +240,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .toast{position:fixed;top:calc(56px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:rgba(44,62,80,.9);color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;z-index:320;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s}
 .toast.show{opacity:1}
 .footer-note{text-align:center;padding:8px 20px;font-size:12px;color:var(--text-light);line-height:1.5}
+html[data-theme="dark"] .footer-note{color:#C8D0DC}
 .hero-emoji{font-size:42px;margin-bottom:8px}
 .meme-hero{display:block;width:min(180px,46vw);height:auto;margin:0 auto 12px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;animation:memeFloat 3.2s ease-in-out infinite}
 .meme-result{display:block;width:min(168px,44vw);height:auto;margin:0 auto 14px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;-webkit-touch-callout:default;user-select:none}
@@ -3725,7 +3726,7 @@ const BANK = [
     "cat": "抽象日常"
   },
   {
-    "q": "立冬将近，进补对我来说？",
+    "q": "立冬过后，进补对我来说？",
     "options": [
       "饺子才是正经仪式",
       "喝口热的就算进补",
@@ -3824,7 +3825,7 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "立冬倒计时一天，我更像在？",
+    "q": "立冬刚过那几天，我更像在？",
     "options": [
       "默默把厚袜子翻出来",
       "精神上先冬眠一天",
@@ -3879,7 +3880,7 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "立冬前夜我更像？",
+    "q": "入冬以后的夜里我更像？",
     "options": [
       "嘴上冬眠手上还在刷",
       "认真盘点进补菜单",
@@ -3990,7 +3991,7 @@ const BANK = [
   }
 ,
   {
-    "q": "立冬当天第一顿我更像？",
+    "q": "立冬补冬那顿我更像？",
     "options": [
       "饺子局灵魂选手",
       "火锅续命不解释",
@@ -4001,7 +4002,7 @@ const BANK = [
     "cat": "口味玄学"
   },
   {
-    "q": "立冬交节那一刻我通常？",
+    "q": "想起立冬交节那天，我通常？",
     "options": [
       "突然觉得该穿厚点",
       "看日历点头然后继续摆",
@@ -4023,7 +4024,7 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "今日双十一，我的购物车？",
+    "q": "双十一刚过，我的购物车还？",
     "options": [
       "比人设还丰富",
       "已清空又加回来",
@@ -4123,7 +4124,7 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "寒潮「至冷时段」卡在今明两早，我通常？",
+    "q": "寒潮最冷的那几个早上，我通常？",
     "options": [
       "闹钟前先把衣服烘热",
       "多赖一分钟再冲出门",
@@ -4134,10 +4135,10 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "双十一当天我更像？",
+    "q": "回看昨天的双十一，我更像？",
     "options": [
       "最后扫一遍购物车再下单",
-      "冷静旁观等明天真香",
+      "冷静旁观后来又真香",
       "被直播间按头加购",
       "已经下单开始后悔预演"
     ],
@@ -4223,7 +4224,7 @@ const BANK = [
     "cat": "抽象日常"
   },
   {
-    "q": "双十一当天晚上我通常？",
+    "q": "双十一过后的晚上我通常？",
     "options": [
       "刷新物流并等待战报",
       "还在补买漏网之鱼",
@@ -4245,7 +4246,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "今天双十一和回暖撞车，我更优先？",
+    "q": "双十一刚过又赶上回暖，我更优先？",
     "options": [
       "先把购物车结算掉",
       "先出门晒太阳",
@@ -4259,7 +4260,7 @@ const BANK = [
 
 ,
   {
-    "q": "今天就是双十一，我打开购物App的第一反应？",
+    "q": "双十一刚过，我再打开购物App时？",
     "options": [
       "先把购物车结算掉",
       "再比一遍怕买亏",
@@ -4292,7 +4293,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "听说回暖持续到13日、周末冷空气又要来，我？",
+    "q": "回暖只到明天、周末冷空气又要来，我？",
     "options": [
       "先把这几天的暖阳用满",
       "厚衣服先不收着观望",
@@ -4314,7 +4315,7 @@ const BANK = [
     "cat": "闺蜜"
   },
   {
-    "q": "双十一当天物流开始预告爆仓时我？",
+    "q": "双十一过后物流还在爆仓时我？",
     "options": [
       "淡定等它自己到",
       "立刻去刷预计送达",
@@ -4323,6 +4324,75 @@ const BANK = [
     ],
     "answer": 0,
     "cat": "抽象日常"
+  }
+
+
+,
+  {
+    "q": "双十一包裹还在路上时我？",
+    "options": [
+      "刷新物流比追剧勤",
+      "到了再开箱也不迟",
+      "已经开始预演退货",
+      "居然忘了自己买过"
+    ],
+    "answer": 0,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "朋友开始晒开箱和比价时我？",
+    "options": [
+      "围观战报不发言",
+      "认真对账怕买亏",
+      "回一句我的还在路上",
+      "默默加入退货讨论"
+    ],
+    "answer": 2,
+    "cat": "闺蜜"
+  },
+  {
+    "q": "出门遇上大雾或霾预警时我？",
+    "options": [
+      "先戴上口罩再出门",
+      "改成云端出席了事",
+      "看能见度决定路线",
+      "心想这天气也太抽象"
+    ],
+    "answer": 3,
+    "cat": "精神状态"
+  },
+  {
+    "q": "快递柜被双十一包裹占满时我？",
+    "options": [
+      "一次清空假装很忙",
+      "先取快逾期的那几个",
+      "让柜门再替我保管一天",
+      "请路过的朋友顺手帮拿"
+    ],
+    "answer": 1,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "听说探源计划探路者卫星发射成功，我的离谱反应？",
+    "options": [
+      "认真转发当今日喜讯",
+      "觉得它去给包裹探路",
+      "先问这和我快递有什么关系",
+      "默契地点一颗星星表情"
+    ],
+    "answer": 1,
+    "cat": "离谱假设"
+  },
+  {
+    "q": "南边降雨、北边雾霾一起刷到时我？",
+    "options": [
+      "先看本地到底是哪一档",
+      "回一句全国天气在左右互搏",
+      "决定今天哪都不去",
+      "出门权交给温差和能见度"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
   }
 
 ];
@@ -5433,7 +5503,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此 · 今日双十一·回暖还在续，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此 · 双十一刚过·回暖还到明天，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -5457,7 +5527,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 回暖这几天温差也大，答完再喝口热的</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 快递还在路上，回暖只到明天，温差仍大，答完再喝口热的</p>
   </div>`;
 }
 
@@ -6382,6 +6452,7 @@ function viewPlayIntro(){
   </div>`;
 }
 function beginPlay(){
+  hideToast();
   const quiz=S.playQuiz;
   if(!quiz){ toast('试卷无效'); return; }
   // Lock only for real friend share links, per quiz id
