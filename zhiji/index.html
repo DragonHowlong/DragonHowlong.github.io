@@ -22,42 +22,42 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root,html[data-theme="cute"]{
-  --bg:#F3F1E8;
-  --bg2:#F8EDE3;
+  --bg:#EAF6F3;
+  --bg2:#E8F4FC;
   --card:#ffffff;
   --primary:#4BA3C7;
   --primary-dark:#3A8FB0;
-  --primary-soft:#E4F2F8;
+  --primary-soft:#D6EEF7;
   --green:#5CB88A;
   --green-soft:#E6F6EE;
   --mint:#7BC9A6;
   --text:#2C3E50;
   --text-light:#7A8A9A;
-  --border:#E6DCCD;
+  --border:#D0E8E2;
   --danger:#E8747A;
   --danger-soft:#FFF0F0;
   --warn:#E8A838;
   --radius:16px;
-  --shadow:0 4px 16px rgba(180,120,70,.10);
+  --shadow:0 4px 16px rgba(75,163,199,.12);
   --header-1:#4BA3C7;
-  --header-2:#E08B62;
+  --header-2:#6BB3E0;
   --header-3:#7BC9A6;
-  --input-bg:#FFFCF7;
+  --input-bg:#FAFDFC;
   --chip-bg:#ffffff;
   --opt-bg:#ffffff;
-  --opt-selected-bg:#F7F3EC;
-  --progress-track:#E4D5C4;
-  --quiz-track:rgba(230,220,205,.9);
-  --soft-grad-a:#FDF6EC;
-  --soft-grad-b:#F3F6EA;
-  --reward-bg:#FFFCF7;
+  --opt-selected-bg:#F0F9FC;
+  --progress-track:#C5DDE8;
+  --quiz-track:rgba(208,232,226,.9);
+  --soft-grad-a:#F0F9FC;
+  --soft-grad-b:#EAF7F1;
+  --reward-bg:#FBFEFF;
   --no-reward-bg:#F7F8FA;
   --tip-bg:#FFF8E8;
   --tip-border:#F0D9A0;
   --tip-text:#7A5A20;
   --modal-bg:#ffffff;
-  --bank-item-bg:#FFFCF7;
-  --slot-empty-bg:#F3F0EA;
+  --bank-item-bg:#FAFDFC;
+  --slot-empty-bg:#F3F5F7;
   --btn-sec-bg:#ffffff;
   --danger-border:#F5D0D0;
   --bgm-bg:rgba(255,255,255,.92);
@@ -271,7 +271,8 @@ html[data-theme="dark"] .footer-note{color:#C8D0DC}
 .msg-item{padding:12px 0;border-bottom:1px solid var(--border)}
 .msg-item:last-child{border-bottom:none}
 .msg-item .who{font-size:13px;font-weight:650;color:var(--primary-dark);margin-bottom:4px}
-.msg-item .when{font-size:11px;color:var(--text-light);margin-top:6px}
+.msg-item .when{font-size:11px;color:#5B6B78;margin-top:6px}
+html[data-theme="dark"] .msg-item .when{color:#C8D0DC}
 .msg-item .body{font-size:14px;line-height:1.55;word-break:break-word}
 .corner-msg{display:flex;gap:8px;justify-content:flex-end;margin:0 0 10px}
 .corner-msg .btn{flex:0 0 auto;width:auto;padding:8px 12px;margin:0;font-size:13px}
@@ -3988,8 +3989,7 @@ const BANK = [
     ],
     "answer": 1,
     "cat": "口味玄学"
-  }
-,
+  },
   {
     "q": "立冬补冬那顿我更像？",
     "options": [
@@ -4055,8 +4055,7 @@ const BANK = [
     ],
     "answer": 0,
     "cat": "家人"
-  }
-,
+  },
   {
     "q": "寒潮预警弹到锁屏上时我？",
     "options": [
@@ -4188,8 +4187,7 @@ const BANK = [
     ],
     "answer": 1,
     "cat": "闺蜜"
-  }
-,
+  },
   {
     "q": "寒潮刚走、全国开始大回暖时我？",
     "options": [
@@ -4255,10 +4253,7 @@ const BANK = [
     ],
     "answer": 2,
     "cat": "闺蜜"
-  }
-
-
-,
+  },
   {
     "q": "双十一刚过，我再打开购物App时？",
     "options": [
@@ -4293,11 +4288,11 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "回暖只到今天、明天冷空气就要来，我？",
+    "q": "回暖已经收尾、冷空气今天到了，我？",
     "options": [
-      "先把今天的暖阳用满",
-      "厚衣服先不收着观望",
-      "短袖预演到周末再认输",
+      "还想抓住最后一点暖阳",
+      "厚衣服已经从柜子请出来",
+      "先看它降温能不能到位",
       "天气和购物车一起挂着"
     ],
     "answer": 1,
@@ -4324,10 +4319,7 @@ const BANK = [
     ],
     "answer": 0,
     "cat": "抽象日常"
-  }
-
-
-,
+  },
   {
     "q": "双十一包裹还在路上时我？",
     "options": [
@@ -4395,22 +4387,22 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "回暖最后一天，我的穿衣策略？",
+    "q": "冷空气到了，我的穿衣策略？",
     "options": [
-      "继续短袖把暖阳用尽",
+      "还想再撑一天短袖",
       "洋葱式随时准备加衣服",
-      "已经按冷空气预演穿好",
+      "已经按降温预告穿好",
       "出门前连看三遍气温"
     ],
     "answer": 1,
     "cat": "抽象日常"
   },
   {
-    "q": "明天起两股冷空气接连来，我更像？",
+    "q": "今天起两股冷空气接连来，我更像？",
     "options": [
-      "先把今天的暖阳用满",
-      "厚衣服提前从柜子请出来",
-      "先看它能不能如期到达",
+      "还想抓住最后一点暖阳",
+      "厚衣服已经从柜子请出来",
+      "先看降温能不能到位",
       "已经开始精神过冬"
     ],
     "answer": 1,
@@ -4428,7 +4420,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "今早大雾黄色预警还挂着时我？",
+    "q": "今早大雾橙色预警还挂着时我？",
     "options": [
       "出门先看十米外还有没有人",
       "改成云端出席了事",
@@ -4439,11 +4431,11 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "听说15日起中东部又有一轮雨雪，我？",
+    "q": "今天起中东部大范围雨雪上线，我？",
     "options": [
       "先查本地是雨还是雪",
       "把伞和厚袜子一起备上",
-      "先当远期预报再观望",
+      "先看窗外再决定要不要信",
       "回一句这季节剧本有点密"
     ],
     "answer": 0,
@@ -4461,6 +4453,74 @@ const BANK = [
     "cat": "离谱假设"
   }
 
+
+,
+  {
+    "q": "两股冷空气接连来、大部要降温六到十度，我？",
+    "options": [
+      "立刻把冬装全翻出来",
+      "先看本地会降到几度",
+      "觉得预告总是说得很满",
+      "已经在心里把暖气拧高"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "甘肃陕西山西降雪上线、东北还可能有暴雪时我？",
+    "options": [
+      "先转发预警再看自己那儿",
+      "开始盘算出行要不要改期",
+      "只在心里给东北加件厚衣服",
+      "回一句雪比冷空气更有仪式感"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "听说15日起大风一到雾霾就会散，我更像？",
+    "options": [
+      "今天先忍一忍等风来",
+      "口罩还是先戴上再说",
+      "已经在盼着能见度回升",
+      "觉得风和雾在玩接力赛"
+    ],
+    "answer": 2,
+    "cat": "精神状态"
+  },
+  {
+    "q": "周末遇上降温雨雪，我的出行策略？",
+    "options": [
+      "该出门还是出门，加件衣服就好",
+      "改成云端团聚或家里答题",
+      "先看雷达图再决定",
+      "把出门权交给体感和朋友"
+    ],
+    "answer": 2,
+    "cat": "闺蜜"
+  },
+  {
+    "q": "刷到「三种流感毒株同时流行」时我？",
+    "options": [
+      "认真洗手并考虑要不要戴口罩",
+      "先把这句话转发给家人",
+      "回一句今年的 Buff 也太多了",
+      "觉得自己会是那个旁观的"
+    ],
+    "answer": 0,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "听说12306已经能买国际机票了，我的离谱反应？",
+    "options": [
+      "认真点开看能飞到哪",
+      "先问这和抢火车票是不是同一套手速",
+      "把它当成降温后的精神出走入口",
+      "转发给那个总说要出国的朋友"
+    ],
+    "answer": 1,
+    "cat": "离谱假设"
+  }
 ];
 /* ---------- Minimal LZ-String (compress share payloads) ---------- */
 var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(r){return null==r?"":""==r?null:i._decompress(r.length,16384,function(o){return r.charCodeAt(o)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;e<t;e++){var s=o.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null==o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;e<t;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,s={},u={},a="",p="",c="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(a=r.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,u[a]=!0),p=c+a,Object.prototype.hasOwnProperty.call(s,p))c=p;else{if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++),s[p]=f++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,m="",v=[],g={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,v.push(c);;){if(g.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return v.join("")}if(0==f&&(f=Math.pow(2,d),d++),l[c])m=l[c];else{if(c!==h)return null;m=i+i.charAt(0)}v.push(m),l[h++]=i+m.charAt(0),i=m,0==--f&&(f=Math.pow(2,d),d++)}}};return i}();
@@ -5569,7 +5629,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此 · 回暖只到今天·明天冷空气，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此 · 冷空气到了·降温雨雪上线，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -5593,7 +5653,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 回暖只到今天，明天起冷空气接连来，答完再把厚衣服找出来</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 今天起两股冷空气接连来，降温雨雪上线，答完再把厚衣服找出来</p>
   </div>`;
 }
 
@@ -6733,7 +6793,7 @@ function viewResult(){
       ${r.firstTime===false?'<p class="hint" style="margin-top:6px">排行榜只记第一次成绩</p>':''}
       <div class="comment">${escapeHtml(r.band&&r.band.text||'')}</div>
       ${r.won
-        ? `<div class="reward">🎁 恭喜获得：${escapeHtml(quiz.reward)} · <br><span style="font-weight:500;font-size:12px;color:var(--text-light)">请联系出题人兑换（先到先得）</span></div>`
+        ? `<div class="reward">🎁 恭喜获得：${escapeHtml(quiz.reward)}<br><span style="font-weight:500;font-size:12px;color:var(--text-light)">请联系出题人兑换（先到先得）</span></div>`
         : `<div class="no-reward">未获得奖励<br><span style="font-size:12px">需答对 ≥ ${quiz.threshold} 题（你答对 ${r.score} 题）</span></div>`}
       <div class="result-actions">
         <button class="btn btn-secondary" onclick="openLeaveMsg('whisper')">写悄悄话</button>
