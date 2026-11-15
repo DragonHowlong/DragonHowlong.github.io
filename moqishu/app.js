@@ -5,6 +5,7 @@
   const STORE_KEY = "moqiTreeQuizzes.v1";
   const DEMO_ID = "demo-long";
   const NAME_MAX = 15;
+  const PRACTICE_API = "https://moqi-tree-practice.wanghowlonggg.workers.dev";
 
   const HOOKS = [
     { x: 80.0, y: 82.7 }, // 0: sits in the gift box (cx 240, y 430)
@@ -403,6 +404,14 @@
   }
 
   /* ---------- storage / routing ---------- */
+  let routeToken = 0;
+
+  function apiBase() {
+    const origin = location.origin;
+    if (origin === "https://moqi-tree-practice.wanghowlonggg.workers.dev") return origin;
+    return PRACTICE_API;
+  }
+
   function loadStore() {
     try {
       return JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
@@ -412,6 +421,7 @@
   }
 
   function saveQuiz(quiz) {
+    if (!quiz || !quiz.id || quiz.id === DEMO_ID) return;
     const all = loadStore();
     all[quiz.id] = quiz;
     localStorage.setItem(STORE_KEY, JSON.stringify(all));
@@ -421,6 +431,64 @@
     if (!id || id === DEMO_ID) return DEMO_QUIZ;
     const found = loadStore()[id];
     return found || null;
+  }
+
+  async function publishQuiz(quiz) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      const res = await fetch(apiBase() + "/api/quizzes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: quiz.id,
+          hostName: quiz.hostName,
+          mood: quiz.mood || "",
+          questions: quiz.questions,
+        }),
+        signal: ctrl.signal,
+      });
+      return res.ok || res.status === 409;
+    } catch {
+      return false;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function fetchQuizRemote(id) {
+    if (!id || id === DEMO_ID) return null;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      const res = await fetch(apiBase() + "/api/quizzes/" + encodeURIComponent(id), {
+        signal: ctrl.signal,
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data || data.id !== id || !Array.isArray(data.questions) || data.questions.length !== 10) {
+        return null;
+      }
+      const quiz = {
+        id: data.id,
+        hostName: String(data.hostName || "").slice(0, NAME_MAX),
+        mood: String(data.mood || ""),
+        questions: data.questions,
+      };
+      if (!quiz.hostName) return null;
+      saveQuiz(quiz);
+      return quiz;
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function resolveQuiz(id) {
+    const local = getQuiz(id);
+    if (local) return local;
+    return fetchQuizRemote(id);
   }
 
   function parseHash() {
@@ -805,8 +873,16 @@
 
   function newId() {
     const alphabet = "abcdefghijkmnopqrstuvwxyz23456789";
-    let s = "demo-";
-    for (let i = 0; i < 4; i++) s += alphabet[Math.floor(Math.random() * alphabet.length)];
+    const bytes = new Uint8Array(10);
+    // Must call as a method: crypto.getRandomValues(bytes).
+    // Detaching it (const fn = crypto.getRandomValues; fn(bytes)) throws Illegal invocation and stalls create on Q10.
+    if (crypto.getRandomValues) {
+      crypto.getRandomValues(bytes);
+    } else {
+      for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+    }
+    let s = "";
+    for (let i = 0; i < bytes.length; i++) s += alphabet[bytes[i] % alphabet.length];
     return s;
   }
 
@@ -827,25 +903,27 @@
     lightHooks(10);
     els.room.classList.add("is-celebrate");
     snd.done();
+    const published = publishQuiz(quiz);
     await wait(900);
+    await published;
     els.room.classList.remove("is-celebrate");
     openShare(quiz);
   }
 
-  function shortLink(id) {
-    return "index.html#/f/" + id;
-  }
-
   function fullLink(id) {
-    const base = location.href.split("#")[0];
-    return base + "#/f/" + id;
+    const url = new URL(location.href);
+    url.hash = "#/f/" + id;
+    url.pathname = url.pathname.replace(/\/index\.html$/i, "/");
+    url.search = "";
+    return url.toString();
   }
 
   function openShare(quiz) {
     state.quiz = quiz;
     setText(els.shareHost, quiz.hostName + "的默契树已经做好了。");
-    setText(els.shareLink, shortLink(quiz.id));
-    els.shareLink.title = fullLink(quiz.id);
+    const url = fullLink(quiz.id);
+    setText(els.shareLink, url);
+    els.shareLink.title = url;
     setText(els.btnCopy, "复制");
     els.btnCopy.classList.remove("is-done");
     setHash("/share/" + quiz.id);
@@ -882,22 +960,27 @@
   }
 
   /* ---------- route ---------- */
-  function goFromHash() {
+  async function goFromHash() {
+    const token = ++routeToken;
     const parts = parseHash();
     if (parts[0] === "create") {
       openCreate();
       return;
     }
-    if (parts[0] === "share" && parts[1]) {
-      const quiz = getQuiz(parts[1]);
-      if (quiz) { openShare(quiz); return; }
+    if ((parts[0] === "share" || parts[0] === "f") && parts[1]) {
+      const quiz = await resolveQuiz(parts[1]);
+      if (token !== routeToken) return;
+      if (quiz) {
+        if (parts[0] === "share") openShare(quiz);
+        else openInvite(quiz);
+        return;
+      }
+      if (parts[0] === "f") {
+        openMissing();
+        return;
+      }
     }
-    if (parts[0] === "f" && parts[1]) {
-      const quiz = getQuiz(parts[1]);
-      if (quiz) { openInvite(quiz); return; }
-      openMissing();
-      return;
-    }
+    if (token !== routeToken) return;
     openInvite(DEMO_QUIZ);
   }
 
@@ -933,7 +1016,7 @@
 
   window.addEventListener("hashchange", () => {
     if (state.scene === "splash") return;
-    goFromHash();
+    void goFromHash();
   });
 
   /* ---------- start ---------- */
@@ -953,7 +1036,7 @@
     els.splash.classList.add("is-off");
     await wait(reduceMotion ? 120 : 520);
     els.splash.hidden = true;
-    goFromHash();
+    await goFromHash();
     document.documentElement.dataset.ready = "1";
     if (shot) applyShot(shot);
   }
