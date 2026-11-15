@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#1F2B4D" />
+  <title>我的默契树上，你在哪儿？ · 默契测试仿写练习</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='18' r='10' fill='%23c43c3c'/%3E%3Ccircle cx='13' cy='14' r='3' fill='%23fff6'/%3E%3Crect x='14' y='5' width='4' height='5' rx='1' fill='%23e7c56a'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
+  <style>
+    /* Critical: no white flash before stylesheet loads */
+    html, body {
+      margin: 0;
+      background: #1F2B4D;
+      color: #fff8ee;
+      min-height: 100%;
+    }
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #1F2B4D;
+      color: #fff8ee;
+    }
+    .splash.is-off {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .55s ease;
+    }
+  </style>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="splash" class="splash is-on" role="status" aria-live="polite">
+    <div class="splash-glow" aria-hidden="true"></div>
+    <h1 class="splash-title">
+      <span>我的默契树上</span>
+      <span>你在哪儿？</span>
+    </h1>
+    <p class="splash-sub">默契测试的仿写练习</p>
+    <div class="splash-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+
+  <div id="rotate-gate" class="rotate-gate" hidden>
+    <p>把手机竖过来再玩</p>
+  </div>
+
+  <div class="shell">
+    <div class="app" id="app">
+      <div class="room" id="room" data-mode="invite">
+        <div class="sky" aria-hidden="true">
+          <div class="window">
+            <div class="window-frame">
+              <div class="window-sky">
+                <div class="moon"></div>
+                <div class="star-field" id="star-field"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="garland" aria-hidden="true">
+          <svg viewBox="0 0 390 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M-10 14 C40 54 80 12 120 46 C160 14 200 56 240 24 C248 46 252 26 258 34" stroke="#1e6a38" stroke-width="18" stroke-linecap="round"/>
+            <path d="M-10 14 C40 54 80 12 120 46 C160 14 200 56 240 24 C248 46 252 26 258 34" stroke="#2f8a4a" stroke-width="12" stroke-linecap="round"/>
+            <path d="M-10 14 C40 54 80 12 120 46 C160 14 200 56 240 24 C248 46 252 26 258 34" stroke="#3fad5c" stroke-width="6.5" stroke-linecap="round"/>
+            <path d="M8.0 22.0 C-2.0 36.0 -8.0 42.0 3.0 48.0 C8.0 38.0 11.0 30.0 8.0 22.0 Z" fill="#1e6a38"/><path d="M8.0 22.0 C18.0 36.0 24.0 42.0 13.0 48.0 C8.0 38.0 5.0 30.0 8.0 22.0 Z" fill="#2f8a4a"/><path d="M8.0 22.0 C6.0 32.0 8.0 38.0 9.0 44.0 C8.0 34.0 10.0 30.0 8.0 22.0 Z" fill="#4aba66"/><path d="M28.0 36.0 C39.5 52.1 46.4 59.0 33.8 65.9 C28.0 54.4 24.6 45.2 28.0 36.0 Z" fill="#1e6a38"/><path d="M28.0 36.0 C16.5 52.1 9.6 59.0 22.2 65.9 C28.0 54.4 31.4 45.2 28.0 36.0 Z" fill="#2f8a4a"/><path d="M28.0 36.0 C30.3 47.5 28.0 54.4 26.9 61.3 C28.0 49.8 25.7 45.2 28.0 36.0 Z" fill="#4aba66"/><path d="M48.0 44.0 C37.5 58.7 31.2 65.0 42.8 71.3 C48.0 60.8 51.1 52.4 48.0 44.0 Z" fill="#1e6a38"/><path d="M48.0 44.0 C58.5 58.7 64.8 65.0 53.2 71.3 C48.0 60.8 44.9 52.4 48.0 44.0 Z" fill="#2f8a4a"/><path d="M48.0 44.0 C45.9 54.5 48.0 60.8 49.0 67.1 C48.0 56.6 50.1 52.4 48.0 44.0 Z" fill="#4aba66"/><path d="M68.0 30.0 C80.0 46.8 87.2 54.0 74.0 61.2 C68.0 49.2 64.4 39.6 68.0 30.0 Z" fill="#1e6a38"/><path d="M68.0 30.0 C56.0 46.8 48.8 54.0 62.0 61.2 C68.0 49.2 71.6 39.6 68.0 30.0 Z" fill="#2f8a4a"/><path d="M68.0 30.0 C70.4 42.0 68.0 49.2 66.8 56.4 C68.0 44.4 65.6 39.6 68.0 30.0 Z" fill="#4aba66"/><path d="M88.0 22.0 C78.0 36.0 72.0 42.0 83.0 48.0 C88.0 38.0 91.0 30.0 88.0 22.0 Z" fill="#1e6a38"/><path d="M88.0 22.0 C98.0 36.0 104.0 42.0 93.0 48.0 C88.0 38.0 85.0 30.0 88.0 22.0 Z" fill="#2f8a4a"/><path d="M88.0 22.0 C86.0 32.0 88.0 38.0 89.0 44.0 C88.0 34.0 90.0 30.0 88.0 22.0 Z" fill="#4aba66"/><path d="M108.0 40.0 C120.5 57.5 128.0 65.0 114.2 72.5 C108.0 60.0 104.2 50.0 108.0 40.0 Z" fill="#1e6a38"/><path d="M108.0 40.0 C95.5 57.5 88.0 65.0 101.8 72.5 C108.0 60.0 111.8 50.0 108.0 40.0 Z" fill="#2f8a4a"/><path d="M108.0 40.0 C110.5 52.5 108.0 60.0 106.8 67.5 C108.0 55.0 105.5 50.0 108.0 40.0 Z" fill="#4aba66"/><path d="M128.0 44.0 C117.0 59.4 110.4 66.0 122.5 72.6 C128.0 61.6 131.3 52.8 128.0 44.0 Z" fill="#1e6a38"/><path d="M128.0 44.0 C139.0 59.4 145.6 66.0 133.5 72.6 C128.0 61.6 124.7 52.8 128.0 44.0 Z" fill="#2f8a4a"/><path d="M128.0 44.0 C125.8 55.0 128.0 61.6 129.1 68.2 C128.0 57.2 130.2 52.8 128.0 44.0 Z" fill="#4aba66"/><path d="M148.0 26.0 C159.5 42.1 166.4 49.0 153.8 55.9 C148.0 44.4 144.6 35.2 148.0 26.0 Z" fill="#1e6a38"/><path d="M148.0 26.0 C136.5 42.1 129.6 49.0 142.2 55.9 C148.0 44.4 151.4 35.2 148.0 26.0 Z" fill="#2f8a4a"/><path d="M148.0 26.0 C150.3 37.5 148.0 44.4 146.8 51.3 C148.0 39.8 145.7 35.2 148.0 26.0 Z" fill="#4aba66"/><path d="M168.0 34.0 C157.5 48.7 151.2 55.0 162.8 61.3 C168.0 50.8 171.2 42.4 168.0 34.0 Z" fill="#1e6a38"/><path d="M168.0 34.0 C178.5 48.7 184.8 55.0 173.2 61.3 C168.0 50.8 164.8 42.4 168.0 34.0 Z" fill="#2f8a4a"/><path d="M168.0 34.0 C165.9 44.5 168.0 50.8 169.1 57.1 C168.0 46.6 170.1 42.4 168.0 34.0 Z" fill="#4aba66"/><path d="M188.0 48.0 C200.0 64.8 207.2 72.0 194.0 79.2 C188.0 67.2 184.4 57.6 188.0 48.0 Z" fill="#1e6a38"/><path d="M188.0 48.0 C176.0 64.8 168.8 72.0 182.0 79.2 C188.0 67.2 191.6 57.6 188.0 48.0 Z" fill="#2f8a4a"/><path d="M188.0 48.0 C190.4 60.0 188.0 67.2 186.8 74.4 C188.0 62.4 185.6 57.6 188.0 48.0 Z" fill="#4aba66"/><path d="M208.0 34.0 C197.0 49.4 190.4 56.0 202.5 62.6 C208.0 51.6 211.3 42.8 208.0 34.0 Z" fill="#1e6a38"/><path d="M208.0 34.0 C219.0 49.4 225.6 56.0 213.5 62.6 C208.0 51.6 204.7 42.8 208.0 34.0 Z" fill="#2f8a4a"/><path d="M208.0 34.0 C205.8 45.0 208.0 51.6 209.1 58.2 C208.0 47.2 210.2 42.8 208.0 34.0 Z" fill="#4aba66"/><path d="M228.0 24.0 C238.0 38.0 244.0 44.0 233.0 50.0 C228.0 40.0 225.0 32.0 228.0 24.0 Z" fill="#1e6a38"/><path d="M228.0 24.0 C218.0 38.0 212.0 44.0 223.0 50.0 C228.0 40.0 231.0 32.0 228.0 24.0 Z" fill="#2f8a4a"/><path d="M228.0 24.0 C230.0 34.0 228.0 40.0 227.0 46.0 C228.0 36.0 226.0 32.0 228.0 24.0 Z" fill="#4aba66"/><path d="M248.0 40.0 C236.0 56.8 228.8 64.0 242.0 71.2 C248.0 59.2 251.6 49.6 248.0 40.0 Z" fill="#1e6a38"/><path d="M248.0 40.0 C260.0 56.8 267.2 64.0 254.0 71.2 C248.0 59.2 244.4 49.6 248.0 40.0 Z" fill="#2f8a4a"/><path d="M248.0 40.0 C245.6 52.0 248.0 59.2 249.2 66.4 C248.0 54.4 250.4 49.6 248.0 40.0 Z" fill="#4aba66"/><path d="M18.0 48.0 C9.5 59.9 4.4 65.0 13.8 70.1 C18.0 61.6 20.6 54.8 18.0 48.0 Z" fill="#1e6a38"/><path d="M18.0 48.0 C26.5 59.9 31.6 65.0 22.2 70.1 C18.0 61.6 15.4 54.8 18.0 48.0 Z" fill="#2f8a4a"/><path d="M18.0 48.0 C16.3 56.5 18.0 61.6 18.9 66.7 C18.0 58.2 19.7 54.8 18.0 48.0 Z" fill="#4aba66"/><path d="M58.0 52.0 C67.0 64.6 72.4 70.0 62.5 75.4 C58.0 66.4 55.3 59.2 58.0 52.0 Z" fill="#1e6a38"/><path d="M58.0 52.0 C49.0 64.6 43.6 70.0 53.5 75.4 C58.0 66.4 60.7 59.2 58.0 52.0 Z" fill="#2f8a4a"/><path d="M58.0 52.0 C59.8 61.0 58.0 66.4 57.1 71.8 C58.0 62.8 56.2 59.2 58.0 52.0 Z" fill="#4aba66"/><path d="M98.0 54.0 C88.5 67.3 82.8 73.0 93.2 78.7 C98.0 69.2 100.8 61.6 98.0 54.0 Z" fill="#1e6a38"/><path d="M98.0 54.0 C107.5 67.3 113.2 73.0 102.8 78.7 C98.0 69.2 95.2 61.6 98.0 54.0 Z" fill="#2f8a4a"/><path d="M98.0 54.0 C96.1 63.5 98.0 69.2 99.0 74.9 C98.0 65.4 99.9 61.6 98.0 54.0 Z" fill="#4aba66"/><path d="M138.0 50.0 C146.5 61.9 151.6 67.0 142.2 72.1 C138.0 63.6 135.4 56.8 138.0 50.0 Z" fill="#1e6a38"/><path d="M138.0 50.0 C129.5 61.9 124.4 67.0 133.8 72.1 C138.0 63.6 140.6 56.8 138.0 50.0 Z" fill="#2f8a4a"/><path d="M138.0 50.0 C139.7 58.5 138.0 63.6 137.2 68.7 C138.0 60.2 136.3 56.8 138.0 50.0 Z" fill="#4aba66"/><path d="M178.0 58.0 C169.0 70.6 163.6 76.0 173.5 81.4 C178.0 72.4 180.7 65.2 178.0 58.0 Z" fill="#1e6a38"/><path d="M178.0 58.0 C187.0 70.6 192.4 76.0 182.5 81.4 C178.0 72.4 175.3 65.2 178.0 58.0 Z" fill="#2f8a4a"/><path d="M178.0 58.0 C176.2 67.0 178.0 72.4 178.9 77.8 C178.0 68.8 179.8 65.2 178.0 58.0 Z" fill="#4aba66"/><path d="M218.0 52.0 C226.5 63.9 231.6 69.0 222.2 74.1 C218.0 65.6 215.4 58.8 218.0 52.0 Z" fill="#1e6a38"/><path d="M218.0 52.0 C209.5 63.9 204.4 69.0 213.8 74.1 C218.0 65.6 220.6 58.8 218.0 52.0 Z" fill="#2f8a4a"/><path d="M218.0 52.0 C219.7 60.5 218.0 65.6 217.2 70.7 C218.0 62.2 216.3 58.8 218.0 52.0 Z" fill="#4aba66"/><path d="M258.0 58.0 C248.5 71.3 242.8 77.0 253.2 82.7 C258.0 73.2 260.9 65.6 258.0 58.0 Z" fill="#1e6a38"/><path d="M258.0 58.0 C267.5 71.3 273.2 77.0 262.8 82.7 C258.0 73.2 255.2 65.6 258.0 58.0 Z" fill="#2f8a4a"/><path d="M258.0 58.0 C256.1 67.5 258.0 73.2 258.9 78.9 C258.0 69.4 259.9 65.6 258.0 58.0 Z" fill="#4aba66"/>
+            <circle cx="28" cy="34" r="7" fill="#ff5b6a"/><circle cx="28" cy="34" r="2.4" fill="#fff6c8"/>
+            <circle cx="72" cy="28" r="6" fill="#ffd24a"/><circle cx="72" cy="28" r="2" fill="#fff"/>
+            <circle cx="118" cy="44" r="7" fill="#5aa8ff"/><circle cx="118" cy="44" r="2.4" fill="#fff"/>
+            <circle cx="164" cy="26" r="6.2" fill="#ff7a3a"/><circle cx="164" cy="26" r="2" fill="#fff6c8"/>
+            <circle cx="208" cy="42" r="7" fill="#b46bff"/><circle cx="208" cy="42" r="2.4" fill="#fff"/>
+            <circle cx="254" cy="24" r="6" fill="#ffd24a"/><circle cx="254" cy="24" r="2" fill="#fff"/>
+            
+            
+            <path d="M94 12 C88 26 82 30 94 36 C106 30 100 26 94 12 Z" fill="#e24b4b"/>
+            <ellipse cx="94" cy="16" rx="3" ry="2" fill="#ffd24a"/>
+            <path d="M232 10 C226 24 220 28 232 34 C244 28 238 24 232 10 Z" fill="#e24b4b"/>
+            <ellipse cx="232" cy="14" rx="3" ry="2" fill="#ffd24a"/>
+            <path d="M186 18 C180 32 174 36 186 42 C198 36 192 32 186 18 Z" fill="#5aa8ff"/>
+          </svg>
+        </div>
+        <div class="snow" id="snow" aria-hidden="true"></div>
+        <div class="tree-camera" id="camera">
+          <div class="tree-fit" id="tree-fit">
+          <svg class="tree-svg" id="tree-svg" viewBox="0 0 300 520" role="img" aria-label="一棵十层的默契树">
+            <defs>
+              <linearGradient id="foliageA" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3aaf5c" />
+                <stop offset="100%" stop-color="#2d9148" />
+              </linearGradient>
+              <linearGradient id="foliageB" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#46c068" />
+                <stop offset="100%" stop-color="#34a054" />
+              </linearGradient>
+              <linearGradient id="foliageC" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#58d07a" />
+                <stop offset="100%" stop-color="#3aaf5c" />
+              </linearGradient>
+              <linearGradient id="boxGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ff6b6b" />
+                <stop offset="100%" stop-color="#d44545" />
+              </linearGradient>
+              <linearGradient id="boxGradTeal" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4fd0a0" />
+                <stop offset="100%" stop-color="#2a9d7c" />
+              </linearGradient>
+              <linearGradient id="boxGradGold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ffe07a" />
+                <stop offset="100%" stop-color="#e0b23a" />
+              </linearGradient>
+              <linearGradient id="potG" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d4924e" />
+                <stop offset="100%" stop-color="#8e5424" />
+              </linearGradient>
+              <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2.2" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="starGlow" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="3.4" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- pot + trunk -->
+            <ellipse cx="150" cy="498" rx="70" ry="12" fill="#5a3a18" opacity=".22" />
+            <path d="M108 430 L192 430 L182 496 Q150 510 118 496 Z" fill="url(#potG)" stroke="#5a3210" stroke-width="3" stroke-linejoin="round" />
+            <rect x="100" y="420" width="100" height="16" rx="6" fill="#d4924e" stroke="#5a3210" stroke-width="3" />
+            <rect x="138" y="398" width="24" height="28" rx="6" fill="#c48a4a" stroke="#5a3210" stroke-width="2.2" />
+
+            <!-- fluffier scalloped foliage; same overall bounds so hooks stay on the tree -->
+            <path class="foliage" fill="url(#foliageA)" d="M150 248
+              C165 252 178 264 188 278
+              C204 268 218 280 224 296
+              C240 288 254 300 258 318
+              C272 310 284 324 282 344
+              C294 338 298 356 288 374
+              C296 384 292 400 270 410
+              C230 426 186 430 150 426
+              C114 430 70 426 30 410
+              C8 400 4 384 12 374
+              C2 356 6 338 18 344
+              C16 324 28 310 42 318
+              C46 300 60 288 76 296
+              C82 280 96 268 112 278
+              C122 264 135 252 150 248 Z" />
+            <path class="foliage" fill="url(#foliageB)" d="M150 198
+              C164 202 176 214 184 228
+              C198 220 210 232 216 248
+              C230 240 242 252 244 270
+              C256 264 262 278 258 296
+              C266 304 262 320 244 332
+              C210 348 174 356 150 350
+              C126 356 90 348 56 332
+              C38 320 34 304 42 296
+              C38 278 44 264 56 270
+              C58 252 70 240 84 248
+              C90 232 102 220 116 228
+              C124 214 136 202 150 198 Z" />
+            <path class="foliage" fill="url(#foliageA)" d="M150 148
+              C162 152 172 164 180 178
+              C192 170 204 182 208 196
+              C220 190 230 202 230 218
+              C240 226 236 242 220 254
+              C192 268 164 276 150 270
+              C136 276 108 268 80 254
+              C64 242 60 226 70 218
+              C70 202 80 190 92 196
+              C96 182 108 170 120 178
+              C128 164 138 152 150 148 Z" />
+            <path class="foliage" fill="url(#foliageB)" d="M150 106
+              C160 110 168 122 174 136
+              C186 128 196 140 198 154
+              C208 150 214 162 212 176
+              C218 184 214 198 198 208
+              C176 220 158 226 150 220
+              C142 226 124 220 102 208
+              C86 198 82 184 88 176
+              C86 162 92 150 102 154
+              C104 140 114 128 126 136
+              C132 122 140 110 150 106 Z" />
+            <path class="foliage" fill="url(#foliageC)" d="M150 60
+              C158 64 166 76 170 90
+              C180 84 188 94 188 108
+              C196 114 194 128 180 138
+              C166 148 156 154 150 148
+              C144 154 134 148 120 138
+              C106 128 104 114 112 108
+              C112 94 120 84 130 90
+              C134 76 142 64 150 60 Z" />
+
+            <path class="leaf-shine" d="M86 300 C110 270 130 262 150 258 C128 278 112 312 108 350 C98 336 88 318 86 300 Z" fill="#fff" opacity=".16" />
+            <path class="leaf-shine" d="M108 140 C124 118 138 112 150 112 C138 128 128 150 128 172 C118 162 110 150 108 140 Z" fill="#fff" opacity=".16" />
+
+            <!-- original static decorations, kept off hook points -->
+            <g class="tree-deco" aria-hidden="true">
+              <g transform="translate(64 350) rotate(-18)">
+                <path d="M0 0 C2 18 10 28 10 44" stroke="#fff6ea" stroke-width="7" stroke-linecap="round"/>
+                <path d="M0 0 C2 18 10 28 10 44" stroke="#e24b4b" stroke-width="7" stroke-linecap="round" stroke-dasharray="5 5"/>
+                <circle r="4" fill="#e24b4b" stroke="#fff6ea" stroke-width="1.2"/>
+              </g>
+              <g transform="translate(232 338) rotate(16)">
+                <path d="M0 0 C2 18 10 28 10 44" stroke="#fff6ea" stroke-width="7" stroke-linecap="round"/>
+                <path d="M0 0 C2 18 10 28 10 44" stroke="#e24b4b" stroke-width="7" stroke-linecap="round" stroke-dasharray="5 5"/>
+                <circle r="4" fill="#e24b4b" stroke="#fff6ea" stroke-width="1.2"/>
+              </g>
+              <g transform="translate(78 250)">
+                <path d="M0 0 C-8 10 -12 14 0 20 C12 14 8 10 0 0 Z" fill="#e24b4b"/>
+                <circle r="2.2" fill="#ffd24a"/>
+              </g>
+              <g transform="translate(220 300)">
+                <path d="M0 0 C-9 11 -13 15 0 22 C13 15 9 11 0 0 Z" fill="#e24b4b"/>
+                <circle r="2.4" fill="#ffd24a"/>
+              </g>
+              <g transform="translate(100 358)">
+                <path d="M0 0 C-7 9 -10 12 0 18 C10 12 7 9 0 0 Z" fill="#5aa8ff"/>
+                <circle r="2" fill="#ffd24a"/>
+              </g>
+              <g transform="translate(226 236)">
+                <circle r="11" fill="#ff8ab0" stroke="#c98410" stroke-width="1.8"/>
+                <circle r="4" fill="#fff6c8"/>
+              </g>
+              <g transform="translate(86 170)">
+                <circle r="9" fill="#7ad3ff" stroke="#c98410" stroke-width="1.8"/>
+                <circle r="3.2" fill="#fff"/>
+              </g>
+              <g transform="translate(214 156)">
+                <path d="M0 -10 L3 -3 L10 -3 L4 2 L6 9 L0 5 L-6 9 L-4 2 L-10 -3 L-3 -3 Z" fill="#ffd24a" stroke="#c98410" stroke-width="1.4" stroke-linejoin="round"/>
+              </g>
+              <g transform="translate(70 300)">
+                <circle r="8" fill="#b46bff" stroke="#c98410" stroke-width="1.6"/>
+                <circle r="2.8" fill="#fff6c8"/>
+              </g>
+              <g transform="translate(230 178)">
+                <circle r="8.5" fill="#ff5b6a" stroke="#c98410" stroke-width="1.8"/>
+                <circle r="3" fill="#fff6c8"/>
+              </g>
+              <g transform="translate(66 210)">
+                <circle r="7.5" fill="#ffd24a" stroke="#c98410" stroke-width="1.6"/>
+                <circle r="2.6" fill="#fff"/>
+              </g>
+              <g transform="translate(48 368)">
+                <circle r="7" fill="#4fd0a0" stroke="#c98410" stroke-width="1.6"/>
+                <circle r="2.4" fill="#fff6c8"/>
+              </g>
+              <g transform="translate(150 280)">
+                <path d="M-9 2 C-9 -11 9 -11 9 2 C9 9 4 13 0 13 C-4 13 -9 9 -9 2 Z" fill="#ffd24a" stroke="#c98410" stroke-width="1.6" stroke-linejoin="round"/>
+                <rect x="-2.4" y="-14" width="4.8" height="5" rx="1.2" fill="#c98410"/>
+                <circle cy="16" r="2.6" fill="#c98410"/>
+                <path d="M0 13 L0 16" stroke="#c98410" stroke-width="1.4"/>
+              </g>
+              <g transform="translate(52 318)">
+                <path d="M-7 1 C-7 -9 7 -9 7 1 C7 7 3 10 0 10 C-3 10 -7 7 -7 1 Z" fill="#ff8ab0" stroke="#c98410" stroke-width="1.4" stroke-linejoin="round"/>
+                <rect x="-2" y="-12" width="4" height="4" rx="1" fill="#c98410"/>
+                <circle cy="13" r="2.1" fill="#c98410"/>
+              </g>
+            </g>
+
+            <!-- string lights -->
+            <g id="lights" filter="url(#softGlow)"></g>
+
+            <!-- 10 hooks, bottom to top -->
+            <g id="hooks" fill="none" stroke-linecap="round">
+              <path class="hook" data-tier="1" d="M100 386 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="2" d="M186 358 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="3" d="M106 324 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="4" d="M180 292 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="5" d="M112 260 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="6" d="M174 228 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="7" d="M120 196 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="8" d="M166 164 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="9" d="M128 132 a7 7 0 0 0 14 0" />
+              <path class="hook" data-tier="10" d="M143 96 a7 7 0 0 0 14 0" />
+            </g>
+
+            <!-- paper star -->
+            <g class="top-star" filter="url(#starGlow)" transform="translate(150 64)">
+              <path d="M0 -22 L6.2 -7 L22 -7 L9.5 3 L14 18 L0 10 L-14 18 L-9.5 3 L-22 -7 L-6.2 -7 Z" fill="#ffd24a" stroke="#c98410" stroke-width="2.2" stroke-linejoin="round" />
+              <circle cy="-2" r="3.6" fill="#fff6c8" />
+            </g>
+
+            <!-- gift box (0–4 ending home), same place -->
+            <g class="gift-box" transform="translate(214 428)">
+              <rect width="52" height="38" rx="6" fill="url(#boxGrad)" stroke="#8a2020" stroke-width="2" />
+              <rect x="22" width="8" height="38" fill="#ffd24a" />
+              <rect y="14" width="52" height="8" fill="#ffd24a" />
+              <path d="M18 10 C18 -4 30 -4 26 4 C34 -2 38 10 32 10 Z" fill="#ffd24a" stroke="#c98410" stroke-width="1.2" />
+              <path d="M32 10 C32 -2 44 0 38 6 C46 4 46 12 40 12 Z" fill="#ffd24a" stroke="#c98410" stroke-width="1.2" />
+              <rect x="-2" y="-5" width="56" height="10" rx="4" fill="#ff6b6b" stroke="#8a2020" stroke-width="2" />
+            </g>
+            <g class="gift-box gift-box-2" transform="translate(36 448)">
+              <rect width="40" height="30" rx="5" fill="url(#boxGradTeal)" stroke="#1a6a58" stroke-width="2" />
+              <rect x="16" width="7" height="30" fill="#ffd24a" />
+              <rect y="11" width="40" height="7" fill="#ffd24a" />
+              <path d="M14 8 C14 -3 24 -3 20 4 C27 -1 31 8 25 8 Z" fill="#ffd24a" stroke="#c98410" stroke-width="1" />
+              <rect x="-2" y="-4" width="44" height="8" rx="3" fill="#2a9d7c" stroke="#1a6a58" stroke-width="2" />
+            </g>
+            <g class="gift-box gift-box-3" transform="translate(86 468)">
+              <rect width="28" height="22" rx="4" fill="url(#boxGradGold)" stroke="#8a5a10" stroke-width="1.8" />
+              <rect x="11" width="6" height="22" fill="#e24b4b" />
+              <rect y="8" width="28" height="6" fill="#e24b4b" />
+            </g>
+          </svg>
+
+          <div class="ornament" id="ornament" data-tier="0">
+            <div class="ornament-hanger"></div>
+            <div class="ornament-cap"></div>
+            <div class="ornament-body">
+              <span class="ornament-shine"></span>
+              <span class="ornament-name" id="ornament-name"></span>
+            </div>
+          </div>
+
+          <div class="deco-layer" id="deco-layer" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="floor" aria-hidden="true"></div>
+        <div class="rug" aria-hidden="true"></div>
+        <div class="spotlight" aria-hidden="true"></div>
+        <div class="vignette" aria-hidden="true"></div>
+      </div>
+
+      <!-- INVITE -->
+      <section class="scene" id="scene-invite" data-scene="invite" hidden>
+        <div class="letter sheet" id="invite-letter">
+          <p class="letter-kicker">一封邀请</p>
+          <h2 class="letter-title">
+            <span id="invite-host"></span>
+            <span class="letter-title-rest">请你来认一认这棵树</span>
+          </h2>
+          <p class="letter-mood" id="invite-mood"></p>
+          <p class="letter-rule">答对一题，就往树上爬一层</p>
+          <p class="social-proof" id="social-proof" hidden></p>
+          <div class="ornament-preview-wrap">
+            <div class="ornament is-preview" id="preview-ornament">
+              <div class="ornament-hanger"></div>
+              <div class="ornament-cap"></div>
+              <div class="ornament-body">
+                <span class="ornament-shine"></span>
+                <span class="ornament-name" id="preview-name">你的名字</span>
+              </div>
+            </div>
+          </div>
+          <label class="name-field">
+            <span class="name-label">你的名字，会写在挂件上</span>
+            <input id="player-name" type="text" maxlength="15" autocomplete="nickname" placeholder="怎么称呼你" />
+          </label>
+          <button type="button" class="btn-primary" id="btn-start">走起</button>
+          <p class="fine-print">默契测试的仿写练习 · 不是 Cloudz 或 Helopal 的游戏</p>
+        </div>
+      </section>
+
+      <!-- INTRO -->
+      <section class="scene scene-overlay" id="scene-intro" data-scene="intro" hidden>
+        <p class="intro-caption" id="intro-caption"></p>
+        <button type="button" class="btn-text btn-skip" id="btn-skip-intro">跳过</button>
+      </section>
+
+      <!-- QUIZ -->
+      <section class="scene scene-bottom" id="scene-quiz" data-scene="quiz" hidden>
+        <div class="board sheet" id="quiz-board">
+          <p class="flavor" id="flavor" hidden></p>
+          <p class="board-kicker ribbon" id="quiz-kicker">第 1 题</p>
+          <h2 class="board-question" id="quiz-question"></h2>
+          <div class="choices" id="quiz-choices"></div>
+        </div>
+      </section>
+
+      <!-- RESULT -->
+      <section class="scene scene-bottom" id="scene-result" data-scene="result" hidden>
+        <div class="result-card sheet" id="result-card">
+          <p class="result-kicker ribbon" id="result-kicker"></p>
+          <h2 class="result-title" id="result-title"></h2>
+          <p class="result-score">
+            <span id="result-player"></span>对<span id="result-host"></span>的了解
+            <strong id="result-score"></strong>/10
+          </p>
+          <p class="result-body" id="result-body"></p>
+          <p class="result-comeback" id="result-comeback"></p>
+          <button type="button" class="btn-primary" id="btn-create">也出一套我的题</button>
+          <div class="result-links">
+            <button type="button" class="btn-text" id="btn-peek-tree">再看一眼树</button>
+            <button type="button" class="btn-text" id="btn-retry">再答一次</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CREATE NAME -->
+      <section class="scene" id="scene-create-name" data-scene="create-name" hidden>
+        <div class="letter sheet">
+          <p class="letter-kicker">轮到你了</p>
+          <h2 class="letter-title">先在挂件上写下你的名字</h2>
+          <p class="letter-rule">接下来用 10 道关于你的题，把树点亮</p>
+          <label class="name-field">
+            <span class="name-label">出题人的名字</span>
+            <input id="creator-name" type="text" maxlength="15" autocomplete="nickname" placeholder="怎么称呼你" />
+          </label>
+          <div class="ornament-preview-wrap">
+            <div class="ornament is-preview is-gold" id="creator-ornament">
+              <div class="ornament-hanger"></div>
+              <div class="ornament-cap"></div>
+              <div class="ornament-body">
+                <span class="ornament-shine"></span>
+                <span class="ornament-name" id="creator-preview-name">你的名字</span>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-primary" id="btn-create-start">开始出题</button>
+        </div>
+      </section>
+
+      <!-- CREATE QUIZ -->
+      <section class="scene scene-bottom" id="scene-create-quiz" data-scene="create-quiz" hidden>
+        <div class="board sheet">
+          <p class="board-kicker ribbon" id="create-kicker">装饰第 1 层</p>
+          <h2 class="board-question" id="create-question"></h2>
+          <p class="board-hint">点你的答案，这层就会亮起来</p>
+          <div class="choices" id="create-choices"></div>
+        </div>
+      </section>
+
+      <!-- SHARE -->
+      <section class="scene scene-bottom" id="scene-share" data-scene="share" hidden>
+        <div class="result-card share-card sheet">
+          <p class="result-kicker ribbon">你的树已经点亮</p>
+          <h2 class="result-title">发给朋友，看他们挂在哪一层</h2>
+          <p class="share-host" id="share-host-line"></p>
+          <div class="share-link-row">
+            <code class="share-link" id="share-link"></code>
+            <button type="button" class="btn-copy" id="btn-copy">复制</button>
+          </div>
+          <button type="button" class="btn-primary" id="btn-open-invite">打开邀请页试试</button>
+          <p class="fine-print tight">演示短链，卷面存在这台设备的浏览器里，没有真实后台</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <audio id="bgm" loop preload="auto" autoplay playsinline webkit-playsinline>
+    <source src="audio/quirky-little-march.m4a" type="audio/mp4">
+    <source src="audio/quirky-little-march.mp3" type="audio/mpeg">
+  </audio>
+  <button type="button" id="bgm-toggle" class="bgm-toggle" aria-label="切换背景音乐静音" aria-pressed="false" title="背景音乐">🔊</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
