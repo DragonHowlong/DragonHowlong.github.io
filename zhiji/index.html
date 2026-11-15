@@ -150,10 +150,10 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","P
 .view{display:none;padding:0 0 24px;animation:fadeIn .25s ease}
 .view.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-header.app-header{background:linear-gradient(135deg,var(--header-1) 0%,var(--header-2) 55%,var(--header-3) 100%);color:#fff;padding:28px 20px 24px;border-radius:0 0 28px 28px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
+header.app-header{background:linear-gradient(135deg,var(--header-1) 0%,var(--header-2) 55%,var(--header-3) 100%);color:#fff;padding:28px 20px 30px;border-radius:0 0 28px 28px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
 header.app-header::after{content:"";position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12)}
 header.app-header h1{font-size:22px;font-weight:700;letter-spacing:1px;position:relative}
-header.app-header p{font-size:13px;opacity:.92;margin-top:6px;position:relative}
+header.app-header p{font-size:13px;opacity:1;margin-top:6px;line-height:1.55;position:relative}
 .step-pill{display:inline-block;background:rgba(255,255,255,.22);padding:4px 12px;border-radius:20px;font-size:12px;margin-top:10px;position:relative}
 .card{background:var(--card);border-radius:var(--radius);padding:16px;margin:0 14px 12px;box-shadow:var(--shadow);border:1px solid var(--border)}
 .card h2{font-size:16px;margin-bottom:12px;color:var(--primary-dark);display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -228,7 +228,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .band-row .band-range{flex:0 0 78px;font-size:12px;color:var(--primary);font-weight:600;padding-top:12px;text-align:center}
 .band-row textarea{flex:1;min-height:52px}
 .modal-mask{position:fixed;inset:0;background:rgba(20,28,36,.55);z-index:400;display:flex;align-items:flex-end;justify-content:center}
-.modal{background:var(--modal-bg);border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));width:100%;max-width:430px;max-height:88vh;overflow-y:auto;color:var(--text);box-sizing:border-box}
+.modal{background:var(--modal-bg);border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));width:100%;max-width:430px;max-height:88vh;overflow-y:auto;color:var(--text);box-sizing:border-box;box-shadow:0 -8px 28px rgba(0,0,0,.18)}
 .modal h3{font-size:17px;margin-bottom:12px;text-align:center}
 .bank-list{max-height:46vh;overflow-y:auto}
 .bank-item{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;background:var(--bank-item-bg)}
@@ -237,10 +237,13 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .bank-item .bq{font-size:14px;font-weight:550;margin-bottom:4px}
 .bank-item .bo{font-size:12px;color:var(--text-light);line-height:1.5}
 .bank-item .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);margin-bottom:4px;font-weight:600}
-.toast{position:fixed;top:calc(56px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:rgba(44,62,80,.9);color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;z-index:320;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s}
+.toast{position:fixed;top:calc(92px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:#1A2330;color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;font-weight:650;z-index:500;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s;box-shadow:0 6px 20px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.45)}
 .toast.show{opacity:1}
-.footer-note{text-align:center;padding:8px 20px;font-size:12px;color:var(--text-light);line-height:1.5}
+.footer-note{text-align:center;padding:8px 20px;font-size:12px;color:#4E5D6B;line-height:1.5}
+html[data-theme="mono"] .footer-note{color:#444}
 html[data-theme="dark"] .footer-note{color:#C8D0DC}
+.modal .hint{color:#4E5D6B}
+html[data-theme="dark"] .modal .hint{color:#C8D0DC}
 .hero-emoji{font-size:42px;margin-bottom:8px}
 .meme-hero{display:block;width:min(180px,46vw);height:auto;margin:0 auto 12px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;animation:memeFloat 3.2s ease-in-out infinite}
 .meme-result{display:block;width:min(168px,44vw);height:auto;margin:0 auto 14px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;-webkit-touch-callout:default;user-select:none}
@@ -271,7 +274,7 @@ html[data-theme="dark"] .footer-note{color:#C8D0DC}
 .msg-item{padding:12px 0;border-bottom:1px solid var(--border)}
 .msg-item:last-child{border-bottom:none}
 .msg-item .who{font-size:13px;font-weight:650;color:var(--primary-dark);margin-bottom:4px}
-.msg-item .when{font-size:11px;color:#5B6B78;margin-top:6px}
+.msg-item .when{font-size:11px;color:#3E4E5A;margin-top:6px}
 html[data-theme="dark"] .msg-item .when{color:#C8D0DC}
 .msg-item .body{font-size:14px;line-height:1.55;word-break:break-word}
 .corner-msg{display:flex;gap:8px;justify-content:flex-end;margin:0 0 10px}
@@ -4288,7 +4291,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "回暖已经收尾、冷空气今天到了，我？",
+    "q": "回暖已经收尾、冷空气已经到了，我？",
     "options": [
       "还想抓住最后一点暖阳",
       "厚衣服已经从柜子请出来",
@@ -4409,7 +4412,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "听说17日前后可能刷下半年低温新低，我？",
+    "q": "听说北方17日、南方18日可能刷下半年低温新低，我？",
     "options": [
       "认真翻箱子找冬装",
       "先当天气预报在夸张",
@@ -4478,12 +4481,12 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "听说15日起大风一到雾霾就会散，我更像？",
+    "q": "今天起大风一到、雾霾开始散，我更像？",
     "options": [
-      "今天先忍一忍等风来",
+      "出门看看能见度回没回升",
       "口罩还是先戴上再说",
-      "已经在盼着能见度回升",
-      "觉得风和雾在玩接力赛"
+      "已经在盼着天晴透一点",
+      "觉得风和雾在玩交接班"
     ],
     "answer": 2,
     "cat": "精神状态"
@@ -4520,6 +4523,72 @@ const BANK = [
     ],
     "answer": 1,
     "cat": "离谱假设"
+  },
+  {
+    "q": "刷到医保目录又新增一百多种药，我？",
+    "options": [
+      "认真看看有没有自己关心的",
+      "先转给家人让他们研究",
+      "回一句药比购物车还会上新",
+      "觉得这比促销战报更实用"
+    ],
+    "answer": 0,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "听说国产十吨级电动商用飞机首飞了，我的离谱反应？",
+    "options": [
+      "认真转发当今日喜讯",
+      "先问这和我抢票有什么关系",
+      "已经在脑内预约电动航班",
+      "觉得它和冷空气一起起飞更抽象"
+    ],
+    "answer": 2,
+    "cat": "离谱假设"
+  },
+  {
+    "q": "刷到星舰被发射塔机械臂活捉回收，我？",
+    "options": [
+      "认真看完回收那一下",
+      "觉得像夹娃娃机升级版",
+      "先问这和我快递回收有什么关系",
+      "默契地点一个机械臂表情"
+    ],
+    "answer": 1,
+    "cat": "离谱假设"
+  },
+  {
+    "q": "重污染预警刚解除、雾霾开始散时我？",
+    "options": [
+      "终于想开窗透口气",
+      "还是先看一眼空气质量",
+      "出门权交给能见度",
+      "回一句风比口罩来得及时"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "十一月已经过半、低温还在后头时我？",
+    "options": [
+      "突然意识到冬天真的开始了",
+      "开始盘点这个月还没做的事",
+      "先把厚衣服留到真正冷的那天",
+      "回一句时间比冷空气走得还快"
+    ],
+    "answer": 0,
+    "cat": "精神状态"
+  },
+  {
+    "q": "听说这两股冷空气要续到18日，我？",
+    "options": [
+      "按天把衣服排好班",
+      "先看后几天还会不会再降",
+      "已经决定这几天少出门",
+      "回一句降温也要搞续集"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
   }
 ];
 /* ---------- Minimal LZ-String (compress share payloads) ---------- */
@@ -5629,7 +5698,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.85;font-size:12px">沉淀默契 · 慢慢认识彼此 · 冷空气到了·降温雨雪上线，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px">沉淀默契 · 慢慢认识彼此 · 冷空气续上·低温还在后头，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -5653,7 +5722,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 今天起两股冷空气接连来，降温雨雪上线，答完再把厚衣服找出来</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 两股冷空气还在续，雨雪降温中，答完再把冬装请出柜</p>
   </div>`;
 }
 
@@ -6125,14 +6194,17 @@ async function hydrateRemoteBoard(quizId){
     box.innerHTML='<p class="hint">跨设备排行榜未启用</p>';
     return;
   }
-  // Prefer board returned by the just-finished POST (avoids WeChat/*.workers.dev flaky GET)
-  if(S.lastRemoteBoard && S.lastRemoteBoard.quizId===id && Array.isArray(S.lastRemoteBoard.board) && S.lastRemoteBoard.board.length){
+  // Paint last POST board immediately (result page / flaky GET), but always refetch
+  // so the creator manage page is not stuck on a stale in-memory cache.
+  const cached=S.lastRemoteBoard && S.lastRemoteBoard.quizId===id && Array.isArray(S.lastRemoteBoard.board) && S.lastRemoteBoard.board.length;
+  if(cached){
     box.innerHTML=renderBoardRows(S.lastRemoteBoard.board);
-    return;
+  } else {
+    box.innerHTML='<p class="hint">正在加载排行榜…</p>';
   }
-  box.innerHTML='<p class="hint">正在加载排行榜…</p>';
   const board=await fetchBoardRemote(id);
   if(board===null){
+    if(cached) return;
     const self=selfBoardFallback();
     if(self){
       box.innerHTML='<p class="hint">排行榜加载失败，可能是网络拦截（如微信内置浏览器拦 *.workers.dev）。以下先显示你自己的成绩：</p>'+renderBoardRows(self);
@@ -6142,6 +6214,10 @@ async function hydrateRemoteBoard(quizId){
     return;
   }
   if(!board.length){
+    if(cached){
+      box.innerHTML=renderBoardRows(S.lastRemoteBoard.board)+'<p class="hint">成绩已提交；若其他人还没出现，稍后再看。</p>';
+      return;
+    }
     const self=selfBoardFallback();
     if(self){
       // Just finished but remote still empty / lag — never look blank for the finisher
@@ -6151,6 +6227,7 @@ async function hydrateRemoteBoard(quizId){
     }
     return;
   }
+  S.lastRemoteBoard={quizId:id, board};
   box.innerHTML=renderBoardRows(board);
 }
 
