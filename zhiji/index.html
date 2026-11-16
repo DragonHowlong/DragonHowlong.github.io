@@ -348,7 +348,7 @@ html[data-theme="mono"] header.app-header{background:#111}
   <source src="audio/quirky-little-march.mp3" type="audio/mpeg">
 </audio>
 <button type="button" id="bgm-toggle" class="bgm-toggle" aria-label="切换背景音乐静音" aria-pressed="false" title="背景音乐">🔊</button>
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" aria-hidden="true"></div>
 <script>
 /* ========== Built-in bank (搞怪抽象·娱乐) with categories ========== */
 const BANK = [
@@ -3972,7 +3972,7 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "现货直发和还在等预售尾款之间我？",
+    "q": "现货直发和预售尾款之间我更像？",
     "options": [
       "现货党：今晚就能摸到",
       "尾款党：仪式感不能少",
@@ -4401,7 +4401,7 @@ const BANK = [
     "cat": "抽象日常"
   },
   {
-    "q": "今天起两股冷空气接连来，我更像？",
+    "q": "两股冷空气还在接连影响时，我更像？",
     "options": [
       "还想抓住最后一点暖阳",
       "厚衣服已经从柜子请出来",
@@ -4423,7 +4423,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "今早大雾橙色预警还挂着时我？",
+    "q": "大雾预警刚过、雨雪接上来时我？",
     "options": [
       "出门先看十米外还有没有人",
       "改成云端出席了事",
@@ -4434,7 +4434,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "今天起中东部大范围雨雪上线，我？",
+    "q": "中东部大范围雨雪还在向东发展时，我？",
     "options": [
       "先查本地是雨还是雪",
       "把伞和厚袜子一起备上",
@@ -4454,10 +4454,7 @@ const BANK = [
     ],
     "answer": 3,
     "cat": "离谱假设"
-  }
-
-
-,
+  },
   {
     "q": "两股冷空气接连来、大部要降温六到十度，我？",
     "options": [
@@ -4481,7 +4478,7 @@ const BANK = [
     "cat": "网络冲浪"
   },
   {
-    "q": "今天起大风一到、雾霾开始散，我更像？",
+    "q": "冷空气继续清扫雾和霾时，我更像？",
     "options": [
       "出门看看能见度回没回升",
       "口罩还是先戴上再说",
@@ -4558,12 +4555,12 @@ const BANK = [
     "cat": "离谱假设"
   },
   {
-    "q": "重污染预警刚解除、雾霾开始散时我？",
+    "q": "雾霾散了却还赶上雨雪降温时我？",
     "options": [
-      "终于想开窗透口气",
-      "还是先看一眼空气质量",
-      "出门权交给能见度",
-      "回一句风比口罩来得及时"
+      "想开窗又被雨雪劝回去",
+      "还是先看一眼空气质量和气温",
+      "出门权交给体感",
+      "回一句天气脚本切换得太快"
     ],
     "answer": 1,
     "cat": "精神状态"
@@ -4589,6 +4586,72 @@ const BANK = [
     ],
     "answer": 1,
     "cat": "精神状态"
+  },
+  {
+    "q": "听说南北方大片地区要刷下半年气温新低，我？",
+    "options": [
+      "认真把最厚的那件翻出来",
+      "先看本地会不会真的破纪录",
+      "已经开始在心里提前喊冷",
+      "回一句新低也要搞首发"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "明后天东北降雪还会增多增强时我？",
+    "options": [
+      "先看那边朋友出不出得了门",
+      "把出行往更后天挪一挪",
+      "已经在脑内给东北铺上一层雪",
+      "回一句续集比预告更认真"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "听说北方已经全面供暖了，我？",
+    "options": [
+      "认真把暖气和被子一起请出柜",
+      "先问自己那儿开没开上",
+      "突然很羡慕暖气房的朋友",
+      "把这当成冬天正式开工的通知"
+    ],
+    "answer": 1,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "刷到多地官宣雪假还能连休五天时我？",
+    "options": [
+      "认真盘算自己那儿有没有",
+      "已经开始安排滑雪和宅家答题",
+      "先把日历按连休重新排一遍",
+      "回一句冬天也要有假期 Buff"
+    ],
+    "answer": 0,
+    "cat": "离谱假设"
+  },
+  {
+    "q": "刷到今年电影票房破了三百二十亿，我？",
+    "options": [
+      "认真翻翻还有哪部没看",
+      "先问这和我购物车有什么关系",
+      "已经在脑内排下周观影清单",
+      "觉得这比降温战报更热乎"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "广州的秋天终于被官宣上岗时我？",
+    "options": [
+      "认真恭喜秋天持证上岗",
+      "先问这和冷空气南下谁先到",
+      "已经在心里给华南减一件",
+      "回一句入秋也要补办手续"
+    ],
+    "answer": 0,
+    "cat": "离谱假设"
   }
 ];
 /* ---------- Minimal LZ-String (compress share payloads) ---------- */
@@ -5174,13 +5237,19 @@ function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
 let toastTimer=null;
 function hideToast(){
   const el=document.getElementById('toast');
-  if(el) el.classList.remove('show');
+  if(el){
+    el.classList.remove('show');
+    el.setAttribute('aria-hidden','true');
+    el.textContent='';
+  }
   clearTimeout(toastTimer);
 }
 function toast(msg){
   const el=document.getElementById('toast');
   if(!el) return;
-  el.textContent=msg;el.classList.add('show');
+  el.textContent=msg;
+  el.removeAttribute('aria-hidden');
+  el.classList.add('show');
   clearTimeout(toastTimer);toastTimer=setTimeout(hideToast,2200);
 }
 
@@ -5698,7 +5767,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px">沉淀默契 · 慢慢认识彼此 · 冷空气续上·低温还在后头，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>雨雪继续·低温新低在后头，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -5722,7 +5791,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 两股冷空气还在续，雨雪降温中，答完再把冬装请出柜</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 中东部雨雪还在扩，东北更冷，答完再加件衣服</p>
   </div>`;
 }
 
@@ -6910,6 +6979,7 @@ function viewResult(){
     btn.textContent = muted ? '🔇' : '🔊';
     btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
     btn.title = muted ? '点击开启背景音乐' : '点击静音背景音乐';
+    btn.setAttribute('aria-label', muted ? '点击开启背景音乐' : '点击静音背景音乐');
   }
 
   function persist(){
