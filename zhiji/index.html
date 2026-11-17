@@ -152,7 +152,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","P
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 header.app-header{background:linear-gradient(135deg,var(--header-1) 0%,var(--header-2) 55%,var(--header-3) 100%);color:#fff;padding:28px 20px 30px;border-radius:0 0 28px 28px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
 header.app-header::after{content:"";position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12)}
-header.app-header h1{font-size:22px;font-weight:700;letter-spacing:1px;position:relative}
+header.app-header h1{font-size:22px;font-weight:700;letter-spacing:1px;position:relative;padding:0 104px;box-sizing:border-box;width:100%;line-height:1.35;word-break:keep-all;overflow-wrap:break-word}
 header.app-header p{font-size:13px;opacity:1;margin-top:6px;line-height:1.55;position:relative}
 .step-pill{display:inline-block;background:rgba(255,255,255,.22);padding:4px 12px;border-radius:20px;font-size:12px;margin-top:10px;position:relative}
 .card{background:var(--card);border-radius:var(--radius);padding:16px;margin:0 14px 12px;box-shadow:var(--shadow);border:1px solid var(--border)}
@@ -242,7 +242,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .footer-note{text-align:center;padding:8px 20px;font-size:12px;color:#4E5D6B;line-height:1.5}
 html[data-theme="mono"] .footer-note{color:#444}
 html[data-theme="dark"] .footer-note{color:#C8D0DC}
-.modal .hint{color:#4E5D6B}
+.modal .hint{color:#2F3D4A}
 html[data-theme="dark"] .modal .hint{color:#C8D0DC}
 .hero-emoji{font-size:42px;margin-bottom:8px}
 .meme-hero{display:block;width:min(180px,46vw);height:auto;margin:0 auto 12px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;animation:memeFloat 3.2s ease-in-out infinite}
@@ -4412,14 +4412,14 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "听说北方17日、南方18日可能刷下半年低温新低，我？",
+    "q": "这轮寒潮要把下半年气温新低送到19日前后时，我？",
     "options": [
-      "认真翻箱子找冬装",
-      "先当天气预报在夸张",
-      "提前把暖宝宝放回包里",
-      "回一句热冷循环好抽象"
+      "认真把最厚的那件翻出来",
+      "先看本地会不会真的破纪录",
+      "已经开始在心里提前喊冷",
+      "回一句新低也要搞期末冲刺"
     ],
-    "answer": 2,
+    "answer": 1,
     "cat": "精神状态"
   },
   {
@@ -4577,12 +4577,12 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "听说这两股冷空气要续到18日，我？",
+    "q": "寒潮还要影响到19日、0℃线20日早晨继续往南压时，我？",
     "options": [
       "按天把衣服排好班",
-      "先看后几天还会不会再降",
+      "先看后几天最低温会到哪",
       "已经决定这几天少出门",
-      "回一句降温也要搞续集"
+      "回一句降温也要再加一集"
     ],
     "answer": 1,
     "cat": "精神状态"
@@ -4599,12 +4599,12 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "明后天东北降雪还会增多增强时我？",
+    "q": "吉林甘肃今天局地还有暴雪、明天雨雪就要明显收少时我？",
     "options": [
       "先看那边朋友出不出得了门",
-      "把出行往更后天挪一挪",
+      "把出行往放晴后挪一挪",
       "已经在脑内给东北铺上一层雪",
-      "回一句续集比预告更认真"
+      "回一句暴雪也要赶着收尾"
     ],
     "answer": 0,
     "cat": "网络冲浪"
@@ -4652,6 +4652,72 @@ const BANK = [
     ],
     "answer": 0,
     "cat": "离谱假设"
+  },
+  {
+    "q": "锁屏弹出「寒潮蓝色预警」时我？",
+    "options": [
+      "认真把厚衣服再加一档",
+      "先看本地会降几度",
+      "已经在心里把暖气拧到最大",
+      "回一句蓝色预警也挺会营业"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "中东部雨雪今天还在、明天起就要明显转晴时我？",
+    "options": [
+      "先把今天的伞用完再说",
+      "已经在盼着放晴却更冷",
+      "出门权交给雷达图",
+      "回一句转晴也要先交降温作业"
+    ],
+    "answer": 1,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "大风蓝色预警也挂上、阵风能到七八级时我？",
+    "options": [
+      "先检查门窗和阳台杂物",
+      "出门把帽子围巾按紧",
+      "改成云端出席躲风",
+      "觉得风比降温更会整人"
+    ],
+    "answer": 0,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "听说呼和浩特最高气温要跌破冰点时我？",
+    "options": [
+      "认真给北方朋友发一件虚拟冬装",
+      "先对比自己那儿还差几度",
+      "已经在心里听见结冰的声音",
+      "回一句下半年也要第一次破冰"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "小雪还剩五天、天气却已经提前彩排时我？",
+    "options": [
+      "认真盘算这周要不要把冬装穿满",
+      "先看会不会真的下到小雪",
+      "已经把节气当成降温预告",
+      "回一句节气比日历还会剧透"
+    ],
+    "answer": 0,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "刷到 BLG 拿下英雄联盟全球总决赛冠军时我？",
+    "options": [
+      "认真把庆祝视频再看一遍",
+      "先问这和我段位有什么关系",
+      "已经在脑内补一场决赛",
+      "回一句冠军也要赶在寒潮前收工"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
   }
 ];
 /* ---------- Minimal LZ-String (compress share payloads) ---------- */
@@ -5767,7 +5833,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>雨雪继续·低温新低在后头，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>寒潮蓝预警·小雪还剩五天，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -5791,7 +5857,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 中东部雨雪还在扩，东北更冷，答完再加件衣服</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 寒潮蓝预警已上线，小雪还剩五天，答完再加件衣服</p>
   </div>`;
 }
 
