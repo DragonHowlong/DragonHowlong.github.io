@@ -211,7 +211,9 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .more-fold .fold-body{padding:0 12px 12px;border-top:1px solid var(--border)}
 .more-fold .fold-body .btn{margin-top:8px}
 .result-card .reward{font-size:15px;color:var(--primary-dark);font-weight:650;padding:14px 16px;border:1.5px dashed var(--primary);border-radius:14px;margin-bottom:8px;background:var(--reward-bg)}
-.result-card .no-reward{font-size:14px;color:var(--text-light);padding:12px;background:var(--no-reward-bg);border-radius:12px;margin-bottom:8px}
+.result-card .no-reward{font-size:14px;color:#3A4A58;padding:12px;background:var(--no-reward-bg);border-radius:12px;margin-bottom:8px}
+html[data-theme="mono"] .result-card .no-reward{color:#444}
+html[data-theme="dark"] .result-card .no-reward{color:#C8D0DC}
 .reward-preview{display:flex;align-items:center;gap:12px;padding:12px;background:linear-gradient(135deg,var(--soft-grad-a),var(--soft-grad-b));border-radius:14px;margin-top:8px}
 .reward-preview .emoji{font-size:28px}
 .reward-preview .txt{flex:1;text-align:left}
@@ -237,12 +239,13 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .bank-item .bq{font-size:14px;font-weight:550;margin-bottom:4px}
 .bank-item .bo{font-size:12px;color:var(--text-light);line-height:1.5}
 .bank-item .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);margin-bottom:4px;font-weight:600}
-.toast{position:fixed;top:calc(92px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:#1A2330;color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;font-weight:650;z-index:500;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s;box-shadow:0 6px 20px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.45)}
+.toast{position:fixed;top:auto;bottom:calc(24px + env(safe-area-inset-bottom, 0px));left:50%;transform:translateX(-50%);background:#1A2330;color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;font-weight:650;z-index:500;max-width:82%;text-align:center;pointer-events:none;opacity:0;transition:opacity .3s;box-shadow:0 6px 20px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.45)}
 .toast.show{opacity:1}
-.footer-note{text-align:center;padding:8px 20px;font-size:13px;color:#3A4A58;line-height:1.5}
+.footer-note{text-align:center;padding:8px 20px;font-size:13px;color:#3A4A58;line-height:1.5;word-break:keep-all}
 html[data-theme="mono"] .footer-note{color:#444}
 html[data-theme="dark"] .footer-note{color:#C8D0DC}
-.modal .hint{color:#2F3D4A}
+.modal .hint{color:#2F3D4A;font-size:13px;line-height:1.55}
+.modal > p.hint{margin:0 0 10px}
 html[data-theme="dark"] .modal .hint{color:#C8D0DC}
 .hero-emoji{font-size:42px;margin-bottom:8px}
 .meme-hero{display:block;width:min(180px,46vw);height:auto;margin:0 auto 12px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;animation:memeFloat 3.2s ease-in-out infinite}
@@ -317,8 +320,9 @@ html[data-theme="mono"] .btn-primary,html[data-theme="mono"] .btn-mint{backgroun
 html[data-theme="mono"] header.app-header{background:#111}
 .lb-remote-hook{min-height:24px}
 
-.hub-back{position:fixed;top:max(10px,env(safe-area-inset-top));left:12px;z-index:60;display:inline-flex;align-items:center;gap:4px;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:650;letter-spacing:.3px;text-decoration:none;color:#fff;background:rgba(28,40,51,.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.hub-back{position:fixed;top:max(10px,env(safe-area-inset-top));left:12px;z-index:60;display:inline-flex;align-items:center;gap:4px;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:650;letter-spacing:.3px;text-decoration:none;color:#fff;background:rgba(28,40,51,.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28);box-shadow:0 2px 10px rgba(0,0,0,.12);transition:opacity .2s ease, transform .2s ease}
 .hub-back:active{opacity:.85;transform:scale(.97)}
+html.is-scrolled .hub-back,html.is-scrolled .bgm-toggle{opacity:0;pointer-events:none;transform:translateY(-6px)}
 
 
 
@@ -4412,10 +4416,10 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "今天北方、明天南方要陆续刷下半年气温新低时，我？",
+    "q": "寒潮预警解除后，中东部还要刷立秋后气温新低时我？",
     "options": [
-      "认真把最厚的那件翻出来",
-      "先看本地会不会真的破纪录",
+      "认真把最厚的那件继续留在身上",
+      "先看本地会不会真的再破纪录",
       "已经开始在心里提前喊冷",
       "回一句新低也要搞期末冲刺"
     ],
@@ -4577,7 +4581,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "寒潮还要影响到19日、0℃线20日早晨继续往南压时，我？",
+    "q": "寒潮影响今天收尾、明天早晨 0℃线还要南压时，我？",
     "options": [
       "按天把衣服排好班",
       "先看后几天最低温会到哪",
@@ -4599,12 +4603,12 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "东北内蒙古今天还有小到中雪、雨雪整体在收时我？",
+    "q": "内蒙古、东北和山东半岛今明还要下雪时我？",
     "options": [
       "先看那边朋友出不出得了门",
       "把出行往放晴后挪一挪",
-      "已经在脑内给东北铺上一层雪",
-      "回一句暴雪也要赶着收尾"
+      "已经在脑内给海边也铺一层雪",
+      "回一句雪还要赶着加更"
     ],
     "answer": 0,
     "cat": "网络冲浪"
@@ -4665,12 +4669,12 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "中东部雨雪正在收尾、明天起大部转晴时我？",
+    "q": "寒潮过了、中东部降水变少但气温还在低位时我？",
     "options": [
-      "先把今天的伞用完再说",
+      "伞可以先收，外套还不能收",
       "已经在盼着放晴却更冷",
-      "出门权交给雷达图",
-      "回一句转晴也要先交降温作业"
+      "出门权交给体感温度",
+      "回一句放晴也要先交低温作业"
     ],
     "answer": 1,
     "cat": "网络冲浪"
@@ -4698,10 +4702,10 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "小雪还剩四天、天气却已经提前彩排时我？",
+    "q": "小雪还剩三天、北方却已经在下雪时我？",
     "options": [
       "认真盘算这周要不要把冬装穿满",
-      "先看会不会真的下到小雪",
+      "先看会不会真的下到小雪那天",
       "已经把节气当成降温预告",
       "回一句节气比日历还会剧透"
     ],
@@ -4721,18 +4725,18 @@ const BANK = [
   }
 ,
   {
-    "q": "寒潮蓝色预警还在挂着、局地还能再降十二度时我？",
+    "q": "中央气象台今早解除寒潮蓝色预警时我？",
     "options": [
-      "认真再加一件压箱底的厚衣服",
-      "先看本地到底会降几度",
-      "已经决定这几天少出门",
-      "回一句预警续集也太会加班"
+      "认真确认预警撤了、低温还在",
+      "先看本地是不是真的可以松一口气",
+      "已经决定厚衣服再穿两天",
+      "回一句预警下班了，冷还在加班"
     ],
     "answer": 1,
     "cat": "精神状态"
   },
   {
-    "q": "0℃线要在20日早晨压到河南到苏皖北部时我？",
+    "q": "明天早晨 0℃线要压到河南北部到苏皖北部时我？",
     "options": [
       "按降温路线把围巾提前排好班",
       "先看自己那儿离 0℃ 还有多远",
@@ -4785,6 +4789,72 @@ const BANK = [
     ],
     "answer": 0,
     "cat": "离谱假设"
+  },
+  {
+    "q": "中央气象台今早解除寒潮蓝色预警、大风预警却还挂着时我？",
+    "options": [
+      "认真改口：预警撤了，风还没撤",
+      "先看本地阵风还能到几级",
+      "已经决定帽子和围巾先不还柜子",
+      "回一句预警也要预告下集才走"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "刷到山东半岛冷流降雪、威海下半年第一场雪上线时我？",
+    "options": [
+      "认真把「雪窝子」成因看完",
+      "先问这和我这儿的体感有什么关系",
+      "已经在脑内给海边铺一层薄雪",
+      "回一句海风也要兼职送雪"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "黑龙江东部、山东半岛东北部今明局地还可能有大到暴雪时我？",
+    "options": [
+      "先给那边的朋友发一句路上小心",
+      "把可推迟的出行往放晴后挪",
+      "已经在心里听见铲雪的声音",
+      "回一句暴雪也要赶在小雪前加班"
+    ],
+    "answer": 0,
+    "cat": "精神状态"
+  },
+  {
+    "q": "刷到 APEC 领导人会议今天在深圳举行时我？",
+    "options": [
+      "认真把会议主题看一眼再划走",
+      "先问这和我今天的日程有什么关系",
+      "已经在脑内给深圳湾加一组座位",
+      "回一句国际会议也要赶在小雪前收工"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "听说泰州民营船企造的大型 LNG 船出江试航了时我？",
+    "options": [
+      "认真把「第一次批量建造」看完",
+      "先问这和我坐过的船有什么关系",
+      "已经在江面上目送它出港",
+      "回一句大船也要趁降温去试水"
+    ],
+    "answer": 0,
+    "cat": "离谱假设"
+  },
+  {
+    "q": "这个周末预报晴冷、适合出门但早晚很冷时我？",
+    "options": [
+      "认真排一趟短途，但外套先加厚",
+      "先看最低温再决定出不出门",
+      "已经在脑内完成一次晴天约会",
+      "回一句放晴也要先交低温作业"
+    ],
+    "answer": 1,
+    "cat": "抽象日常"
   }
 ];
 
@@ -5901,7 +5971,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>寒潮预警续上·小雪还剩四天，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>寒潮预警解除·小雪还剩三天，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -5925,7 +5995,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答 · 寒潮蓝预警还在续，小雪还剩四天，答完再加件衣服</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答<br>寒潮蓝预警刚解除，小雪还剩三天，答完还是要加件衣服</p>
   </div>`;
 }
 
@@ -6004,8 +6074,9 @@ function setSlotAnswer(j){
   S.answeredHint=true;
   saveDraft();render();
 }
-function prevStep(){ if(S.draft.step>0){S.draft.step--;saveDraft();ensureSlotSeeded();render()} }
+function prevStep(){ hideToast(); if(S.draft.step>0){S.draft.step--;saveDraft();ensureSlotSeeded();render()} }
 function nextStep(){
+  hideToast();
   const i=S.draft.step; const slot=S.draft.slots[i];
   if(!slot.filled || !slot.q.trim()){ toast('请先完成本题设置'); return; }
   if(slot.options.filter(o=>String(o).trim()).length<2){ toast('至少需要 2 个选项'); return; }
@@ -7284,6 +7355,19 @@ function viewResult(){
   if(S.draft) applyTheme(S.draft.theme);
   else if(S.playQuiz) applyTheme(S.playQuiz.theme);
   else applyTheme('cute');
+  if(!window.__zhijiChromeScroll){
+    window.__zhijiChromeScroll=true;
+    let ticking=false;
+    const syncChrome=()=>{
+      ticking=false;
+      const y=window.scrollY||document.documentElement.scrollTop||0;
+      document.documentElement.classList.toggle('is-scrolled', y>40);
+    };
+    window.addEventListener('scroll', ()=>{
+      if(!ticking){ ticking=true; requestAnimationFrame(syncChrome); }
+    }, {passive:true});
+    syncChrome();
+  }
   render();
 })();
 </script>
