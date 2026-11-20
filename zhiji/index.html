@@ -4581,7 +4581,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "寒潮影响今天收尾、明天早晨 0℃线还要南压时，我？",
+    "q": "寒潮影响已经收尾、今天早晨 0℃线已经南压时，我？",
     "options": [
       "按天把衣服排好班",
       "先看后几天最低温会到哪",
@@ -4702,7 +4702,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "小雪还剩三天、北方却已经在下雪时我？",
+    "q": "小雪还剩两天、北方却已经在下雪时我？",
     "options": [
       "认真盘算这周要不要把冬装穿满",
       "先看会不会真的下到小雪那天",
@@ -4725,7 +4725,7 @@ const BANK = [
   }
 ,
   {
-    "q": "中央气象台今早解除寒潮蓝色预警时我？",
+    "q": "中央气象台刚解除寒潮蓝色预警时我？",
     "options": [
       "认真确认预警撤了、低温还在",
       "先看本地是不是真的可以松一口气",
@@ -4736,7 +4736,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "明天早晨 0℃线要压到河南北部到苏皖北部时我？",
+    "q": "今天早晨 0℃线压到河南北部到苏皖北部时我？",
     "options": [
       "按降温路线把围巾提前排好班",
       "先看自己那儿离 0℃ 还有多远",
@@ -4791,7 +4791,7 @@ const BANK = [
     "cat": "离谱假设"
   },
   {
-    "q": "中央气象台今早解除寒潮蓝色预警、大风预警却还挂着时我？",
+    "q": "中央气象台刚解除寒潮蓝色预警、大风预警却还挂着时我？",
     "options": [
       "认真改口：预警撤了，风还没撤",
       "先看本地阵风还能到几级",
@@ -4824,7 +4824,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "刷到 APEC 领导人会议今天在深圳举行时我？",
+    "q": "刷到 APEC 领导人会议昨天在深圳举行时我？",
     "options": [
       "认真把会议主题看一眼再划走",
       "先问这和我今天的日程有什么关系",
@@ -4855,6 +4855,72 @@ const BANK = [
     ],
     "answer": 1,
     "cat": "抽象日常"
+  },
+  {
+    "q": "周日就是小雪、这两天先拿晴冷周末过渡时我？",
+    "options": [
+      "认真把冬装预热到节气那天",
+      "先看小雪当天会不会真的下雪",
+      "已经在日历上把周日圈成换季日",
+      "回一句节气也要先暖场再上雪"
+    ],
+    "answer": 1,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "0℃线今天压到黄淮一带、出门哈气都看得见时我？",
+    "options": [
+      "按降温路线把围巾提前排好班",
+      "先测自己那儿是不是已经到 0℃",
+      "已经决定少在风口站着聊天",
+      "回一句零度线也准时打卡南下"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "寒潮预警全国解除了，南方却开始报霜冻和「风寒效应」时我？",
+    "options": [
+      "认真把帽子手套提前翻出来",
+      "先看本地最低温会不会真的结霜",
+      "已经决定早晚绝不偷懒少穿",
+      "回一句风比温度更会偷偷加班"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
+  },
+  {
+    "q": "早盘刷到沪指大跌、屏幕一片绿时我？",
+    "options": [
+      "认真看完一眼再把 App 划走",
+      "先问这和我午饭钱有什么关系",
+      "已经决定今天不点开行情了",
+      "回一句大盘也要赶在周末前泻火"
+    ],
+    "answer": 1,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "刷到有的港股科技股一天跌了将近两成时我？",
+    "options": [
+      "认真把新闻标题看完再划走",
+      "先感叹波动比天气还夸张",
+      "已经决定今日不讨论市值",
+      "回一句行情也要先演一出过山车"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "刷到又有 AI 公司上市首日就大涨时我？",
+    "options": [
+      "认真先看这是哪家再划走",
+      "先感叹开盘比过山车还热闹",
+      "已经决定把上市当热闹围观",
+      "回一句新股也要先演一出开门红"
+    ],
+    "answer": 0,
+    "cat": "离谱假设"
   }
 ];
 
@@ -5285,8 +5351,9 @@ async function submitLeaveMsg(kind){
   if(st) st.textContent='发送中…';
   const remote=await postMsgRemote(quiz.id, kind, text, S.playNick||'匿名');
   if(remote&&remote.ok){
+    if(st) st.textContent=kind==='whisper'?'悄悄话已发送':'匿名信已发送';
     toast(kind==='whisper'?'悄悄话已发送':'匿名信已发送');
-    closeModal();
+    setTimeout(closeModal, 800);
     return;
   }
   toast('已记录本地确认；若网络拦截，出题人可能收不到');
@@ -5971,7 +6038,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>寒潮预警解除·小雪还剩三天，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>晴冷周末·小雪还剩两天，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -5995,7 +6062,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答<br>寒潮蓝预警刚解除，小雪还剩三天，答完还是要加件衣服</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答<br>晴冷周末，小雪还剩两天，答完还是要加件衣服</p>
   </div>`;
 }
 
@@ -7182,9 +7249,9 @@ function viewResult(){
 
   function syncUi(){
     btn.textContent = muted ? '🔇' : '🔊';
-    btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
-    btn.title = muted ? '点击开启背景音乐' : '点击静音背景音乐';
-    btn.setAttribute('aria-label', muted ? '点击开启背景音乐' : '点击静音背景音乐');
+    btn.setAttribute('aria-pressed', muted ? 'false' : 'true');
+    btn.title = muted ? '背景音乐已静音，点击开启' : '背景音乐播放中，点击静音';
+    btn.setAttribute('aria-label', muted ? '背景音乐已静音，点击开启' : '背景音乐播放中，点击静音');
   }
 
   function persist(){
