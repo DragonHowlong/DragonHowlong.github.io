@@ -4581,7 +4581,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "寒潮影响已经收尾、今天早晨 0℃线已经南压时，我？",
+    "q": "寒潮影响已经收尾、0℃线已经南压时，我？",
     "options": [
       "按天把衣服排好班",
       "先看后几天最低温会到哪",
@@ -4702,7 +4702,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "小雪还剩两天、北方却已经在下雪时我？",
+    "q": "小雪还剩一天、北方却已经在下雪时我？",
     "options": [
       "认真盘算这周要不要把冬装穿满",
       "先看会不会真的下到小雪那天",
@@ -4736,7 +4736,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "今天早晨 0℃线压到河南北部到苏皖北部时我？",
+    "q": "0℃线已经压到河南北部到苏皖北部时我？",
     "options": [
       "按降温路线把围巾提前排好班",
       "先看自己那儿离 0℃ 还有多远",
@@ -4824,7 +4824,7 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "刷到 APEC 领导人会议昨天在深圳举行时我？",
+    "q": "刷到 APEC 领导人会议前两天在深圳举行时我？",
     "options": [
       "认真把会议主题看一眼再划走",
       "先问这和我今天的日程有什么关系",
@@ -4846,7 +4846,7 @@ const BANK = [
     "cat": "离谱假设"
   },
   {
-    "q": "这个周末预报晴冷、适合出门但早晚很冷时我？",
+    "q": "这个周末先晴冷、明天却要接上冷空气时我？",
     "options": [
       "认真排一趟短途，但外套先加厚",
       "先看最低温再决定出不出门",
@@ -4857,7 +4857,7 @@ const BANK = [
     "cat": "抽象日常"
   },
   {
-    "q": "周日就是小雪、这两天先拿晴冷周末过渡时我？",
+    "q": "明天就是小雪、今天先拿回暖过渡时我？",
     "options": [
       "认真把冬装预热到节气那天",
       "先看小雪当天会不会真的下雪",
@@ -4868,7 +4868,7 @@ const BANK = [
     "cat": "抽象日常"
   },
   {
-    "q": "0℃线今天压到黄淮一带、出门哈气都看得见时我？",
+    "q": "0℃线刚压到黄淮一带、出门哈气都看得见时我？",
     "options": [
       "按降温路线把围巾提前排好班",
       "先测自己那儿是不是已经到 0℃",
@@ -4921,6 +4921,72 @@ const BANK = [
     ],
     "answer": 0,
     "cat": "离谱假设"
+  },
+  {
+    "q": "明天就是小雪、冷空气也要跟着上岗时我？",
+    "options": [
+      "认真把厚衣服提前放到顺手的位置",
+      "先看节气当天会不会真的下雪",
+      "已经在日历上把周日圈成换季日",
+      "回一句节气和冷空气要组团报到"
+    ],
+    "answer": 1,
+    "cat": "抽象日常"
+  },
+  {
+    "q": "中东部今天气温回升、明天冷空气就要南下时我？",
+    "options": [
+      "认真享受这仅有一天的回暖",
+      "先确认自己那儿是不是真的回升了",
+      "已经决定今天不减衣服只看温度",
+      "回一句回暖也要先演出个彩蛋再下线"
+    ],
+    "answer": 0,
+    "cat": "精神状态"
+  },
+  {
+    "q": "今天是世界问候日、有人说要主动跟十个人打招呼时我？",
+    "options": [
+      "认真先跟身边的人多问一句在不在",
+      "先数自己今天已经打过几次招呼",
+      "已经决定用一条消息问候一串人",
+      "回一句问好也要凑满十次才算打卡"
+    ],
+    "answer": 0,
+    "cat": "离谱假设"
+  },
+  {
+    "q": "刷到隔夜美股大跌、纳指一天跌了百分之五时我？",
+    "options": [
+      "认真看完标题就把资讯划走",
+      "先感叹波动比冷空气还准时",
+      "已经决定今天不讨论海外行情",
+      "回一句隔夜市场也要先演一出跳水"
+    ],
+    "answer": 1,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "听说央行 27 日要发行丁未羊年纪念币时我？",
+    "options": [
+      "认真先看一眼设计再把新闻划走",
+      "先算还有几天才到发行日",
+      "已经决定把生肖币当热闹围观",
+      "回一句新年份要先从硬币上预热"
+    ],
+    "answer": 0,
+    "cat": "网络冲浪"
+  },
+  {
+    "q": "预报 22 日起东北要下雪、南方要下雨时我？",
+    "options": [
+      "认真按路线把伞和厚衣服分开准备",
+      "先看自己那儿是雨还是雪",
+      "已经决定这几天少排户外行程",
+      "回一句南北天气也要分成两条赛道"
+    ],
+    "answer": 1,
+    "cat": "精神状态"
   }
 ];
 
@@ -5388,8 +5454,9 @@ async function submitLeaveFeedback(){
   if(st) st.textContent='发送中…';
   const remote=await postFeedbackRemote(text, nick, quizId);
   if(remote&&remote.ok){
+    if(st) st.textContent='已发给开发者';
     toast('已发给开发者');
-    closeModal();
+    setTimeout(closeModal, 800);
     return;
   }
   toast('发送失败；若网络拦截（如微信拦 *.workers.dev），请用系统浏览器再试');
@@ -6038,7 +6105,7 @@ function viewHome(){
   <div class="view active">
     <header class="app-header">
       <h1>默契测试</h1>
-      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>晴冷周末·小雪还剩两天，也要懂彼此</span></p>
+      <p>出 10 道关于你的题 · 看谁最懂你<br><span style="opacity:.96;font-size:13px;line-height:1.6;display:inline-block;margin-top:4px;word-break:keep-all">沉淀默契 · 慢慢认识彼此<br>回升只到今天·明天小雪，也要懂彼此</span></p>
     </header>
     <div class="card p4-hero">
       <h2 class="p4-title">对方到底有多懂你？</h2>
@@ -6062,7 +6129,7 @@ function viewHome(){
       <div class="section-label" style="text-align:left;margin-top:0">主题皮肤 · 创建前可选</div>
       <div class="theme-picker">${themeChips}</div>
     </div>
-    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答<br>晴冷周末，小雪还剩两天，答完还是要加件衣服</p>
+    <p class="footer-note">进度保存在这台手机/浏览器里<br>分享链接自带题目，好友打开即可答<br>回升只到今天，明天小雪带着冷空气，答完还是要加件衣服</p>
   </div>`;
 }
 
@@ -6899,8 +6966,8 @@ function saveQrImage(){
 
 async function copyLink(){
   const url=shareUrl(S.published);
-  const n=(url.split('?q=')[1]||'').length;
-  try{ await navigator.clipboard.writeText(url); toast('邀请链接已复制（压缩约 '+n+' 字符，打开即答题）'); }
+  const n=url.length;
+  try{ await navigator.clipboard.writeText(url); toast('邀请链接已复制（约 '+n+' 字符，打开即答题）'); }
   catch(e){ prompt('复制下面的链接发给好友（打开即答题）：', url); }
 }
 async function copyShortLink(){
