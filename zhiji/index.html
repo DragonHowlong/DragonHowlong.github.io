@@ -247,6 +247,7 @@ html[data-theme="dark"] .footer-note{color:#C8D0DC}
 .modal .hint{color:#2F3D4A;font-size:13px;line-height:1.55}
 .modal > p.hint{margin:0 0 10px}
 html[data-theme="dark"] .modal .hint{color:#C8D0DC}
+#msg-leave-status, #dev-fb-status{margin-top:8px;padding-bottom:12px}
 .hero-emoji{font-size:42px;margin-bottom:8px}
 .meme-hero{display:block;width:min(180px,46vw);height:auto;margin:0 auto 12px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;animation:memeFloat 3.2s ease-in-out infinite}
 .meme-result{display:block;width:min(168px,44vw);height:auto;margin:0 auto 14px;border-radius:18px;box-shadow:0 6px 18px rgba(var(--primary-rgb),.18);object-fit:cover;-webkit-touch-callout:default;user-select:none}
@@ -4251,12 +4252,12 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "双十一刚过又赶上回暖，我更优先？",
+    "q": "双十一过去一阵、回暖也已经收工时我更优先？",
     "options": [
       "先把购物车结算掉",
-      "先出门晒太阳",
+      "先把冬装彻底穿回去",
       "两边都惦记但先躺平",
-      "用回暖当借口再逛一圈"
+      "用换季当借口再逛一圈"
     ],
     "answer": 2,
     "cat": "闺蜜"
@@ -4592,12 +4593,12 @@ const BANK = [
     "cat": "精神状态"
   },
   {
-    "q": "听说南北方大片地区要刷下半年气温新低，我？",
+    "q": "冷空气再次南下、有人说又要刷气温新低时我？",
     "options": [
       "认真把最厚的那件翻出来",
       "先看本地会不会真的破纪录",
       "已经开始在心里提前喊冷",
-      "回一句新低也要搞首发"
+      "回一句新低也要再刷一遍"
     ],
     "answer": 1,
     "cat": "精神状态"
@@ -5521,8 +5522,8 @@ async function submitLeaveFeedback(){
   const remote=await postFeedbackRemote(text, nick, quizId);
   if(remote&&remote.ok){
     if(st) st.textContent='已发给开发者';
-    toast('已发给开发者');
-    setTimeout(closeModal, 800);
+    closeModal();
+    toast('已发给开发者', 4000);
     return;
   }
   toast('发送失败；若网络拦截（如微信拦 *.workers.dev），请用系统浏览器再试');
@@ -5648,13 +5649,14 @@ function hideToast(){
   }
   clearTimeout(toastTimer);
 }
-function toast(msg){
+function toast(msg, ms){
   const el=document.getElementById('toast');
   if(!el) return;
   el.textContent=msg;
   el.removeAttribute('aria-hidden');
   el.classList.add('show');
-  clearTimeout(toastTimer);toastTimer=setTimeout(hideToast,2200);
+  const dur=(typeof ms==='number' && ms>0)?ms:2200;
+  clearTimeout(toastTimer);toastTimer=setTimeout(hideToast,dur);
 }
 
 
@@ -7558,14 +7560,30 @@ function viewResult(){
   if(!window.__zhijiChromeScroll){
     window.__zhijiChromeScroll=true;
     let ticking=false;
+    let extraScrollTop=0;
+    const readScrollY=()=>{
+      const se=document.scrollingElement;
+      return Math.max(
+        window.scrollY||0,
+        document.documentElement.scrollTop||0,
+        (document.body&&document.body.scrollTop)||0,
+        (se&&se.scrollTop)||0,
+        extraScrollTop||0
+      );
+    };
     const syncChrome=()=>{
       ticking=false;
-      const y=window.scrollY||document.documentElement.scrollTop||0;
+      const y=readScrollY();
       document.documentElement.classList.toggle('is-scrolled', y>40);
     };
-    window.addEventListener('scroll', ()=>{
+    const onChromeScroll=(ev)=>{
+      const t=ev&&ev.target;
+      extraScrollTop=(t&&t!==window&&t!==document&&typeof t.scrollTop==='number')?(t.scrollTop||0):0;
       if(!ticking){ ticking=true; requestAnimationFrame(syncChrome); }
-    }, {passive:true});
+    };
+    const scrollOpts={capture:true,passive:true};
+    window.addEventListener('scroll', onChromeScroll, scrollOpts);
+    document.addEventListener('scroll', onChromeScroll, scrollOpts);
     syncChrome();
   }
   render();
